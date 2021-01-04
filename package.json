@@ -1,0 +1,22 @@
+{
+  "name": "pixelbot",
+  "version": "1.0.0",
+  "description": "private discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KwongSunny/PixelBot.git"
+  },
+  "author": "Sunny Kwong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KwongSunny/PixelBot/issues"
+  },
+  "homepage": "https://github.com/KwongSunny/PixelBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
+}
