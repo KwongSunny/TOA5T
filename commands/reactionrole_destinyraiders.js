@@ -28,7 +28,7 @@ module.exports = {
             if(reaction.message.channel.id == channel)
             {
                 if(reaction.emoji.name === role1Emoji)
-                    await reaction.message.guild.members.cache.get(user.id).roles.add(role1);
+                    await reaction.message.guild.members.cache.get(user.id).roles.add(role1).catch(console.error);
             }
             else return;
 
@@ -43,7 +43,7 @@ module.exports = {
             if(reaction.message.channel.id == channel)
             {
                 if(reaction.emoji.name === role1Emoji)
-                    await reaction.message.guild.members.cache.get(user.id).roles.remove(role1);
+                    await reaction.message.guild.members.cache.get(user.id).roles.remove(role1).catch(console.error);
             }
             else return;
         });
