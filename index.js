@@ -1,4 +1,4 @@
-const token = require('./token.js')
+const token = process.env.BOT_TOKEN;
 
 const Discord = require('discord.js');
 
