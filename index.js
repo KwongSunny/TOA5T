@@ -1,4 +1,4 @@
-const token = process.env.BOT_TOKEN;
+const token = 'process.env.BOT_TOKEN';
 
 const Discord = require('discord.js');
 
@@ -39,5 +39,5 @@ client.on('message', message => {
     }
 });
 
-client.login(token.token);
+client.login(token);
 
