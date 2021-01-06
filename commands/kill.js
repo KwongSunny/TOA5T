@@ -5,7 +5,7 @@ module.exports = {
         if(message.author.id === '184783523624910858')
         {
             message.channel.send('Stopping processes...')
-                .then(() => {args.destroy().catch(console.error)});
+                .then(() => {args.destroy().catch(console.error)}).catch(console.error);
         }
         else
             message.channel.send('You have insufficient permissions to use this command.');
