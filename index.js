@@ -29,15 +29,15 @@ client.on('message', message => {
 
     if(command === 'ping')
         client.commands.get('ping').execute(message, args);
+
     else if(command === 'kill')
-    {
         client.commands.get('kill').execute(message, client);
-    }
+
     else if(command === 'reactionrole_destinyraiders')
-    {
         client.commands.get('reactionrole_destinyraiders').execute(message, args, Discord, client);
-    }
+
+    else if(command === 'random')
+        client.commands.get('random').execute(message, args)
 });
-console.log(process.env.BOT_TOKEN);
 client.login(process.env.BOT_TOKEN);
 
