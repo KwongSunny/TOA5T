@@ -20,8 +20,8 @@ module.exports = {
         messageEmbed.react(role1Emoji);
 
         client.on('messageReactionAdd', async(reaction, user) => {
-            if(reaction.message.partial) await reaction.message.fetch();
-            if(reaction.partial) await reaction.fetch();
+            if(reaction.message.partial) await reaction.message.fetch().catch(consoole.error);
+            if(reaction.partial) await reaction.fetch().catch(consoole.error);
             if(user.bot) return;
             if(!reaction.message.guild) return;
 
@@ -35,8 +35,8 @@ module.exports = {
         });
         
         client.on('messageReactionRemove', async(reaction, user) => {
-            if(reaction.message.partial) await reaction.message.fetch();
-            if(reaction.partial) await reaction.fetch();
+            if(reaction.message.partial) await reaction.message.fetch().catch(consoole.error);
+            if(reaction.partial) await reaction.fetch().catch(consoole.error);
             if(user.bot) return;
             if(!reaction.message.guild) return;
 
