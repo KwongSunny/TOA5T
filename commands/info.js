@@ -3,7 +3,7 @@ const { Message } = require("discord.js")
 module.exports = {
     name: 'info',
     description: 'Information about PixelBot',
-    execute(message){
+    execute(message, Discord){
         let embed = new Discord.MessageEmbed()
             .setColor('#f7c920')
             .setTitle('PixelBot')
