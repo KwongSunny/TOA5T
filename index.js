@@ -45,6 +45,6 @@ client.on('message', message => {
 });
 
 tokens = require('./tokens.js');
-//client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
+client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 //client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
-client.login(tokens.DEV_TOKEN);         //LOCAL DEV BUILD
+//client.login(tokens.DEV_TOKEN);         //LOCAL DEV BUILD
