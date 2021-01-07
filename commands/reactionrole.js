@@ -62,7 +62,7 @@ module.exports = {
             if(reaction.partial) await reaction.fetch().catch(console.error);
             if(user.bot) return;
             if(!reaction.message.guild) return;
-
+   
             if(reaction.message.channel === getRoleChannel){
                 for(i = 0; i < roleArgs.length; i++)
                 {

@@ -10,7 +10,7 @@ module.exports = {
         // let bar = '[----------------]';
 
         // let embed = new Discord.MessageEmbed()
-        //     .setColor('#6b65e6')
+        //     .setColor('#f7c920')
         //     .setTitle('Randomizer')
         //     .setDescription(bar);
         

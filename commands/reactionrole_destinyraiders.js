@@ -11,7 +11,7 @@ module.exports = {
         const role1Emoji = '🔴';
 
         let embed = new Discord.MessageEmbed()
-            .setColor('#6b65e6')
+            .setColor('#f7c920')
             .setTitle('Pick a Role')
             .setDescription('React below to give yourself a role. \nUnreact to remove your role.\n\n'
                 + `${role1Emoji} for Raiders`);
