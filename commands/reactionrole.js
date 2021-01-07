@@ -19,15 +19,15 @@ module.exports = {
             }
         );
 
+        let roleArgs = [];
+        let roleList = [];
+
         //asks for roles:reactions
         if(args.length === 0){ 
             getRoleChannel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
         }
         //given roles:reactions
         else{
-            let roleArgs = [];
-            let roleList = [];
-
             for(i = 0; i < args.length; i++){
                 roleArgs.push(args[i].split(':'));
                 roleList.push(message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
@@ -47,5 +47,38 @@ module.exports = {
                 messageEmbed.react(roleArgs[i][1]);
 
         }
+
+        client.on('messageReactionAdd', async(reaction, user) => {
+            if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+            if(reaction.partial) await reaction.fetch().catch(console.error);
+            if(user.bot) return;
+            if(!reaction.message.guild) return;
+
+            if(reaction.message.channel == getRoleChannel){
+                for(i = 0; i < roleArgs.length; i++)
+                {
+                    if(reaction.emoji.name === roleArgs[i][1])
+                        await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
+                }
+            }
+            else return;
+
+        });
+        
+        client.on('messageReactionRemove', async(reaction, user) => {
+            if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+            if(reaction.partial) await reaction.fetch().catch(console.error);
+            if(user.bot) return;
+            if(!reaction.message.guild) return;
+
+            if(reaction.message.channel == getRoleChannel){
+                for(i = 0; i < roleArgs.length; i++)
+                {
+                    if(reaction.emoji.name === roleArgs[i][1])
+                        await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
+                }
+            }
+            else return;
+        });
     }
 }
