@@ -12,7 +12,7 @@ module.exports = {
 
         let embed = new Discord.MessageEmbed()
             .setColor('#6b65e6')
-            .setTitle('Pick a role!')
+            .setTitle('Pick a Role')
             .setDescription('React below to give yourself a role. \nUnreact to remove your role.\n\n'
                 + `${role1Emoji} for Raiders`);
             
