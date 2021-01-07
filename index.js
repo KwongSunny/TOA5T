@@ -1,12 +1,12 @@
-require("dotenv").config();
+require('dotenv').config();
 
 const Discord = require('discord.js');
+
+const fs = require('fs');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 
 const prefix = '~';
-
-const fs = require('fs');
 
 client.commands = new Discord.Collection();
 
@@ -33,11 +33,18 @@ client.on('message', message => {
     else if(command === 'kill')
         client.commands.get('kill').execute(message, client);
 
-    else if(command === 'reactionrole_destinyraiders')
+    else if(command === 'reactionrole')
+        client.commands.get('reactionrole').execute(message, args, Discord, client);
+
+    else if(command === 'reactionrole_destinyraiders') //IF BOT GOES OFFLINE, PREVIOUS POSTS WILL BE USELESS
         client.commands.get('reactionrole_destinyraiders').execute(message, args, Discord, client);
 
-    else if(command === 'random')
-        client.commands.get('random').execute(message, args)
+    else if(command === 'random') // NOT DONE, NEED TO DO EMBEDS
+        client.commands.get('random').execute(message, args, Discord)
+    
 });
-client.login(process.env.BOT_TOKEN);
 
+tokens = require('./tokens.js');
+//client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
+//client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
+client.login(tokens.DEV_TOKEN);         //LOCAL DEV BUILD
