@@ -12,22 +12,27 @@ module.exports = {
         );
 
         let reactionPost;
-        //finds a previous reaction post from a past runtime and syncs up
+        let previousArgs = '';
+        let roleArgs = [];
+        let roleList = [];
+
+        //finds a previous reaction post from a past runtime and syncs up reactions and roles
         client.once('ready', () => {
-            reactionPost = getRoleChannel.messages.cache.find((cachedMessage) => 
-                cachedMessage.embeds[0].title === 'Pick a role!')
+            console.log("A");
+            // reactionPost = getRoleChannel.messages.cache.find((cachedMessage) => 
+            //     cachedMessage.embeds[0].title === 'Pick a Role!');
+            // previousArgs = reactionPost.fields.find(field => field.name === 'Roles');
+            // console.log(previousArgs);
+
             }
         );
 
-        //asks for roles:reactions
+        //check for no args
         if(args.length === 0){ 
             getRoleChannel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
         }
-        //given roles:reactions
+        //there are args, create a new reactionrole post
         else{
-            let roleArgs = [];
-            let roleList = [];
-
             for(i = 0; i < args.length; i++){
                 roleArgs.push(args[i].split(':'));
                 roleList.push(message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
@@ -35,17 +40,55 @@ module.exports = {
 
             let embed = new Discord.MessageEmbed()
                 .setColor('#6b65e6')
-                .setTitle('Pick a role!')
+                .setTitle('Pick a Role')
                 .setDescription('React below to give yourself a role. \nUnreact to remove your role.\n')
-                .addField('reactionRoles', message.content.slice(14));
+            
+            let rolesField = '';
             for(i = 0; i < roleList.length; i++){
-                embed.setDescription(embed.description + '\n' + roleArgs[i][1] + ' for ' + roleArgs[i][0]);
+                rolesField = rolesField + '\n' + roleArgs[i][1] + ' for ' + roleArgs[i][0];
             }
+            embed.addField('Roles', rolesField);
 
+            //send the message and it's reaction roles
             messageEmbed = await getRoleChannel.send(embed);
             for(i = 0; i < roleArgs.length; i++)
                 messageEmbed.react(roleArgs[i][1]);
 
         }
+
+        //read active reactions, and gives out roles
+        client.on('messageReactionAdd', async(reaction, user) => {
+            if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+            if(reaction.partial) await reaction.fetch().catch(console.error);
+            if(user.bot) return;
+            if(!reaction.message.guild) return;
+   
+            if(reaction.message.channel === getRoleChannel){
+                for(i = 0; i < roleArgs.length; i++)
+                {
+                    if(reaction.emoji.name === roleArgs[i][1])
+                        await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
+                }
+            }
+            else return;
+
+        });
+        
+        //read active reactions, and remove roles
+        client.on('messageReactionRemove', async(reaction, user) => {
+            if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+            if(reaction.partial) await reaction.fetch().catch(console.error);
+            if(user.bot) return;
+            if(!reaction.message.guild) return;
+
+            if(reaction.message.channel === getRoleChannel){
+                for(i = 0; i < roleArgs.length; i++)
+                {
+                    if(reaction.emoji.name === roleArgs[i][1])
+                        await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
+                }
+            }
+            else return;
+        });
     }
 }
