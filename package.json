@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/KwongSunny/PixelBot#readme",
   "dependencies": {
+    "aws-sdk": "^2.824.0",
     "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "uuid": "^8.3.2"
   }
 }
