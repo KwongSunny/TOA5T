@@ -2,6 +2,8 @@ const AWS = require('aws-sdk');
 const uuid = require('uuid');
 
 AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: "us-east-2"
 });
 
@@ -34,10 +36,10 @@ async function returnServers(){
     return new Promise((resolve, reject)=>{
         docClient.get(param, function(err, data) {
             if (err) {
-                //console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+                console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
                 reject(err)
             } else {
-                //console.log("get succeeded:", JSON.stringify(data, null, 2));
+                console.log("get succeeded:", JSON.stringify(data, null, 2));
                 resolve(data)
             }
         });
