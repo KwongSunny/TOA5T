@@ -97,7 +97,6 @@ client.on('messageReactionRemove', async(reaction, user) => {
     let response = await aws_reactionroles.getItem(reaction.message.guild.id.toString());
     if(reaction.message.id === response.Item.reactionrole_post_id)
     {
-        console.log("A");
         let roleString = response.Item.roles;
 
         let args = roleString.split(/, +/);
@@ -118,7 +117,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
     }
 });
 
-let deploy = 'LOCAL';
+let deploy = 'HEROKU';
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 if(deploy === 'PUBLIC') client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
 if(deploy === 'LOCAL') client.login(tokens.DEV_TOKEN);        //LOCAL DEV BUILD
