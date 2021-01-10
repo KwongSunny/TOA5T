@@ -4,32 +4,14 @@ const { execute } = require('./reactionrole_destinyraiders');
 module.exports = {
     name: 'reactionrole',
     description: 'Creates a reaction role message',
-    async execute(message, args, Discord, client){
+    async execute(message, args, rolesChannel, Discord, client){
 
-        //finds the get-role channel
-        let getRoleChannel = message.guild.channels.cache.find((cachedChannel) => 
-            cachedChannel.name ==='get-role'
-        );
-
-        let reactionPost;
-        let previousArgs = '';
         let roleArgs = [];
         let roleList = [];
 
-        //finds a previous reaction post from a past runtime and syncs up reactions and roles
-        client.once('ready', () => {
-            console.log("A");
-            // reactionPost = getRoleChannel.messages.cache.find((cachedMessage) => 
-            //     cachedMessage.embeds[0].title === 'Pick a Role!');
-            // previousArgs = reactionPost.fields.find(field => field.name === 'Roles');
-            // console.log(previousArgs);
-
-            }
-        );
-
         //check for no args
         if(args.length === 0){ 
-            getRoleChannel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
+            rolesChannel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
         }
         //there are args, create a new reactionrole post
         else{
@@ -50,7 +32,7 @@ module.exports = {
             embed.addField('Roles', rolesField);
 
             //send the message and it's reaction roles
-            messageEmbed = await getRoleChannel.send(embed);
+            messageEmbed = await rolesChannel.send(embed);
             for(i = 0; i < roleArgs.length; i++)
                 messageEmbed.react(roleArgs[i][1]);
 
