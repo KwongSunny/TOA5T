@@ -6,32 +6,60 @@ AWS.config.update({
 });
 
 const dynamodb = new AWS.DynamoDB();
-let docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient();
+const tableName = 'pixelbot_servers';
 
 async function returnServers(){
-    await dynamodb.scan({TableName: 'pixelbot_servers'}, function(err, data) {
+    let param = {
+        TableName: tableName
+    }
+
+    docClient.scan(param, function(err, data) {
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            console.log("dynamodb scan succeeded:", JSON.stringify(data, null, 2));
+            console.log("scan succeeded:", JSON.stringify(data, null, 2));
         }
     });
-    
-    await docClient.scan({TableName: 'pixelbot_servers'}, function(err, data) {
+}
+
+function readItem(server_id){
+    let param = {
+        TableName: tableName,
+        Key: {
+            "server_id": server_id
+        }
+    }
+
+    docClient.get(param, function(err, data) {
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            console.log("docClient scan succeeded:", JSON.stringify(data, null, 2));
+            console.log("get succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+}
+
+function writeItem(server_id, post_id, roles){
+    let param = {
+        TableName: tableName,
+        Item: {
+            "server_id": server_id,
+            "reactionrole_post_id": post_id,
+            "roles": roles
+        }
+    }
+
+    docClient.put(param, function(err, data) {
+        if (err) {
+            console.error("Unable to write item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("write succeeded:", JSON.stringify(data, null, 2));
         }
     });
 
-    docClient.get({TableName: 'pixelbot_servers', Key: {server_id: 558952579627876350}, function(err, data) {
-        if (err) {
-            console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("docClient GetItem succeeded:", JSON.stringify(data, null, 2));
-        }
-    }})
 }
 
 module.exports.returnServers = returnServers;
+module.exports.readItem = readItem;
+module.exports.writeItem = writeItem;

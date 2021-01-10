@@ -4,14 +4,14 @@ const { execute } = require('./reactionrole_destinyraiders');
 module.exports = {
     name: 'reactionrole',
     description: 'Creates a reaction role message',
-    async execute(message, args, rolesChannel, Discord, client){
+    async execute(message, args, aws_reactionroles, Discord, client){
 
         let roleArgs = [];
         let roleList = [];
 
         //check for no args
         if(args.length === 0){ 
-            rolesChannel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
+            message.channel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
         }
         //there are args, create a new reactionrole post
         else{
@@ -32,9 +32,12 @@ module.exports = {
             embed.addField('Roles', rolesField);
 
             //send the message and it's reaction roles
-            messageEmbed = await rolesChannel.send(embed);
+            messageEmbed = await message.channel.send(embed);
             for(i = 0; i < roleArgs.length; i++)
                 messageEmbed.react(roleArgs[i][1]);
+
+            let commandPrefix = '~reactionrole ';
+            aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), message.content.slice(commandPrefix.length));
 
         }
 

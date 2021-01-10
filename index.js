@@ -19,51 +19,10 @@ for(const file of commandFiles){
     client.commands.set(command.name, command);
 }
 
-let reactionPost;
-let previousReactionArgs = '';
-
-let getRoleChannel;
-let guilds = client.guilds.cache;
-let getRoleChannels = [];
-
 //on startup
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
-    aws_reactionroles.returnServers();
-
-
-    
-    //finds all servers with a 'get-role' channel
-    guilds.each(guild => {
-        guild.channels.cache.each(channel => {
-            if(channel.name === 'get-role')
-            getRoleChannels.push(channel);
-        })
-    })
-
-    for(channel in getRoleChannels)
-    {
-        //look for reaction post in the get-role channel
-
-        //read for roles and emojis
-
-        //sync up post
-
-    }
-    
-    // reactionPost = getRoleChannel.messages.cache.find((cachedMessage) => 
-    //     cachedMessage.embeds[0].title === 'Pick a Role!');
-    // previousArgs = reactionPost.fields.find(field => field.name === 'Roles');
-    // console.log(previousArgs);
-    //finds a previous reaction post from a past runtime and syncs up reactions and roles
-    // rolesManager = () => {
-    //     console.log("A");
-    //     reactionPost = getRoleChannel.messages.cache.find((cachedMessage) => 
-    //         cachedMessage.embeds[0].title === 'Pick a Role!');
-    //     previousArgs = reactionPost.fields.find(field => field.name === 'Roles');
-    //     console.log(previousArgs);
-    // }
 })
 
 //persist while bot is alive
@@ -84,7 +43,7 @@ client.on('message', message => {
         client.commands.get('kill').execute(message, client);
     //modular reactionrole command
     else if(command === 'reactionrole')
-        client.commands.get('reactionrole').execute(message, args, getRoleChannel, Discord, client);
+        client.commands.get('reactionrole').execute(message, args, aws_reactionroles, Discord, client);
     //nonmodular reactionrole command - to be replaced by reactionrole DONE
     else if(command === 'reactionrole_destinyraiders')
         client.commands.get('reactionrole_destinyraiders').execute(message, args, Discord, client);
@@ -94,6 +53,25 @@ client.on('message', message => {
     
 });
 
-//client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
-//client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
-client.login(tokens.DEV_TOKEN);         //LOCAL DEV BUILD
+//read active reactions, and gives out roles
+client.on('messageReactionAdd', async(reaction, user) => {
+    if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+    if(reaction.partial) await reaction.fetch().catch(console.error);
+    if(user.bot) return;
+    if(!reaction.message.guild) return;
+
+    if(reaction.message.channel === getRoleChannel){
+        for(i = 0; i < roleArgs.length; i++)
+        {
+            if(reaction.emoji.name === roleArgs[i][1])
+                await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
+        }
+    }
+    else return;
+
+});
+
+let deploy = 'LOCAL';
+if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
+if(deploy === 'PUBLIC') client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
+if(deploy === 'LOCAL') client.login(tokens.DEV_TOKEN);        //LOCAL DEV BUILD
