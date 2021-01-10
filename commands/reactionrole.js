@@ -6,13 +6,14 @@ module.exports = {
     description: "Creates a reaction role message, syntax: '~reactionrole role1:emoji, role2:emoji2, role3:emoji3'",
     async execute(message, args, aws_reactionroles, Discord, client){
 
-        args = args.split(/, +/);
+        args = args.trim().split(/, +/);
         let roleArgs = [];
         let roleList = [];
+        console.log(args);
 
         //check for no args
         if(args.length === 0){ 
-            message.channel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`");
+            message.channel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`\n\n Use of custom emojis are currently not supported.");
         }
         //there are args, create a new reactionrole post
         else{
@@ -41,40 +42,5 @@ module.exports = {
             aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), message.content.slice(commandPrefix.length));
 
         }
-
-        //read active reactions, and gives out roles
-        // client.on('messageReactionAdd', async(reaction, user) => {
-        //     if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
-        //     if(reaction.partial) await reaction.fetch().catch(console.error);
-        //     if(user.bot) return;
-        //     if(!reaction.message.guild) return;
-   
-        //     if(reaction.message.channel === getRoleChannel){
-        //         for(i = 0; i < roleArgs.length; i++)
-        //         {
-        //             if(reaction.emoji.name === roleArgs[i][1])
-        //                 await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
-        //         }
-        //     }
-        //     else return;
-
-        // });
-        
-        //read active reactions, and remove roles
-        // client.on('messageReactionRemove', async(reaction, user) => {
-        //     if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
-        //     if(reaction.partial) await reaction.fetch().catch(console.error);
-        //     if(user.bot) return;
-        //     if(!reaction.message.guild) return;
-
-        //     if(reaction.message.channel === getRoleChannel){
-        //         for(i = 0; i < roleArgs.length; i++)
-        //         {
-        //             if(reaction.emoji.name === roleArgs[i][1])
-        //                 await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
-        //         }
-        //     }
-        //     else return;
-        // });
     }
 }
