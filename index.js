@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const fs = require('fs');
-const aws = require('./aws_reactionroles');
+const aws_reactionroles = require('./aws_reactionroles');
 
 //various tokens to test and build
 tokens = require('./tokens.js');
@@ -30,7 +30,7 @@ let getRoleChannels = [];
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
-    aws.returnServers();
+    aws_reactionroles.returnServers();
 
 
     
