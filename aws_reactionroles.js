@@ -19,25 +19,31 @@ async function returnServers(){
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
             console.log("scan succeeded:", JSON.stringify(data, null, 2));
+            return data;
         }
     });
 }
 
-function readItem(server_id){
+ function getItem(server_id){
     let param = {
         TableName: tableName,
         Key: {
             "server_id": server_id
         }
     }
+    return new Promise((resolve, reject)=>{
+        docClient.get(param, function(err, data) {
+            if (err) {
+                //console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err)
+            } else {
+                //console.log("get succeeded:", JSON.stringify(data, null, 2));
+                resolve(data)
+            }
+        });
+    })
 
-    docClient.get(param, function(err, data) {
-        if (err) {
-            console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("get succeeded:", JSON.stringify(data, null, 2));
-        }
-    });
+  
 }
 
 function writeItem(server_id, post_id, roles){
@@ -61,5 +67,5 @@ function writeItem(server_id, post_id, roles){
 }
 
 module.exports.returnServers = returnServers;
-module.exports.readItem = readItem;
+module.exports.getItem = getItem;
 module.exports.writeItem = writeItem;

@@ -3,9 +3,10 @@ const { execute } = require('./reactionrole_destinyraiders');
 
 module.exports = {
     name: 'reactionrole',
-    description: 'Creates a reaction role message',
+    description: "Creates a reaction role message, syntax: '~reactionrole role1:emoji, role2:emoji2, role3:emoji3'",
     async execute(message, args, aws_reactionroles, Discord, client){
 
+        args = args.split(/, +/);
         let roleArgs = [];
         let roleList = [];
 
@@ -42,38 +43,38 @@ module.exports = {
         }
 
         //read active reactions, and gives out roles
-        client.on('messageReactionAdd', async(reaction, user) => {
-            if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
-            if(reaction.partial) await reaction.fetch().catch(console.error);
-            if(user.bot) return;
-            if(!reaction.message.guild) return;
+        // client.on('messageReactionAdd', async(reaction, user) => {
+        //     if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+        //     if(reaction.partial) await reaction.fetch().catch(console.error);
+        //     if(user.bot) return;
+        //     if(!reaction.message.guild) return;
    
-            if(reaction.message.channel === getRoleChannel){
-                for(i = 0; i < roleArgs.length; i++)
-                {
-                    if(reaction.emoji.name === roleArgs[i][1])
-                        await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
-                }
-            }
-            else return;
+        //     if(reaction.message.channel === getRoleChannel){
+        //         for(i = 0; i < roleArgs.length; i++)
+        //         {
+        //             if(reaction.emoji.name === roleArgs[i][1])
+        //                 await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
+        //         }
+        //     }
+        //     else return;
 
-        });
+        // });
         
         //read active reactions, and remove roles
-        client.on('messageReactionRemove', async(reaction, user) => {
-            if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
-            if(reaction.partial) await reaction.fetch().catch(console.error);
-            if(user.bot) return;
-            if(!reaction.message.guild) return;
+        // client.on('messageReactionRemove', async(reaction, user) => {
+        //     if(reaction.message.partial) await reaction.message.fetch().catch(console.error);
+        //     if(reaction.partial) await reaction.fetch().catch(console.error);
+        //     if(user.bot) return;
+        //     if(!reaction.message.guild) return;
 
-            if(reaction.message.channel === getRoleChannel){
-                for(i = 0; i < roleArgs.length; i++)
-                {
-                    if(reaction.emoji.name === roleArgs[i][1])
-                        await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
-                }
-            }
-            else return;
-        });
+        //     if(reaction.message.channel === getRoleChannel){
+        //         for(i = 0; i < roleArgs.length; i++)
+        //         {
+        //             if(reaction.emoji.name === roleArgs[i][1])
+        //                 await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
+        //         }
+        //     }
+        //     else return;
+        // });
     }
 }
