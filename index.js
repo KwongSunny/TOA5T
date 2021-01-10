@@ -4,9 +4,6 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const aws_reactionroles = require('./aws_reactionroles');
 
-//various tokens to test and build
-tokens = require('./tokens.js');
-
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const prefix = '~';
 client.commands = new Discord.Collection();
@@ -118,6 +115,13 @@ client.on('messageReactionRemove', async(reaction, user) => {
 });
 
 let deploy = 'HEROKU';
+
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
-if(deploy === 'PUBLIC') client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
-if(deploy === 'LOCAL') client.login(tokens.DEV_TOKEN);        //LOCAL DEV BUILD
+if(deploy === 'PUBLIC'){
+    let tokens = require('./tokens.js');
+    client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
+} 
+if(deploy === 'LOCAL') {
+    let tokens = require('./tokens.js');
+    client.login(tokens.DEV_TOKEN);        //LOCAL DEV BUILD
+}
