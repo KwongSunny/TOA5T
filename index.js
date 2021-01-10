@@ -107,7 +107,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
     }
 });
 
-let deploy = 'LOCAL';
+let deploy = 'HEROKU';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 if(deploy === 'PUBLIC'){
