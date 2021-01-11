@@ -68,6 +68,29 @@ function writeItem(server_id, post_id, roles){
 
 }
 
+function updateItem(server_id, key, value){
+    let param = {
+        TableName: tableName,
+        Key: {
+            "server_id": server_id
+        },
+        UpdateExpression: `set ${key}=:k`,
+        ExpressionAttributeValues: {
+            ":k": value
+        },
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    docClient.update(param, function(err, data) {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+}
+
 module.exports.returnServers = returnServers;
 module.exports.getItem = getItem;
 module.exports.writeItem = writeItem;
+module.exports.updateItem = updateItem;
