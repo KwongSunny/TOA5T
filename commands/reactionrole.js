@@ -1,5 +1,5 @@
 const {Message} = require('discord.js');
-const { execute } = require('./reactionrole_destinyraiders');
+const common_library = require('../common_library');
 
 module.exports = {
     name: 'reactionrole',
@@ -9,13 +9,21 @@ module.exports = {
         args = args.trim().split(/, +/);
         let roleArgs = [];
         let roleList = [];
-        console.log(args);
 
         //check for no args
-        if(args.length === 0){ 
-            message.channel.send("Please add the list of roles you want to be added seperated by spaces using the following format:.\n  `~reactionrole rolename:reaction rolename2:reaction2...`\n\n Use of custom emojis are currently not supported.");
+        if(message.content === '~reactionrole'){ 
+            message.channel.send("Please add the list of roles you want to be added seperated by spaces using the following format:\n\n  `~reactionrole rolename:reaction rolename2:reaction2...`\n\n Use of custom emojis are currently not supported.");
         }
-        //there are args, create a new reactionrole post
+        //if argument is an id, change the reactionrole_post_id
+        else if(args.length === 1 && !args.includes(':'))
+        {
+            if(common_library.isNumeric(args[0]))
+            {
+                aws_reactionroles.updateItem(message.guild.id, 'reactionrole_post_id', args[0]);
+            }
+
+        }
+        //there are roles, create a new reaction post
         else{
             for(i = 0; i < args.length; i++){
                 roleArgs.push(args[i].split(':'));
@@ -39,7 +47,7 @@ module.exports = {
                 messageEmbed.react(roleArgs[i][1]);
 
             let commandPrefix = '~reactionrole ';
-            aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), message.content.slice(commandPrefix.length));
+            aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), message.content.slice(commandPrefix.length).trim());
 
         }
     }

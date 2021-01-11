@@ -41,10 +41,7 @@ client.on('message', message => {
     //modular reactionrole command
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, args, aws_reactionroles, Discord, client);
-    //nonmodular reactionrole command - to be replaced by reactionrole DONE
-    else if(command === 'reactionrole_destinyraiders')
-        client.commands.get('reactionrole_destinyraiders').execute(message, args, Discord, client);
-    //randomizer command, gives a random output based on the parameters NEED TO DO EMBEDS | ARGS SEPERATES SPACED ITEMS IN LIST (NEED TO GO OFF ENTIRE MESSAGE.CONTENT)
+    //randomizer command, gives a random output based on the parOameters NEED TO DO EMBEDS | ARGS SEPERATES SPACED ITEMS IN LIST (NEED TO GO OFF ENTIRE MESSAGE.CONTENT)
     else if(command === 'random')
         client.commands.get('random').execute(message, args, Discord)
     
@@ -61,7 +58,7 @@ client.on('messageReactionAdd', async(reaction, user) => {
     if(reaction.message.id === response.Item.reactionrole_post_id){
         let roleString = response.Item.roles;
 
-        let args = roleString.trim().split(/, +/);
+        let args = roleString.split(/, +/);
         let roleArgs = [];
         let roleList = []; 
     
@@ -89,7 +86,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
     {
         let roleString = response.Item.roles;
 
-        let args = roleString.trim().split(/, +/);
+        let args = roleString.split(/, +/);
         let roleArgs = [];
         let roleList = []; 
     
@@ -107,7 +104,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 if(deploy === 'PUBLIC'){

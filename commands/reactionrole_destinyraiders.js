@@ -2,7 +2,7 @@ const { Message } = require('discord.js');
 
 module.exports = {
     name: 'reactionrole_destinyraiders',
-    description: 'Creates a reaction role message.',
+    description: '[DEPRECATED - use reactionrole] Creates a reaction role message.',
     async execute(message, args, Discord, client){
         const channel = message.channel;
         const role1 = message.guild.roles.cache.find(role => role.name === 'Raiders');
