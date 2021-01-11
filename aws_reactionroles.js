@@ -48,12 +48,13 @@ async function returnServers(){
   
 }
 
-function writeItem(server_id, post_id, roles){
+function writeItem(server_id, post_id, channel_id, roles){
     let param = {
         TableName: tableName,
         Item: {
             "server_id": server_id,
             "reactionrole_post_id": post_id,
+            "reactionrole_channel_id": channel_id,
             "roles": roles
         }
     }
@@ -90,7 +91,26 @@ function updateItem(server_id, key, value){
     });
 }
 
+async function cacheMessages(){
+    let param = {
+        TableName: tableName,
+    }
+
+    let table;
+    docClient.scan(param, function(err, data) {
+        if (err) {
+            console.error("Unable to scan table. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            console.log("scan succeeded:", JSON.stringify(data, null, 2));
+            table = data;
+        }
+    });
+    await console.log('table: ', table);
+
+}
+
 module.exports.returnServers = returnServers;
 module.exports.getItem = getItem;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
+module.exports.cacheMessages = cacheMessages;

@@ -11,20 +11,18 @@ module.exports = {
         let roleList = [];
 
         //check for no args
-        if(message.content === '~reactionrole'){ 
-            message.channel.send("Please add the list of roles you want to be added seperated by spaces using the following format:\n\n  `~reactionrole rolename:reaction rolename2:reaction2...`\n\n Use of custom emojis are currently not supported.");
+        if(args[0] === '' || args[0] === 'help'){ 
+            message.channel.send("Please add the list of roles:reaction you want to be added seperated by commas using the following format:\n\n  `~reactionrole rolename:reaction, rolename2:reaction2...`\n\n Use of custom emojis are currently not supported.");
         }
         //if argument is an id, change the reactionrole_post_id
-        else if(args.length === 1 && !args.includes(':'))
-        {
-            if(common_library.isNumeric(args[0]))
-            {
+        else if(args.length === 1 && !args[0].includes(':')){
+            if(common_library.isNumeric(args[0])){
                 aws_reactionroles.updateItem(message.guild.id, 'reactionrole_post_id', args[0]);
             }
 
         }
         //there are roles, create a new reaction post
-        else{
+        else if(args[0].includes(':')){
             for(i = 0; i < args.length; i++){
                 roleArgs.push(args[i].split(':'));
                 roleList.push(message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
@@ -47,7 +45,7 @@ module.exports = {
                 messageEmbed.react(roleArgs[i][1]);
 
             let commandPrefix = '~reactionrole ';
-            aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), message.content.slice(commandPrefix.length).trim());
+            aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim());
 
         }
     }

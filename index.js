@@ -20,14 +20,19 @@ for(const file of commandFiles){
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
+    aws_reactionroles.cacheMessages();
 })
 
 //persist while bot is alive
 client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
 
-    const args = message.content.slice(message.content.search(" ")+1);
+    let args = '';
+    if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
     const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
+
+    console.log('args: ', args);
+    console.log('command: ',command);
 
     //gives basic information about the bot
     if(command === 'info')
@@ -82,24 +87,22 @@ client.on('messageReactionRemove', async(reaction, user) => {
     if(!reaction.message.guild) return;
 
     let response = await aws_reactionroles.getItem(reaction.message.guild.id.toString());
-    if(reaction.message.id === response.Item.reactionrole_post_id)
-    {
+    if(reaction.message.id === response.Item.reactionrole_post_id){
         let roleString = response.Item.roles;
 
         let args = roleString.split(/, +/);
         let roleArgs = [];
         let roleList = []; 
     
-        for(i = 0; i < args.length; i++)
-        {
+        for(i = 0; i < args.length; i++){
             roleArgs.push(args[i].split(':'));
             roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
         }
     
-        for(i = 0; i < roleArgs.length; i++)
-        {
-            if(reaction.emoji.name === roleArgs[i][1])
+        for(i = 0; i < roleArgs.length; i++){
+            if(reaction.emoji.name === roleArgs[i][1]){
                 await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
+            }
         }
     }
 });
@@ -107,11 +110,12 @@ client.on('messageReactionRemove', async(reaction, user) => {
 let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
-if(deploy === 'PUBLIC'){
+else{
     let tokens = require('./tokens.js');
-    client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
-} 
-if(deploy === 'LOCAL') {
-    let tokens = require('./tokens.js');
-    client.login(tokens.DEV_TOKEN);        //LOCAL DEV BUILD
+    if(deploy === 'PUBLIC'){
+        client.login(tokens.BOT_TOKEN);       //LOCAL PUBLIC BUILD
+    } 
+    if(deploy === 'LOCAL') {
+        client.login(tokens.DEV_TOKEN);        //LOCAL DEV BUILD
+    }     
 }
