@@ -94,18 +94,21 @@ function updateItem(server_id, key, value){
 async function cacheMessages(){
     let param = {
         TableName: tableName,
+        FilterExpression: 'reactionrole_channel_id <> :id',
+        ExpressionAttributeValues: {':id': ""}
     }
 
-    let table;
-    docClient.scan(param, function(err, data) {
-        if (err) {
-            console.error("Unable to scan table. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("scan succeeded:", JSON.stringify(data, null, 2));
-            table = data;
-        }
+    let table = new Promise((resolve, reject)=>{
+        docClient.scan(param, function(err, data) {
+            if (err) {
+                console.error("Unable to scan item. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err)
+            } else {
+                console.log("scan succeeded:", JSON.stringify(data, null, 2));
+                resolve(data)
+            }
+        });
     });
-    await console.log('table: ', table);
 
 }
 
