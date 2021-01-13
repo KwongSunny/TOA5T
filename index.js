@@ -20,19 +20,21 @@ for(const file of commandFiles){
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
-    let table = aws_reactionroles.scanItemsPromise();
-    table.then((result) => {
-        for(i = 0; i < result.Count; i++)
-        {
-            if(client.channels.cache.get(result.Items[i].reactionrole_channel_id) != undefined)
-            {
-                let item = client.channels.cache.get(result.Items[i].reactionrole_channel_id).messages.fetch(result.Items[i].reactionrole_post_id);
-                item.then((result) => {
-                    console.log(result.id);
-                })
-            } 
-        }
-    });
+    client.channels.cache.get('796177001793716337').messages.fetch('797977249596964884');
+
+    // let table = aws_reactionroles.scanItemsPromise();
+    // table.then((result) => {
+    //     for(i = 0; i < result.Count; i++)
+    //     {
+    //         if(client.channels.cache.get(result.Items[i].reactionrole_channel_id) != undefined)
+    //         {
+    //             let item = client.channels.cache.get(result.Items[i].reactionrole_channel_id).messages.fetch(result.Items[i].reactionrole_post_id);
+    //             item.then((result) => {
+    //                 console.log(result.id);
+    //             })
+    //         } 
+    //     }
+    // });
 })
 
 //persist while bot is alive
