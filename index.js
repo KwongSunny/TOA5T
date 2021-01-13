@@ -20,7 +20,16 @@ for(const file of commandFiles){
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
-    aws_reactionroles.cacheMessages();
+    let table = aws_reactionroles.scanItemsPromise();
+    table.then((result) => {
+        for(i = 0; i < result.Count; i++)
+        {
+            if(client.channels.cache.get(result.Items[i].reactionrole_channel_id) != undefined)
+            {
+                client.channels.cache.get(result.Items[i].reactionrole_channel_id).messages.fetch(result.Items[i].reactionrole_post_id);
+            } 
+        }
+    })
 })
 
 //persist while bot is alive
