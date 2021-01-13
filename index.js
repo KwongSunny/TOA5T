@@ -26,10 +26,13 @@ client.once('ready', () => {
         {
             if(client.channels.cache.get(result.Items[i].reactionrole_channel_id) != undefined)
             {
-                client.channels.cache.get(result.Items[i].reactionrole_channel_id).messages.fetch(result.Items[i].reactionrole_post_id);
+                let item = client.channels.cache.get(result.Items[i].reactionrole_channel_id).messages.fetch(result.Items[i].reactionrole_post_id);
+                item.then((result) => {
+                    console.log(result.id);
+                })
             } 
         }
-    })
+    });
 })
 
 //persist while bot is alive
