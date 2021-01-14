@@ -20,8 +20,6 @@ for(const file of commandFiles){
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
-    client.channels.cache.get('796177001793716337').messages.fetch('797977249596964884');
-
     // let table = aws_reactionroles.scanItemsPromise();
     // table.then((result) => {
     //     for(i = 0; i < result.Count; i++)
@@ -45,9 +43,6 @@ client.on('message', message => {
     if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
     const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
 
-    console.log('args: ', args);
-    console.log('command: ',command);
-
     //gives basic information about the bot
     if(command === 'info')
         client.commands.get('info').execute(message);
@@ -57,7 +52,7 @@ client.on('message', message => {
     //stops the bot DONE
     else if(command === 'kill')
         client.commands.get('kill').execute(message, client);
-    //modular reactionrole command
+    //modular reactionrole command ON STARTUP FIRST REACTION IS NOT READ, MESSAGE NEEDS TO BE CACHED ON STARTUP
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, args, aws_reactionroles, Discord, client);
     //randomizer command, gives a random output based on the parOameters NEED TO DO EMBEDS | ARGS SEPERATES SPACED ITEMS IN LIST (NEED TO GO OFF ENTIRE MESSAGE.CONTENT)
@@ -74,7 +69,7 @@ client.on('messageReactionAdd', async(reaction, user) => {
     if(!reaction.message.guild) return;
 
     let response = await aws_reactionroles.getItem(reaction.message.guild.id.toString());
-    if(reaction.message.id === response.Item.reactionrole_post_id){
+    if(response && (reaction.message.id === response.Item.reactionrole_post_id)){
         let roleString = response.Item.roles;
 
         let args = roleString.split(/, +/);
@@ -121,7 +116,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
