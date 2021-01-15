@@ -13,7 +13,6 @@ module.exports = {
         const roleArgs = [];
         const roleList = [];
         const guildEmojis = message.guild.emojis.cache.keyArray();
-        const regex = emojiRegex();
 
         //check for no args
         if(args[0] === '' || args[0] === 'help'){ 
@@ -28,7 +27,6 @@ module.exports = {
         //there are roles, create a new reaction post
         else if(args[0].includes(':')){
             for(i = 0; i < args.length; i++){
-                //roleArgs.push(args[i].split(':'));
                 let arr = [];
                 arr.push(args[i].substring(0, args[i].indexOf(':')));
                 arr.push(args[i].substring(args[i].indexOf(':')+1));
@@ -36,7 +34,6 @@ module.exports = {
                 roleArgs.push(arr);
                 roleList.push(message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
             }
-            console.log(`roleArgs: `, roleArgs);
             let embed = new Discord.MessageEmbed()
                 .setColor('#6b65e6')
                 .setTitle('Pick a Role')
@@ -44,14 +41,19 @@ module.exports = {
             
             let rolesField = '';
             for(i = 0; i < roleArgs.length; i++){
-                console.log(`roleArgs[${i}][0]: `, roleArgs[i][0]);
-                console.log(`roleArgs[${i}][1]: `, roleArgs[i][1]);
-                //if(regex.test(roleArgs[i][1]) || guildEmojis.includes(roleArgs[i][1]))
-                    rolesField = rolesField + '\n' + roleArgs[i][1] + ' for ' + roleArgs[i][0];
-                // else { 
-                //     message.channel.send(`${roleArgs[i][1]} is an invalid emoji, try again with different emojis`);
-                //     return;
-                // }
+                const roleName = roleArgs[i][0]
+                const emoji= roleArgs[i][1]
+                console.log(`roleName: `,roleName );
+                console.log(`emoji: `,emoji );
+
+                const regex = emojiRegex();
+
+                if(regex.test(emoji)){
+                    rolesField = rolesField + '\n' + emoji + ' for ' + roleName;
+                }
+                else { 
+                    message.channel.send(`${emoji} is an invalid emoji, try again with different emojis`);
+                }
             }
             embed.addField('Roles', rolesField);
 
