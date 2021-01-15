@@ -1,4 +1,4 @@
-const common_library = require('../common_library');
+const common_library = require('../utilities');
 const {Message} = require('discord.js');
 
 module.exports = {

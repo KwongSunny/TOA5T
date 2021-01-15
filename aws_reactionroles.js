@@ -18,9 +18,9 @@ async function returnServers(){
 
     docClient.scan(param, function(err, data) {
         if (err) {
-            console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+            console.error("Unable to scan item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            console.log("scan succeeded:", JSON.stringify(data, null, 2));
+            console.log("Scan succeeded:", JSON.stringify(data, null, 2));
             return data;
         }
     });
@@ -39,7 +39,7 @@ async function returnServers(){
                 console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
                 reject(err)
             } else {
-                console.log("get succeeded:", JSON.stringify(data, null, 2));
+                console.log("Read succeeded:", JSON.stringify(data, null, 2));
                 resolve(data)
             }
         });
@@ -63,7 +63,7 @@ function writeItem(server_id, post_id, channel_id, roles){
         if (err) {
             console.error("Unable to write item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            console.log("write succeeded:", JSON.stringify(data, null, 2));
+            console.log("Write succeeded:", JSON.stringify(data, null, 2));
         }
     });
 
@@ -86,7 +86,7 @@ function updateItem(server_id, key, value){
         if (err) {
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+            console.log("Update succeeded:", JSON.stringify(data, null, 2));
         }
     });
 }
