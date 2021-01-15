@@ -2,7 +2,9 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const fs = require('fs');
+const emojiRegex = require('emoji-regex/RGI_Emoji.js');
 const aws_reactionroles = require('./aws_reactionroles');
+const rr_utilities = require('./reactionrole_utilities');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const prefix = '~';
@@ -69,20 +71,29 @@ client.on('messageReactionAdd', async(reaction, user) => {
     if(!reaction.message.guild) return;
 
     let response = await aws_reactionroles.getItem(reaction.message.guild.id.toString());
+    //if the server is logged in the reactinroles db and the post being reacted to is the reactionroles post
     if(response && (reaction.message.id === response.Item.reactionrole_post_id)){
         let roleString = response.Item.roles;
 
-        let args = roleString.split(/, +/);
-        let roleArgs = [];
+        let args = roleString.trim().split(/,/);
+        args = args.map(element => element.trim());
+
+        //split the args array items into an array of [role, emoji] items
+        let roleArgs = rr_utilities.splitReactionArgs(args);
+
+        //array of role items
         let roleList = []; 
-    
         for(i = 0; i < args.length; i++){
-            roleArgs.push(args[i].split(':'));
             roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
         }
     
         for(i = 0; i < roleArgs.length; i++){
-            if(reaction.emoji.name === roleArgs[i][1])
+            let regex = emojiRegex();
+
+            //checks if it's an unicode emoji
+            let isEmoji = regex.test(roleArgs[i][1]);;
+
+            if(isEmoji && reaction.emoji.name === roleArgs[i][1] || !isEmoji && reaction.emoji.id === roleArgs[i][1].split(':')[2].substring(0, roleArgs[i][1].split(':')[2].length-1))
                 await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
         }
     }
@@ -99,19 +110,26 @@ client.on('messageReactionRemove', async(reaction, user) => {
     if(reaction.message.id === response.Item.reactionrole_post_id){
         let roleString = response.Item.roles;
 
-        let args = roleString.split(/, +/);
-        let roleArgs = [];
+        let args = roleString.trim().split(/,/);
+        args = args.map(element => element.trim());
+
+        //split the args array items into an array of [role, emoji] items
+        let roleArgs = rr_utilities.splitReactionArgs(args);
+
+        //array of role items
         let roleList = []; 
-    
         for(i = 0; i < args.length; i++){
-            roleArgs.push(args[i].split(':'));
             roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
         }
     
         for(i = 0; i < roleArgs.length; i++){
-            if(reaction.emoji.name === roleArgs[i][1]){
+            let regex = emojiRegex();
+
+            //checks if it's an unicode emoji
+            let isEmoji = regex.test(roleArgs[i][1]);;
+
+            if(isEmoji && reaction.emoji.name === roleArgs[i][1] || !isEmoji && reaction.emoji.id === roleArgs[i][1].split(':')[2].substring(0, roleArgs[i][1].split(':')[2].length-1))
                 await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
-            }
         }
     }
 });
