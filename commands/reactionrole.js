@@ -14,7 +14,9 @@ module.exports = {
         const guildEmojis = message.guild.emojis.cache.keyArray();
 
         //check for the user's permissions
-        if(!message.member.hasPermission('ADMINISTRATOR') || message.member !== message.guild.owner || !message.member.hasPermission('MANAGE_ROLES')){
+        console.log('member isAdmin: ', message.member.hasPermission('ADMINISTRATOR'));
+        console.log('member canManageRoles: ', message.member.hasPermission('MANAGE_ROLES'));
+        if(!message.member.hasPermission('ADMINISTRATOR') && message.member !== message.guild.owner && !message.member.hasPermission('MANAGE_ROLES')){
             message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //check for no arguments or if user is asking for help
@@ -66,5 +68,7 @@ module.exports = {
                 aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim());
             }
         }
+        else
+            message.channel.send("Incorrect usage of reactionrole, please type `~reactionrole help` for instructions on how to use it.");
     }
 }
