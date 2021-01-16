@@ -2,7 +2,7 @@ const { Message } = require("discord.js")
 
 module.exports = {
     name: 'help',
-    description: 'provides help on commands',
+    description: 'provides a list of commands',
     execute(message, args){
         let embed = new Discord.MessageEmbed()
             .setColor('#f7c920')
@@ -10,8 +10,12 @@ module.exports = {
             .setDescription('');
                    
 
-        if(args.length === 0){ //provides a list of commands
-
+        if(args === ''){ //provides a list of commands
+            embed.setDescription(
+                '`random`: randomizer that can utilize integer ranges and lists\n' +
+                '`reactionrole`: creates a post which can give out and take away roles via reactions\n' +
+                ''
+            );
 
         }
         else{

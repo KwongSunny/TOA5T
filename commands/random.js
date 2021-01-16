@@ -7,46 +7,15 @@ module.exports = {
     async execute(message, args, Discord){
         const channel = message.channel;
 
-        // let bar = '[----------------]';
-
-        // let embed = new Discord.MessageEmbed()
-        //     .setColor('#f7c920')
-        //     .setTitle('Randomizer')
-        //     .setDescription(bar);
-        
-        // let messagePromise = channel.send(embed);
-
-        // messagePromise.then(() => {
-        //     console.log(messagePromise);
-        //     while(messagePromise.embeds[0].description != "[■■■■■■■■■■■■]"){
-        //         setTimeout(() => {
-
-        //             bar = bar.substring(0, i) + '■' + bar.substring(i+2);
-        //             //messagePromise.edit(embed.description.substring(embed.description.length - bar.length) + '\n\n' + bar);
-        //             console.log(messagePromise.embeds);
-    
-        //             let newEmbed = new Discord.MessageEmbed()
-        //                 .setColor('#6b65e6')
-        //                 .setTitle('Randomizer')
-        //                 .setDescription(embed.description.substring(embed.description.length - bar.length) + '\n\n' + bar);
-    
-        //             messagePromise.edit(newEmbed);
-        //         }, 2000)
-        //     }
-        // }).catch(console.error);
-
-        if(args.length === 0) 
+        if(args === '') 
             channel.send('Insufficient parameters');
-        else if(args[0][0] === ',')
+        else if(args.trim()[0] === ',')
             channel.send('Incorrect syntax');
-
         else{
             let isList = false;
-            for(i = 0; i < args.length; i++){ //checks if the args has a comma to see if it's a list
-                if(args[i].includes(',')){
-                    isList = true;
-                    break;
-                }
+            if(args.includes(',')){
+                isList = true;
+                break;
             }
             
             if(isList){ //the command will be a list of items, weighted or non-weighted
@@ -61,7 +30,6 @@ module.exports = {
                         else args[i] = split[0];
                     }
                 }
-                
                 if(args[0].includes(':')){ //weighted list
                     let words = [];
                     for(i = 0; i < args.length; i++){
