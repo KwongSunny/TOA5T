@@ -51,14 +51,14 @@ function getItem(server_id){
 }
 
 //writes an items to the dynamodb database
-function writeItem(server_id, post_id, channel_id, roles, default_role){
+function writeItem(server_id, post_id, channel_id, reaction_roles, default_role){
     let param = {
         TableName: tableName,
         Item: {
             "server_id": server_id,
             "reactionrole_post_id": post_id,
             "reactionrole_channel_id": channel_id,
-            "roles": roles,
+            "reaction_roles": reaction_roles,
             "default_role": default_role
         }
     }
@@ -75,27 +75,29 @@ function writeItem(server_id, post_id, channel_id, roles, default_role){
 }
 
 //updates an item in the dynamodb database
-function updateItem(server_id, key, value){
-    let param = {
-        TableName: tableName,
-        Key: {
-            "server_id": server_id
-        },
-        UpdateExpression: `set ${key}=:k`,
-        ExpressionAttributeValues: {
-            ":k": value
-        },
-        ReturnValues: "UPDATED_NEW"
-    };
-
-    docClient.update(param, function(err, data) {
-        if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-        } 
-        else {
-            console.log("Update succeeded:", JSON.stringify(data, null, 2));
-        }
-    });
+function updateItem(server_id, keys, values){
+    for(i = 0; i < keys.length; i++){
+        let param = {
+            TableName: tableName,
+            Key: {
+                "server_id": server_id
+            },
+            UpdateExpression: `set ${keys[i]}=:k`,
+            ExpressionAttributeValues: {
+                ":k": values[i]
+            },
+            ReturnValues: "UPDATED_NEW"
+        };
+    
+        docClient.update(param, function(err, data) {
+            if (err) {
+                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            } 
+            else {
+                console.log("Update succeeded:", JSON.stringify(data, null, 2));
+            }
+        });
+    }
 }
 
 
