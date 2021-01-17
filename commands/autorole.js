@@ -5,7 +5,11 @@ module.exports = {
     description: 'Assigns a default role to a server, every person that joins will automatically be assigned this role',
     async execute(message, prefix, args, Discord) {
         let roleName = args.trim();
-        if(args === '' || args === 'help'){
+
+        if(!message.member.hasPermission('ADMINISTRATOR') && message.member !== message.guild.owner && !message.member.hasPermission('MANAGE_ROLES')){
+            message.channel.send("You do not have sufficient permissions to use this command.");
+        }
+        else if(args === '' || args === 'help'){
             message.channel.send('To assign a default role to server members use the following command and format:\n`' + prefix + 'autorole roleName`')
         }
         else{
