@@ -51,14 +51,15 @@ function getItem(server_id){
 }
 
 //writes an items to the dynamodb database
-function writeItem(server_id, post_id, channel_id, roles){
+function writeItem(server_id, post_id, channel_id, roles, default_role){
     let param = {
         TableName: tableName,
         Item: {
             "server_id": server_id,
             "reactionrole_post_id": post_id,
             "reactionrole_channel_id": channel_id,
-            "roles": roles
+            "roles": roles,
+            "default_role": default_role
         }
     }
 

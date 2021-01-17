@@ -13,7 +13,7 @@ module.exports = {
         if(args === ''){ //provides a list of commands
             embed.setDescription(
                 '`random`: randomizer that can utilize integer ranges and lists\n' +
-                '`reactionrole`: creates a post which can give out and take away roles via reactions\n' +
+                '`reactionrole`: creates a post which people can react to to give out and take away roles\n' +
                 ''
             );
 

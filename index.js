@@ -2,9 +2,8 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const fs = require('fs');
-const emojiRegex = require('emoji-regex/RGI_Emoji.js');
-const aws_reactionroles = require('./aws_reactionroles');
-const rr_utilities = require('./reactionrole_utilities');
+const aws_utilities = require('./utils/aws_utilities');
+const rr_utilities = require('./utils/reactionrole_utilities');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const prefix = '~';
@@ -21,20 +20,7 @@ for(const file of commandFiles){
 //on startup
 client.once('ready', () => {
     console.log('PixelBot, online!');
-
-    // let table = aws_reactionroles.scanItemsPromise();
-    // table.then((result) => {
-    //     for(i = 0; i < result.Count; i++)
-    //     {
-    //         if(client.channels.cache.get(result.Items[i].reactionrole_channel_id) != undefined)
-    //         {
-    //             let item = client.channels.cache.get(result.Items[i].reactionrole_channel_id).messages.fetch(result.Items[i].reactionrole_post_id);
-    //             item.then((result) => {
-    //                 console.log(result.id);
-    //             })
-    //         } 
-    //     }
-    // });
+    
 })
 
 //persist while bot is alive
@@ -45,8 +31,11 @@ client.on('message', message => {
     if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
     const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
 
+    //assigns a default role to every new member
+    if(command === 'autorole')
+        client.commands.get('autorole').execute(message, prefix, args, Discord);
     //provides a list of commands
-    if(command === 'help')
+    else if(command === 'help')
         client.commands.get('help').execute(message);
     //gives basic information about the bot
     else if(command === 'info')
@@ -59,7 +48,7 @@ client.on('message', message => {
         client.commands.get('kill').execute(message, client);
     //modular reactionrole command ON STARTUP FIRST REACTION IS NOT READ, MESSAGE NEEDS TO BE CACHED ON STARTUP
     else if(command === 'reactionrole')
-        client.commands.get('reactionrole').execute(prefix, message, args, aws_reactionroles, Discord, client);
+        client.commands.get('reactionrole').execute(prefix, message, args, Discord, client);
     //randomizer command, gives a random output based on the parOameters NEED TO DO EMBEDS | ARGS SEPERATES SPACED ITEMS IN LIST (NEED TO GO OFF ENTIRE MESSAGE.CONTENT)
     else if(command === 'random')
         client.commands.get('random').execute(message, args, Discord)
@@ -73,33 +62,7 @@ client.on('messageReactionAdd', async(reaction, user) => {
     if(user.bot) return;
     if(!reaction.message.guild) return;
 
-    let response = await aws_reactionroles.getItem(reaction.message.guild.id.toString());
-    //if the server is logged in the reactinroles db and the post being reacted to is the reactionroles post
-    if(response && (reaction.message.id === response.Item.reactionrole_post_id)){
-        let roleString = response.Item.roles;
-
-        let args = roleString.trim().split(/,/);
-        args = args.map(element => element.trim());
-
-        //split the args array items into an array of [role, emoji] items
-        let roleArgs = rr_utilities.splitReactionArgs(args);
-
-        //array of role items
-        let roleList = []; 
-        for(i = 0; i < args.length; i++){
-            roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
-        }
-    
-        for(i = 0; i < roleArgs.length; i++){
-            let regex = emojiRegex();
-
-            //checks if it's an unicode emoji
-            let isEmoji = regex.test(roleArgs[i][1]);;
-
-            if(isEmoji && reaction.emoji.name === roleArgs[i][1] || !isEmoji && reaction.emoji.id === roleArgs[i][1].split(':')[2].substring(0, roleArgs[i][1].split(':')[2].length-1))
-                await reaction.message.guild.members.cache.get(user.id).roles.add(roleList[i]).catch(console.error);
-        }
-    }
+    rr_utilities.addRoleFromReaction(reaction, user);
 });
 
 //read active reactions, and gives out roles
@@ -109,35 +72,10 @@ client.on('messageReactionRemove', async(reaction, user) => {
     if(user.bot) return;
     if(!reaction.message.guild) return;
 
-    let response = await aws_reactionroles.getItem(reaction.message.guild.id.toString());
-    if(reaction.message.id === response.Item.reactionrole_post_id){
-        let roleString = response.Item.roles;
-
-        let args = roleString.trim().split(/,/);
-        args = args.map(element => element.trim());
-
-        //split the args array items into an array of [role, emoji] items
-        let roleArgs = rr_utilities.splitReactionArgs(args);
-
-        //array of role items
-        let roleList = []; 
-        for(i = 0; i < args.length; i++){
-            roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
-        }
-    
-        for(i = 0; i < roleArgs.length; i++){
-            let regex = emojiRegex();
-
-            //checks if it's an unicode emoji
-            let isEmoji = regex.test(roleArgs[i][1]);;
-
-            if(isEmoji && reaction.emoji.name === roleArgs[i][1] || !isEmoji && reaction.emoji.id === roleArgs[i][1].split(':')[2].substring(0, roleArgs[i][1].split(':')[2].length-1))
-                await reaction.message.guild.members.cache.get(user.id).roles.remove(roleList[i]).catch(console.error);
-        }
-    }
+    rr_utilities.removeRoleFromReaction(reaction, user);
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
