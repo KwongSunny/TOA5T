@@ -1,4 +1,4 @@
-const common_library = require('../utilities');
+const utilities = require('../utilities');
 const {Message} = require('discord.js');
 
 module.exports = {
@@ -7,71 +7,59 @@ module.exports = {
     async execute(message, args, Discord){
         const channel = message.channel;
 
-        if(args === '') 
-            channel.send('Insufficient parameters');
-        else if(args.trim()[0] === ',')
+        args = args.trim();
+        if(args === '' || args === 'help'){
+            channel.send(
+                'To get a random number between `1` and `n` use the following format:\n' +
+                '`~random n`\n\n' +
+                'To get a random number between `x` and `y` use the following format:\n' +
+                '`~random x y`\n\n' +
+                'To get a random item in a list use the following format:\n' +
+                '`~random item1, item2, item3...`\n\n' +
+                'To get a random item in a weighted list, use the following format:\n' +
+                '`~random item1:weight, item2:weight, item3:weight...`'
+            );
+        }
+        else if(args[0] === ',')
             channel.send('Incorrect syntax');
         else{
-            let isList = false;
-            if(args.includes(',')){
-                isList = true;
-                break;
-            }
-            
-            if(isList){ //the command will be a list of items, weighted or non-weighted
-                for(i = 0; i < args.length; i++){ //prune all ","
-                    if(args[i] === ','){
-                        args.splice(i, 1);
-                        i--;
-                    }
-                    if(args[i].includes(',')){
-                        let split = args[i].split(',');
-                        if(split[0] === '') args[i] = split[1];
-                        else args[i] = split[0];
-                    }
-                }
-                if(args[0].includes(':')){ //weighted list
-                    let words = [];
-                    for(i = 0; i < args.length; i++){
-                        let word = args[i].split(':');
-                        for(j = 0; j < word[1]; j++){
-                            words.push(word[0]);
+            let isList = args.includes(',');
+            //the arguments are a list of items, weighted or non-weighted
+            if(isList){
+                argArray = args.split(/,/);
+                //weighted list
+                if(args.includes(':')){
+                    let weightedArr = [];
+                    for(i = 0; i < argArray.length; i++){
+                        let temp = argArray[i].split(':');
+                        for(j = 0; j < parseInt(temp[1]); j++){
+                            weightedArr.push(temp[0]);
                         }
                     }
-                    channel.send(words[common_library.getRandomInt(words.length)]);
+                    channel.send(weightedArr[utilities.getRandomInt(weightedArr.length)]);
                 }
-                else{ //un-weighted list
-                    channel.send(args[common_library.getRandomInt(args.length)]);
+                //non-weighted list
+                else{
+                    channel.send(argArray[utilities.getRandomInt(argArray.length)]);
                 }
-
             }
-            else{ //the command will be numerical or a single item item
-                if(args.length === 1){ //returns a number between 1 and args[0] or a single item list
-                    if(common_library.isNumeric(args[0]))
-                        channel.send(common_library.getRandomInt(args[0]) + 1);
-                    else 
-                        channel.send(args[0]);
+            //the arguments are an integer range or a single item list
+            else {
+                let argArray = args.split(/ +/);
+                //random int between 1 and argArray[0] or single item
+                if(argArray.length === 1){
+                    if(utilities.isNumeric(argArray[0]))
+                        channel.send(utilities.getRandomInt(argArray[0]) + 1);
+                    //single item list, will return that single item
+                    else channel.send(argArray[0].split(':')[0]);
                 }
-                else{ //returns a random number between args[0] and args[1]
-                    channel.send(common_library.getRandomInt(parseInt(args[1]) - parseInt(args[0]) + 1) + parseInt(args[0]));
-                }
+                //random int between argArray[0] and argArray[1]
+                else if(argArray.length === 2) 
+                    channel.send(utilities.getRandomInt(parseInt(argArray[1]) - parseInt(argArray[0]) + 1) + parseInt(argArray[0]));
+                //incorrect use of the command
+                else
+                    channel.send('Incorrect usage of `~random`, please use `~random help` for instructions on how to use this command.');
             }
         }
     }
-}
-
-function loadingBar(embed)
-{
-    bar = '[------------]';
-
-    for(i = 0; i < 12; i++)
-    {
-        console.log("A");
-        setTimeout(() => {
-            bar = bar.substring(0, i+1) + '■' + bar.substring(i+2);
-            embed.setDescription(embed.description.substring(embed.description.length - bar.length) + '\n\n' + bar);
-        }, 1000);
-
-    }
-
 }

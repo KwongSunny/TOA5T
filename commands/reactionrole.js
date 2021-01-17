@@ -18,7 +18,7 @@ module.exports = {
         }
         //check for no arguments or if user is asking for help
         else if(args[0] === '' || args[0] === 'help'){ 
-            message.channel.send("Please use the following format, excluding brackets, to add a reaction roles post:\n`~reactionrole [rolename]:[reaction], [rolename2]:[reaction2]...`\n\nTo reassign a reaction roles post, use command:\n`~reactionrole [message-id]`\n\nUse of custom emojis are currently not supported.");
+            message.channel.send("Please use the following format, excluding brackets, to add a reaction roles post:\n`~reactionrole rolename:reaction, rolename2:reaction2...`\n\nTo reassign a reaction roles post, use command:\n`~reactionrole message-id`\n\nUse of custom emojis are currently not supported.");
         }
         //if argument is an id, change the reactionrole_post_id
         else if(args.length === 1 && !args[0].includes(':')){
