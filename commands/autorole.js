@@ -19,7 +19,7 @@ module.exports = {
                 //if the server is already in the database, update the item
                 let server = await aws_utilities.getItem(message.guild.id);
                 if(server){
-                    aws_utilities.updateItem(message.guild.id, ['default_role'], roleName);
+                    aws_utilities.updateItem(message.guild.id, ['default_role'], [roleName]);
                 }
                 //if the server is not in the database, write a new item
                 else{
