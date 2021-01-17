@@ -23,7 +23,7 @@ async function addRoleFromReaction(reaction, user){
     let response = await aws_utilities.getItem(reaction.message.guild.id.toString());
     //checks if the server is in the reactinroles db and the post being reacted to is the server's reactionroles post
     if(response && (reaction.message.id === response.Item.reactionrole_post_id)){
-        let roleString = response.Item.roles;
+        let roleString = response.Item.reaction_roles;
 
         let args = roleString.trim().split(/,/);
         args = args.map(element => element.trim());
@@ -54,7 +54,7 @@ async function addRoleFromReaction(reaction, user){
 async function removeRoleFromReaction(reaction, user){
     let response = await aws_utilities.getItem(reaction.message.guild.id.toString());
     if(reaction.message.id === response.Item.reactionrole_post_id){
-        let roleString = response.Item.roles;
+        let roleString = response.Item.reaction_roles;
 
         let args = roleString.trim().split(/,/);
         args = args.map(element => element.trim());
