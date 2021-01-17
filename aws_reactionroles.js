@@ -11,6 +11,7 @@ const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = 'pixelbot_servers';
 
+//returns a list of servers the bot is in
 async function returnServers(){
     let param = {
         TableName: tableName
@@ -19,14 +20,16 @@ async function returnServers(){
     docClient.scan(param, function(err, data) {
         if (err) {
             console.error("Unable to scan item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
+        } 
+        else {
             console.log("Scan succeeded:", JSON.stringify(data, null, 2));
             return data;
         }
     });
 }
 
- function getItem(server_id){
+//returns the item from dynamodb using the server_id key
+function getItem(server_id){
     let param = {
         TableName: tableName,
         Key: {
@@ -38,16 +41,16 @@ async function returnServers(){
             if (err) {
                 console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
                 reject(err)
-            } else {
+            } 
+            else {
                 console.log("Read succeeded:", JSON.stringify(data, null, 2));
                 resolve(data)
             }
         });
-    })
-
-  
+    }) 
 }
 
+//writes an items to the dynamodb database
 function writeItem(server_id, post_id, channel_id, roles){
     let param = {
         TableName: tableName,
@@ -62,13 +65,15 @@ function writeItem(server_id, post_id, channel_id, roles){
     docClient.put(param, function(err, data) {
         if (err) {
             console.error("Unable to write item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
+        } 
+        else {
             console.log("Write succeeded:", JSON.stringify(data, null, 2));
         }
     });
 
 }
 
+//updates an item in the dynamodb database
 function updateItem(server_id, key, value){
     let param = {
         TableName: tableName,
@@ -85,11 +90,13 @@ function updateItem(server_id, key, value){
     docClient.update(param, function(err, data) {
         if (err) {
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
+        } 
+        else {
             console.log("Update succeeded:", JSON.stringify(data, null, 2));
         }
     });
 }
+
 
 function scanItemsPromise(){
     let param = {
@@ -103,7 +110,8 @@ function scanItemsPromise(){
             if (err) {
                 console.error("Unable to scan table. Error JSON:", JSON.stringify(err, null, 2));
                 reject(err)
-            } else {
+            } 
+            else {
                 console.log("Scan succeeded:", JSON.stringify(data, null, 2));
                 resolve(data);
             }
