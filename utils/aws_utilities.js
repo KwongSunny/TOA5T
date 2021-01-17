@@ -28,7 +28,7 @@ async function returnServers(){
     });
 }
 
-//returns the item from dynamodb using the server_id key
+//returns a promise of the item from dynamodb using the server_id key
 function getItem(server_id){
     let param = {
         TableName: tableName,
@@ -76,28 +76,34 @@ function writeItem(server_id, post_id, channel_id, reaction_roles, default_role)
 
 //updates an item in the dynamodb database
 function updateItem(server_id, keys, values){
-    for(i = 0; i < keys.length; i++){
-        let param = {
-            TableName: tableName,
-            Key: {
-                "server_id": server_id
-            },
-            UpdateExpression: `set ${keys[i]}=:k`,
-            ExpressionAttributeValues: {
-                ":k": values[i]
-            },
-            ReturnValues: "UPDATED_NEW"
-        };
-    
-        docClient.update(param, function(err, data) {
-            if (err) {
-                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-            } 
-            else {
-                console.log("Update succeeded:", JSON.stringify(data, null, 2));
-            }
-        });
+    let updateExpression = 'set ';
+    let expressionAttributeValues = {};
+    for(key = 0; key < keys.length; key++){
+        if(key === keys.length-1)
+            updateExpression += keys[key] + '=:' + key;
+        else
+            updateExpression += keys[key] + '=:' + key + ', ';
+        expressionAttributeValues[':' + key] = values[key];
     }
+
+    let param = {
+        TableName: tableName,
+        Key: {
+            "server_id": server_id
+        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    docClient.update(param, function(err, data) {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+        } 
+        else {
+            console.log("Update succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
 }
 
 

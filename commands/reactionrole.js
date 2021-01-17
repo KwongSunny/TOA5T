@@ -40,9 +40,9 @@ module.exports = {
             
             //creates a text field of all the reactions on the embed, also tests to see if emojis are valid
             let rolesField = '';
-            for(i = 0; i < roleArgs.length; i++){
-                const roleName = roleArgs[i][0]
-                const emoji= roleArgs[i][1]
+            for(roleArg = 0; roleArg < roleArgs.length; roleArg++){
+                const roleName = roleArgs[roleArg][0];
+                const emoji= roleArgs[roleArg][1];
 
                 //instance of an emoji regex to be tested against the emoji being used for the reaction role
                 let regex = emojiRegex();
@@ -65,22 +65,22 @@ module.exports = {
 
             //send the message and it's reactions
             messageEmbed = await message.channel.send(embed);
-            for(i = 0; i < roleArgs.length; i++){
-                messageEmbed.react(roleArgs[i][1]);
-        
-                let commandPrefix = prefix + this.name;
-                let item = await aws_utilities.getItem(message.guild.id);
+            for(roleArg = 0; roleArg < roleArgs.length; roleArg++){
+                messageEmbed.react(roleArgs[roleArg][1]);
+            }
 
-                //if server is in the database, update the item
-                if(item){
-                    let keys = ['reactionrole_post_id', 'reactionrole_channel_id', 'reaction_roles'];
-                    let values = [messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim()];
-                    aws_utilities.updateItem(message.guild.id, keys, values);
-                }
-                //if the server is not in the database, write a new item
-                else{
-                    aws_utilities.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim(), '');
-                }
+            let commandPrefix = prefix + this.name;
+            let item = await aws_utilities.getItem(message.guild.id);
+
+            //if server is in the database, update the item
+            if(item){
+                let keys = ['reactionrole_post_id', 'reactionrole_channel_id', 'reaction_roles'];
+                let values = [messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim()];
+                aws_utilities.updateItem(message.guild.id, keys, values);
+            }
+            //if the server is not in the database, write a new item
+            else{
+                aws_utilities.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim(), '');
             }
         }
         else message.channel.send("Incorrect usage of reactionrole, please use `~reactionrole help` for instructions on how to use it.");

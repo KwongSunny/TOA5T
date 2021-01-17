@@ -76,14 +76,18 @@ client.on('messageReactionRemove', async(reaction, user) => {
 });
 
 client.on('guildMemberAdd', async(member) => {
-    console.log(member.displayName + ' has joined server: ' + member.guild.name);
-    console.log('default role: ' + aws_utilities.getItem(member.guild.id));
-    if(aws_utilities.getItem(member.guild.id).default_role !== ''  && aws_utilities.getItem(member.guild.id).default_role !== undefined){
-        member.roles.add(member.guild.roles.cache.find(role => role.name ===  aws_utilities.getItem(member.guild.id).default_role));
+    let server = await aws_utilities.getItem(member.guild.id);
+    
+    //checks if default_role exists and is not an empty string
+    if(server.Item.default_role && server.Item.default_role !== ''){
+        member.roles.add(member.guild.roles.cache.find(role => role.name === server.Item.default_role));
+    }
+    else{
+        console.log('This role could not be given. Server: ' + server.Item.server_id);
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
