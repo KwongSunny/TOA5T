@@ -28,7 +28,7 @@ async function returnServers(){
     });
 }
 
-//returns the item from dynamodb using the server_id key
+//returns a promise of the item from dynamodb using the server_id key
 function getItem(server_id){
     let param = {
         TableName: tableName,
@@ -51,14 +51,15 @@ function getItem(server_id){
 }
 
 //writes an items to the dynamodb database
-function writeItem(server_id, post_id, channel_id, roles){
+function writeItem(server_id, post_id, channel_id, reaction_roles, default_role){
     let param = {
         TableName: tableName,
         Item: {
             "server_id": server_id,
             "reactionrole_post_id": post_id,
             "reactionrole_channel_id": channel_id,
-            "roles": roles
+            "reaction_roles": reaction_roles,
+            "default_role": default_role
         }
     }
 
@@ -74,16 +75,24 @@ function writeItem(server_id, post_id, channel_id, roles){
 }
 
 //updates an item in the dynamodb database
-function updateItem(server_id, key, value){
+function updateItem(server_id, keys, values){
+    let updateExpression = 'set ';
+    let expressionAttributeValues = {};
+    for(key = 0; key < keys.length; key++){
+        if(key === keys.length-1)
+            updateExpression += keys[key] + '=:' + key;
+        else
+            updateExpression += keys[key] + '=:' + key + ', ';
+        expressionAttributeValues[':' + key] = values[key];
+    }
+
     let param = {
         TableName: tableName,
         Key: {
             "server_id": server_id
         },
-        UpdateExpression: `set ${key}=:k`,
-        ExpressionAttributeValues: {
-            ":k": value
-        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
         ReturnValues: "UPDATED_NEW"
     };
 

@@ -1,12 +1,13 @@
 const {Message} = require('discord.js');
 const emojiRegex = require('emoji-regex/RGI_Emoji.js');
-const common_library = require('../utilities');
-const rr_utilities = require('../reactionrole_utilities');
+const common_library = require('../utils/utilities');
+const rr_utilities = require('../utils/reactionrole_utilities.js');
+const aws_utilities = require('../utils/aws_utilities.js');
 
 module.exports = {
     name: 'reactionrole',
     description: "Creates a reaction role message, syntax: '~reactionrole role1:emoji, role2:emoji2, role3:emoji3'",
-    async execute(prefix, message, args, aws_reactionroles, Discord, client){
+    async execute(prefix, message, args, Discord, client){
         args = args.trim().split(',');
         args = args.map(element => element.trim());
 
@@ -23,7 +24,7 @@ module.exports = {
         //if argument is an id, change the reactionrole_post_id
         else if(args.length === 1 && !args[0].includes(':')){
             if(common_library.isNumeric(args[0])){
-                aws_reactionroles.updateItem(message.guild.id, 'reactionrole_post_id', args[0]);
+                aws_utilities.updateItem(message.guild.id, 'reactionrole_post_id', args[0]);
             }
         }
         //there are roles, create a new reaction post
@@ -39,9 +40,9 @@ module.exports = {
             
             //creates a text field of all the reactions on the embed, also tests to see if emojis are valid
             let rolesField = '';
-            for(i = 0; i < roleArgs.length; i++){
-                const roleName = roleArgs[i][0]
-                const emoji= roleArgs[i][1]
+            for(roleArg = 0; roleArg < roleArgs.length; roleArg++){
+                const roleName = roleArgs[roleArg][0];
+                const emoji= roleArgs[roleArg][1];
 
                 //instance of an emoji regex to be tested against the emoji being used for the reaction role
                 let regex = emojiRegex();
@@ -64,11 +65,22 @@ module.exports = {
 
             //send the message and it's reactions
             messageEmbed = await message.channel.send(embed);
-            for(i = 0; i < roleArgs.length; i++){
-                messageEmbed.react(roleArgs[i][1]);
-        
-                let commandPrefix = prefix + this.name;
-                aws_reactionroles.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim());
+            for(roleArg = 0; roleArg < roleArgs.length; roleArg++){
+                messageEmbed.react(roleArgs[roleArg][1]);
+            }
+
+            let commandPrefix = prefix + this.name;
+            let item = await aws_utilities.getItem(message.guild.id);
+
+            //if server is in the database, update the item
+            if(item){
+                let keys = ['reactionrole_post_id', 'reactionrole_channel_id', 'reaction_roles'];
+                let values = [messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim()];
+                aws_utilities.updateItem(message.guild.id, keys, values);
+            }
+            //if the server is not in the database, write a new item
+            else{
+                aws_utilities.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim(), '');
             }
         }
         else message.channel.send("Incorrect usage of reactionrole, please use `~reactionrole help` for instructions on how to use it.");

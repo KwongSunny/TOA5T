@@ -1,15 +1,14 @@
-const utilities = require('../utilities');
+const utilities = require('../utils/utilities');
 const {Message} = require('discord.js');
 
 module.exports = {
     name: 'random',
     description: 'random number generator',
     async execute(message, args, Discord){
-        const channel = message.channel;
-
         args = args.trim();
+        //provides information on the command
         if(args === '' || args === 'help'){
-            channel.send(
+            message.channel.send(
                 'To get a random number between `1` and `n` use the following format:\n' +
                 '`~random n`\n\n' +
                 'To get a random number between `x` and `y` use the following format:\n' +
@@ -21,7 +20,7 @@ module.exports = {
             );
         }
         else if(args[0] === ',')
-            channel.send('Incorrect syntax');
+            message.channel.send('Incorrect syntax');
         else{
             let isList = args.includes(',');
             //the arguments are a list of items, weighted or non-weighted
@@ -32,15 +31,21 @@ module.exports = {
                     let weightedArr = [];
                     for(i = 0; i < argArray.length; i++){
                         let temp = argArray[i].split(':');
-                        for(j = 0; j < parseInt(temp[1]); j++){
-                            weightedArr.push(temp[0]);
+                        if(utilities.isNumeric(temp[1]) && temp.length === 2){
+                            for(j = 0; j < parseInt(temp[1]); j++){
+                                weightedArr.push(temp[0]);
+                            }
+                        }
+                        else {
+                            message.channel.send('Incorrect usage of a weighted list, please use `~random help` for instructions on how to use it.');
+                            return;
                         }
                     }
-                    channel.send(weightedArr[utilities.getRandomInt(weightedArr.length)]);
+                    message.channel.send(weightedArr[utilities.getRandomInt(weightedArr.length)]);
                 }
                 //non-weighted list
                 else{
-                    channel.send(argArray[utilities.getRandomInt(argArray.length)]);
+                    message.channel.send(argArray[utilities.getRandomInt(argArray.length)]);
                 }
             }
             //the arguments are an integer range or a single item list
@@ -49,16 +54,16 @@ module.exports = {
                 //random int between 1 and argArray[0] or single item
                 if(argArray.length === 1){
                     if(utilities.isNumeric(argArray[0]))
-                        channel.send(utilities.getRandomInt(argArray[0]) + 1);
+                        message.channel.send(utilities.getRandomInt(argArray[0]) + 1);
                     //single item list, will return that single item
-                    else channel.send(argArray[0].split(':')[0]);
+                    else message.channel.send(argArray[0].split(':')[0]);
                 }
                 //random int between argArray[0] and argArray[1]
                 else if(argArray.length === 2) 
-                    channel.send(utilities.getRandomInt(parseInt(argArray[1]) - parseInt(argArray[0]) + 1) + parseInt(argArray[0]));
+                    message.channel.send(utilities.getRandomInt(parseInt(argArray[1]) - parseInt(argArray[0]) + 1) + parseInt(argArray[0]));
                 //incorrect use of the command
                 else
-                    channel.send('Incorrect usage of `~random`, please use `~random help` for instructions on how to use this command.');
+                    message.channel.send('Incorrect usage of `~random`, please use `~random help` for instructions on how to use this command.');
             }
         }
     }
