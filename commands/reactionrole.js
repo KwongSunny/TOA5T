@@ -7,14 +7,14 @@ const aws_utilities = require('../utils/aws_utilities.js');
 module.exports = {
     name: 'reactionrole',
     description: "Creates a reaction role message, syntax: '~reactionrole role1:emoji, role2:emoji2, role3:emoji3'",
-    async execute(prefix, message, args, Discord, client){
+    async execute(message, prefix, args, Discord, client){
         args = args.trim().split(',');
         args = args.map(element => element.trim());
 
         const guildEmojis = message.guild.emojis.cache.keyArray();
 
         //check for the user's permissions
-        if(!message.member.hasPermission('ADMINISTRATOR') && message.member !== message.guild.owner && !message.member.hasPermission('MANAGE_ROLES')){
+        if(!message.member.hasPermission('MANAGE_ROLES')){
             message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //check for no arguments or if user is asking for help
