@@ -12,7 +12,7 @@ module.exports = {
             embed.addField('Member Management',
                 '`ban`: bans a user from the server\n' +
                 '`kick`: kicks a user from the server\n' +
-                ''
+                '`unban`: unbans a user from the server'
             );
             
             embed.addField('Role Management', 

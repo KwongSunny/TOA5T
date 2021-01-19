@@ -11,7 +11,7 @@ module.exports = {
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send("To unban a member, use the following format: `" + prefix + this.name + " @user reason[optional]`");
+            message.channel.send("To unban a member, use the following format: `" + prefix + this.name + " userId reason[optional]`");
         }
         //continue with the command
         else{
@@ -32,20 +32,22 @@ module.exports = {
             //if the args is numeric, it is an id
             if(utilities.isNumeric(user))
                 userId = user;
-            userTag = await message.guild.fetchBan(userId);
-            userTag = userTag.user.tag;
+            userTag = await message.guild.fetchBans();
+            console.log(userTag);
+
+            userTag = userTag.keyArray();
     
             //checks if the user exists
-            if(userTag !== '' && userTag){
+            if(userTag.includes(userId)){
                 let unbanMessage = userTag + ' has been unbanned';
                 if(unbanReason !== '') unbanMessage += ' for "' + unbanReason + '"';
     
                 await message.channel.send(unbanMessage);
-                await message.guild.members.unban(userId, unbanReason);
+                message.guild.members.unban(userId, unbanReason);
             }
-            //args should be the name of the user
+            //user could not be found in the bans
             else{
-                message.channel.send(user + ' could not be found, please provide the id of the user')
+                message.channel.send(user + ' could not be found in the bans list, check you have the correct Id')
             }
         }
     }
