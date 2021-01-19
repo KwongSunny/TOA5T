@@ -11,15 +11,19 @@ module.exports = {
                    
 
         if(args === ''){ //provides a list of commands
-            embed.setDescription(
-                '`random`: randomizer that can utilize integer ranges and lists\n' +
+            embed.addField('Role Management', 
+                '`~autorole`: sets a default role for the server, any new members will be granted this role\n' +
                 '`reactionrole`: creates a post which people can react to to give out and take away roles\n' +
                 ''
             );
 
+            embed.addField('Miscellaneous',
+                '`random`: randomizer that can utilize integer ranges and lists\n' +
+                ''
+            );
         }
         else{
-
+            message.channel.send('');
 
         }
     }
