@@ -33,7 +33,6 @@ module.exports = {
             if(utilities.isNumeric(user))
                 userId = user;
             userTag = await message.guild.fetchBans();
-            console.log(userTag);
 
             userTag = userTag.keyArray();
     

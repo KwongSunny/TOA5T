@@ -14,7 +14,7 @@ Done utilities:
 
 In Development utilities:
     
-    Reactionrole - creates a reactionrole post, which users can react to to attain and remove roles [mentions of roles need to be included, other than that it is functional]
+    Reactionrole - creates a reactionrole post, which users can react to to attain and remove roles [mentions of roles need to be included, other than that it is functional if roles are hand typed]
     
     Warn
 
