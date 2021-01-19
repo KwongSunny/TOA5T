@@ -36,7 +36,7 @@ module.exports = {
             else if(utilities.isNumeric(user))
                 userId = user;
             userTag = message.guild.members.cache.find(member => member.id === userId);
-            userTag = userTag?.user.tag;
+            if(userTag) userTag = userTag.user.tag;
     
             //if the user exists
             if(userTag !== '' && userTag){
