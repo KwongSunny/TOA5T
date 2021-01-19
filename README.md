@@ -2,6 +2,8 @@ Bot-Name: PixelBot (temporary name)
 
 Done utilities:
     
+    Autorole - assigns a default role to a server, new members will get this role upon joining [DONE]
+
     Random - random number generator, can also utilitize lists [DONE]
     
     Kick - kicks a user [DONE]
@@ -9,8 +11,6 @@ Done utilities:
     Ban - bans a user permanently [DONE]
 
 In Development utilities:
-    
-    Autorole - assigns a default role to a server, new members will get this role upon joining [need to include mentions]
     
     Reactionrole - creates a reactionrole post, which users can react to to attain and remove roles [mentions of roles need to be included, other than that it is functional]
     
