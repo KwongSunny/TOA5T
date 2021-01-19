@@ -7,7 +7,7 @@ const aws_utilities = require('../utils/aws_utilities.js');
 module.exports = {
     name: 'reactionrole',
     description: "Creates a reaction role message, syntax: '~reactionrole role1:emoji, role2:emoji2, role3:emoji3'",
-    async execute(prefix, message, args, Discord, client){
+    async execute(message, prefix, args, Discord, client){
         args = args.trim().split(',');
         args = args.map(element => element.trim());
 

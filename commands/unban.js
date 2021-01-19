@@ -1,8 +1,8 @@
 const utilities = require('../utils/utilities.js');
 
 module.exports = {
-    name: 'ban',
-    description: 'permanently bans a user, takes a mention or a user Id',
+    name: 'unban',
+    description: 'unbans a user, only takes a user Id',
     async execute(message, prefix, args){
         args = args.trim();
         //checks for user permissions
@@ -11,12 +11,12 @@ module.exports = {
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send("To ban a member, use the following format: `" + prefix + this.name + " @user reason[optional]`");
+            message.channel.send("To unban a member, use the following format: `" + prefix + this.name + " @user reason[optional]`");
         }
         //continue with the command
         else{
             let user = '';
-            let banReason = '';
+            let unbanReason = '';
             let userId = '';
             let userTag = '';
 
@@ -29,25 +29,23 @@ module.exports = {
                 user = args;
             }
     
-            //if the args is a mention, then parse it to just the ID
-            if(utilities.isUserMention(user))
-                userId = utilities.getUserId(user);
             //if the args is numeric, it is an id
-            else if(utilities.isNumeric(user))
+            if(utilities.isNumeric(user))
                 userId = user;
-            userTag = message.guild.members.cache.find(member => member.id === userId)?.user.tag;
+            userTag = await message.guild.fetchBan(userId);
+            userTag = userTag.user.tag;
     
             //checks if the user exists
             if(userTag !== '' && userTag){
-                let banMessage = userTag + ' has been banned';
-                if(banReason !== '') banMessage += ' for "' + banReason + '"';
+                let unbanMessage = userTag + ' has been unbanned';
+                if(unbanReason !== '') unbanMessage += ' for "' + unbanReason + '"';
     
-                await message.channel.send(banMessage);
-                await message.guild.members.ban(userId, {reason: banReason});
+                await message.channel.send(unbanMessage);
+                await message.guild.members.unban(userId, unbanReason);
             }
             //args should be the name of the user
             else{
-                message.channel.send(user + ' could not be found, please use either the user Id or a user mention')
+                message.channel.send(user + ' could not be found, please provide the id of the user')
             }
         }
     }

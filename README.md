@@ -6,18 +6,17 @@ Done utilities:
 
     Random - random number generator, can also utilitize lists [DONE]
     
-    Kick - kicks a user [DONE]
+    Kick - kicks a user by mention or id [DONE]
     
-    Ban - bans a user permanently [DONE]
+    Ban - bans a user permanently by mention or id [DONE]
+
+    Unban - unbans a user by id [DONE]
 
 In Development utilities:
     
     Reactionrole - creates a reactionrole post, which users can react to to attain and remove roles [mentions of roles need to be included, other than that it is functional]
     
     Warn
-    
-    Unban
-
 
 Planned utilities:
     
