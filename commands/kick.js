@@ -4,6 +4,11 @@ module.exports = {
     name: 'kick',
     description: 'kicks a user, takes a mention or user id',
     async execute(message, args){
+        if(!message.member.hasPermission('KICK_MEMBERS')){
+            message.channel.send("You do not have sufficient permissions to use this command.");
+            return;
+        }
+
         args = args.trim();
         let user = '';
         let kickReason = '';

@@ -6,7 +6,7 @@ module.exports = {
     async execute(message, prefix, args, Discord) {
         let roleName = args.trim();
 
-        if(!message.member.hasPermission('ADMINISTRATOR') && message.member !== message.guild.owner && !message.member.hasPermission('MANAGE_ROLES')){
+        if(!message.member.hasPermission('MANAGE_ROLES')){
             message.channel.send("You do not have sufficient permissions to use this command.");
         }
         else if(args === '' || args === 'help'){

@@ -14,7 +14,7 @@ module.exports = {
         const guildEmojis = message.guild.emojis.cache.keyArray();
 
         //check for the user's permissions
-        if(!message.member.hasPermission('ADMINISTRATOR') && message.member !== message.guild.owner && !message.member.hasPermission('MANAGE_ROLES')){
+        if(!message.member.hasPermission('MANAGE_ROLES')){
             message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //check for no arguments or if user is asking for help

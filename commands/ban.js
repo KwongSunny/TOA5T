@@ -4,6 +4,11 @@ module.exports = {
     name: 'ban',
     description: 'permanently bans a user, takes a mention or a user',
     async execute(message, args){
+        if(!message.member.hasPermission('BAN_MEMBERS')){
+            message.channel.send("You do not have sufficient permissions to use this command.");
+            return;
+        }
+
         args = args.trim();
         let user = '';
         let banReason = '';
@@ -29,7 +34,7 @@ module.exports = {
         if(userTag !== '' && userTag){
             let banMessage = userTag + ' has been banned';
             if(banReason !== '') banMessage += ' for "' + banReason + '"';
-            
+
             await message.channel.send(banMessage);
             await message.guild.members.ban(userId, {reason: banReason});
         }
