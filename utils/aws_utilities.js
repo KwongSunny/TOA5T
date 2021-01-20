@@ -11,23 +11,6 @@ const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = 'pixelbot_servers';
 
-//returns a list of servers the bot is in
-async function returnServers(){
-    let param = {
-        TableName: tableName
-    }
-
-    docClient.scan(param, function(err, data) {
-        if (err) {
-            console.error("Unable to scan item. Error JSON:", JSON.stringify(err, null, 2));
-        } 
-        else {
-            console.log("Scan succeeded:", JSON.stringify(data, null, 2));
-            return data;
-        }
-    });
-}
-
 //returns a promise of the item from dynamodb using the server_id key
 function getItem(server_id){
     let param = {
@@ -43,7 +26,7 @@ function getItem(server_id){
                 reject(err)
             } 
             else {
-                console.log("Read succeeded:", JSON.stringify(data, null, 2));
+                console.log("Read succeeded:", JSON.stringify(data.Item, null, 2));
                 resolve(data)
             }
         });
@@ -68,7 +51,7 @@ function writeItem(server_id, post_id, channel_id, reaction_roles, default_role)
             console.error("Unable to write item. Error JSON:", JSON.stringify(err, null, 2));
         } 
         else {
-            console.log("Write succeeded:", JSON.stringify(data, null, 2));
+            console.log("Write succeeded:", JSON.stringify(data.Item, null, 2));
         }
     });
 
@@ -101,7 +84,7 @@ function updateItem(server_id, keys, values){
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
         } 
         else {
-            console.log("Update succeeded:", JSON.stringify(data, null, 2));
+            console.log("Update succeeded:", JSON.stringify(data.Item, null, 2));
         }
     });
 }
@@ -121,14 +104,13 @@ function scanItemsPromise(){
                 reject(err)
             } 
             else {
-                console.log("Scan succeeded:", JSON.stringify(data, null, 2));
+                console.log("Scan succeeded:", JSON.stringify(data.Item, null, 2));
                 resolve(data);
             }
         });
     })
 }
 
-module.exports.returnServers = returnServers;
 module.exports.getItem = getItem;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;

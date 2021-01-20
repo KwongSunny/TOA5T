@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const Discord = require('discord.js');
 const fs = require('fs');
 const aws_utilities = require('./utils/aws_utilities');
@@ -31,9 +30,6 @@ client.on('message', message => {
     let args = '';
     if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
     const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
-
-    console.log('command: ' + command);
-    console.log('args: ' + args);
 
     index_helpers.executeCommand(command, prefix, message, args, Discord, client);
 });
@@ -70,7 +66,7 @@ client.on('guildMemberAdd', async(member) => {
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
