@@ -1,6 +1,6 @@
 const {Message} = require('discord.js');
 const emojiRegex = require('emoji-regex/RGI_Emoji.js');
-const common_library = require('../utils/utilities');
+const utilities = require('../utils/utilities');
 const rr_utilities = require('../utils/reactionrole_utilities.js');
 const aws_utilities = require('../utils/aws_utilities.js');
 
@@ -23,8 +23,8 @@ module.exports = {
         }
         //if argument is an id, change the reactionrole_post_id
         else if(args.length === 1 && !args[0].includes(':')){
-            if(common_library.isNumeric(args[0])){
-                aws_utilities.updateItem(message.guild.id, 'reactionrole_post_id', args[0]);
+            if(utilities.isNumeric(args[0])){
+                aws_utilities.updateItem(message.guild.id, ['reactionrole_post_id'], [args[0]]);
             }
         }
         //there are roles, create a new reaction post
@@ -38,35 +38,49 @@ module.exports = {
                 .setTitle('Pick a Role')
                 .setDescription('React below to give yourself a role. \nUnreact to remove your role.\n')
             
-            //creates a text field of all the reactions on the embed, also tests to see if emojis are valid
+            //creates a text field of all the reactions on the embed, also tests to see if emojis and roles are valid
             let rolesField = '';
             for(roleArg = 0; roleArg < roleArgs.length; roleArg++){
-                const roleName = roleArgs[roleArg][0];
+                const roleMention = roleArgs[roleArg][0];
                 const emoji= roleArgs[roleArg][1];
+                let roleId = '';
+
+                //checks whether the role is a mention or id else return an error
+                if(utilities.isRoleMention(roleMention)){
+                    roleId = utilities.getRoleId(roleMention);
+                }
+                else if(utilities.isNumeric(roleMention)){
+                    roleId = roleMention;
+                }
+                else{
+                    message.channel.send(roleMention + ' is not a valid role, please use a role mention or id');
+                    return;
+                }
 
                 //instance of an emoji regex to be tested against the emoji being used for the reaction role
-                let regex = emojiRegex();
+                const regex = emojiRegex();
 
                 //checks if the role exists in the guild
-                let guildRoleExists = message.guild.roles.cache.find(role => role.name === roleName) !== undefined;
+                const guildRoleExists = message.guild.roles.cache.find(role => role.id === roleId) !== undefined;
 
                 //check if the emoji is a valid emoji or guild emoji and the role exists
                 if(!guildRoleExists){
-                    message.channel.send(`${roleName} is an invalid role, please check your spelling and casing`);
+                    message.channel.send(`${roleMention} is an invalid role, please check your spelling and casing`);
                     return;
                 }
                 else if(!regex.test(emoji) && !guildEmojis.includes(emoji.split(':')[2].substring(0, emoji.split(':')[2].length-1))){
                     message.channel.send(`${emoji} is an invalid emoji, try again with different emojis`);
                     return;
                 }
-                else rolesField = rolesField + '\n' + emoji + ' for ' + roleName;
+                else
+                    rolesField = rolesField + '\n' + emoji + ' for ' + '<@&' + roleId +'>';
             }
             embed.addField('Roles', rolesField);
 
             //send the message and it's reactions
             messageEmbed = await message.channel.send(embed);
-            for(roleArg = 0; roleArg < roleArgs.length; roleArg++){
-                messageEmbed.react(roleArgs[roleArg][1]);
+            for(roleMention = 0; roleMention < roleArgs.length; roleMention++){
+                messageEmbed.react(roleArgs[roleMention][1]);
             }
 
             let commandPrefix = prefix + this.name;

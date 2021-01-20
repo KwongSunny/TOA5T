@@ -13,11 +13,13 @@ function waitSeconds(s){
     setTimeout(() => {}, s * 1000);
 }
 
+//function that takes in a user mention and return T/F if it is a valid mention
 function isUserMention(mention){
     let result = mention.trim();
     return result[0] === '<' && result[1] === '@' && result[2] === '!';
 }
 
+//function that takes in a role mention and returns T/F if it is a valid mention
 function isRoleMention(mention){
     let result = mention.trim();
     return result[0] === '<' && result[1] === '@' && result[2] === '&';

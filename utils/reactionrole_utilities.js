@@ -1,5 +1,6 @@
 const aws_utilities = require('./aws_utilities.js');
 const emojiRegex = require('emoji-regex/RGI_Emoji.js');
+const utilities = require('./utilities.js');
 
 //(Param)args: ['role:emoji', 'role:emoji'...]
 //(Desc):split the args array items into an array of [role, emoji] items
@@ -34,7 +35,14 @@ async function addRoleFromReaction(reaction, user){
         //array of role items
         let roleList = []; 
         for(i = 0; i < args.length; i++){
-            roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
+            if(utilities.isRoleMention(roleArgs[i][0]))
+                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === utilities.getRoleId(roleArgs[i][0])));
+            else if(utilities.isNumeric(roleArgs[i][0]))
+                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === roleArgs[i][0]));
+            else{
+                console.log(roleArgs[i][0] + ' is not a valid role, please check the database');
+                return;
+            }
         }
     
         for(i = 0; i < roleArgs.length; i++){
@@ -65,7 +73,14 @@ async function removeRoleFromReaction(reaction, user){
         //array of role items
         let roleList = []; 
         for(i = 0; i < args.length; i++){
-            roleList.push(reaction.message.guild.roles.cache.find(role => role.name === roleArgs[i][0]));
+            if(utilities.isRoleMention(roleArgs[i][0]))
+                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === utilities.getRoleId(roleArgs[i][0])));
+            else if(utilities.isNumeric(roleArgs[i][0]))
+                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === roleArgs[i][0]));
+            else{
+                console.log(roleArgs[i][0] + ' is not a valid role, please check the database');
+                return;
+            }
         }
     
         for(i = 0; i < roleArgs.length; i++){

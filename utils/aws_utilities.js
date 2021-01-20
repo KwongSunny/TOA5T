@@ -11,23 +11,6 @@ const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = 'pixelbot_servers';
 
-//returns a list of servers the bot is in
-async function returnServers(){
-    let param = {
-        TableName: tableName
-    }
-
-    docClient.scan(param, function(err, data) {
-        if (err) {
-            console.error("Unable to scan item. Error JSON:", JSON.stringify(err, null, 2));
-        } 
-        else {
-            console.log("Scan succeeded:", JSON.stringify(data, null, 2));
-            return data;
-        }
-    });
-}
-
 //returns a promise of the item from dynamodb using the server_id key
 function getItem(server_id){
     let param = {
@@ -128,7 +111,6 @@ function scanItemsPromise(){
     })
 }
 
-module.exports.returnServers = returnServers;
 module.exports.getItem = getItem;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
