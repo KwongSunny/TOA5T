@@ -26,7 +26,7 @@ function getItem(server_id){
                 reject(err)
             } 
             else {
-                console.log("Read succeeded:", JSON.stringify(data.Item, null, 2));
+                console.log("Read succeeded:", JSON.stringify(data, null, 2));
                 resolve(data)
             }
         });
@@ -51,7 +51,7 @@ function writeItem(server_id, post_id, channel_id, reaction_roles, default_role)
             console.error("Unable to write item. Error JSON:", JSON.stringify(err, null, 2));
         } 
         else {
-            console.log("Write succeeded:", JSON.stringify(data.Item, null, 2));
+            console.log("Write succeeded:", JSON.stringify(data, null, 2));
         }
     });
 
@@ -84,7 +84,7 @@ function updateItem(server_id, keys, values){
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
         } 
         else {
-            console.log("Update succeeded:", JSON.stringify(data.Item, null, 2));
+            console.log("Update succeeded:", JSON.stringify(data, null, 2));
         }
     });
 }
@@ -104,7 +104,7 @@ function scanItemsPromise(){
                 reject(err)
             } 
             else {
-                console.log("Scan succeeded:", JSON.stringify(data.Item, null, 2));
+                console.log("Scan succeeded:", JSON.stringify(data, null, 2));
                 resolve(data);
             }
         });
