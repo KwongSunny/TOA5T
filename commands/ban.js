@@ -11,7 +11,7 @@ module.exports = {
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send("To ban a member, use the following format: `" + prefix + this.name + " @user reason[optional]`");
+            message.channel.send("To ban a member, use the following format:\n\n`" + prefix + this.name + " @user reason[optional]`");
         }
         //continue with the command
         else{
@@ -23,7 +23,7 @@ module.exports = {
             //checks if there is a reason for the ban
             if(args.includes(' ')){
                 user = args.substring(0, args.indexOf(' '));
-                reason = args.substring(args.indexOf(' ')).trim();
+                banReason = args.substring(args.indexOf(' ')).trim();
             }
             else{
                 user = args;
@@ -39,7 +39,7 @@ module.exports = {
             userTag = message.guild.members.cache.find(member => member.id === userId);
             if(userTag) userTag = userTag.user.tag;
     
-            //checks if the user exists
+            //checks if the user exists and bans
             if(userTag !== '' && userTag){
                 let banMessage = userTag + ' has been banned';
                 if(banReason !== '') banMessage += ' for "' + banReason + '"';

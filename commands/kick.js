@@ -11,7 +11,7 @@ module.exports = {
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send("To kick a member, use the following format: `" + prefix + this.name + " @user reason[optional]`");
+            message.channel.send("To kick a member, use the following format:\n\n`" + prefix + this.name + " @user reason[optional]`");
         }
         //continue with the command
         else{
@@ -23,7 +23,7 @@ module.exports = {
             //checks if there is a reason for the kick
             if(args.includes(' ')){
                 user = args.substring(0, args.indexOf(' '));
-                reason = args.substring(args.indexOf(' ')).trim();
+                kickReason = args.substring(args.indexOf(' ')).trim();
             }
             else{
                 user = args;

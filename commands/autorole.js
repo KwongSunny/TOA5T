@@ -13,7 +13,7 @@ module.exports = {
         }
 
         if(args === '' || args === 'help'){
-            message.channel.send('To assign a default role to server members use the following command and format:\n`' + prefix + 'autorole @roleName`')
+            message.channel.send('To assign a default role to server members use the following command and format:\n\n`' + prefix + 'autorole @roleName`')
         }
         else{
             
@@ -31,7 +31,8 @@ module.exports = {
                 }
                 //if the server is not in the database, write a new item
                 else{
-                    aws_utilities.writeItem(message.guild.id, '', '', '', roleId);
+                    aws_utilities.writeItem(message.guild.id);
+                    aws_utilities.updateItem(message.guild.id, ['default_role'], [roleId]);
                 }
                 message.channel.send("The server's default role is now " + role + ", new members will now automatically be assigned this role");
             }

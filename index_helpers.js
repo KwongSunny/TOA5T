@@ -26,6 +26,8 @@ function executeCommand(command, prefix, message, args, Discord, client){
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
     else if(command === 'unban')
         client.commands.get('unban').execute(message, prefix, args);
+    else if(command === 'warn')
+        client.commands.get('warn').execute(message, prefix, args);
 }
 
 module.exports.executeCommand = executeCommand;

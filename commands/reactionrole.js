@@ -85,16 +85,21 @@ module.exports = {
 
             let commandPrefix = prefix + this.name;
             let item = await aws_utilities.getItem(message.guild.id);
+            let keys;
+            let values;
 
             //if server is in the database, update the item
             if(item){
-                let keys = ['reactionrole_post_id', 'reactionrole_channel_id', 'reaction_roles'];
-                let values = [messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim()];
+                keys = ['reactionrole_post_id', 'reaction_roles'];
+                values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim()];
                 aws_utilities.updateItem(message.guild.id, keys, values);
             }
             //if the server is not in the database, write a new item
             else{
-                aws_utilities.writeItem(message.guild.id.toString(), messageEmbed.id.toString(), messageEmbed.channel.id.toString(), message.content.slice(commandPrefix.length).trim(), '');
+                aws_utilities.writeItem(message.guild.id);
+                keys = ['reactionrole_post_id', 'reaction_roles'];
+                values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim()];
+                aws_utilities.updateItem(message.guild.id, keys, values);
             }
         }
         else message.channel.send("Incorrect usage of reactionrole, please use `~reactionrole help` for instructions on how to use it.");
