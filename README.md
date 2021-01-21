@@ -6,7 +6,7 @@ Done utilities:
 
     Random - random number generator, can also utilitize lists [DONE]
     
-    Kick - kicks a user by mention or id [DONE]
+    Kick - kicks a user by mention or id [DONE - NO CHANGES NEEDED]
     
     Ban - bans a user permanently by mention or id [DONE]
 
