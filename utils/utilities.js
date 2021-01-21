@@ -13,6 +13,17 @@ function waitSeconds(s){
     setTimeout(() => {}, s * 1000);
 }
 
+//returns a string suffix of the number n
+function numSuffix(n){
+    const remainder = n % 10;
+    
+    if(remainder === 1) return 'st';
+    else if(remainder === 2) return 'nd';
+    else if(remainder === 3) return 'rd';
+    else return 'th';
+
+}
+
 //function that takes in a user mention and return T/F if it is a valid mention
 function isUserMention(mention){
     let result = mention.trim();
@@ -42,6 +53,7 @@ function getUserId(userMention){
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
+module.exports.numSuffix = numSuffix;
 module.exports.isUserMention = isUserMention;
 module.exports.isRoleMention = isRoleMention;
 module.exports.getRoleId = getRoleId;

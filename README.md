@@ -11,15 +11,17 @@ Done utilities:
     Ban - bans a user permanently by mention or id [DONE]
 
     Unban - unbans a user by id [DONE]
+    
+    Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
+
+    Warn - warns a user and logs it into the db, if the user has more than the max warnings, ban the user [DONE]
 
 In Development utilities:
-    
-    Reactionrole - creates a reactionrole post, which users can react to to attain and remove roles [mentions of roles need to be included, other than that it is functional if roles are hand typed, also upon bot turning off and on, first remove reaction event does not remove the role]
-    
-    Warn
 
-Planned utilities:
+    Setmaximumwarnings - changes the default maximum warnings of the server
     
+Planned utilities:
+
     Mod log - sets a channel as a mod log, sends messages on important events in the server
 
     Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision

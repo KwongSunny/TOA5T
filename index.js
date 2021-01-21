@@ -25,13 +25,23 @@ client.once('ready', () => {
 
 //persist while bot is alive
 client.on('message', message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
+    //a bot command is being used
+    if(message.content.startsWith(prefix)){
+        let args = '';
+        if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
+        const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
+    
+        index_helpers.executeCommand(command, prefix, message, args, Discord, client);
+    }
+    //ignore messages from bots
+    else if(message.author.bot){
+        return;
+    }
+    //every other message sent by users
+    else{
 
-    let args = '';
-    if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
-    const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
+    }
 
-    index_helpers.executeCommand(command, prefix, message, args, Discord, client);
 });
 
 //read active reactions, and gives out roles
