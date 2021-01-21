@@ -14,7 +14,7 @@ Done utilities:
     
     Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
 
-    Setmaximumwarnings - changes the default maximum warnings of the server [DONE]
+    Setmaxwarnings - changes the default maximum warnings of the server [DONE]
 
     Warn - warns a user and logs it into the db, if the user has more than the max warnings, ban the user [DONE]
 
