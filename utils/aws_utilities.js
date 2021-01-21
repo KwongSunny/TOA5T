@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const uuid = require('uuid');
 
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,

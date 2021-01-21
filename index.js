@@ -76,7 +76,7 @@ client.on('guildMemberAdd', async(member) => {
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
