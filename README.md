@@ -14,12 +14,14 @@ Done utilities:
     
     Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
 
-In Development utilities:
-    
-    Warn
+    Warn - warns a user and logs it into the db, if the user has more than the max warnings, ban the user [DONE]
 
-Planned utilities:
+In Development utilities:
+
+    Setmaximumwarnings - changes the default maximum warnings of the server
     
+Planned utilities:
+
     Mod log - sets a channel as a mod log, sends messages on important events in the server
 
     Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision

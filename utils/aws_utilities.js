@@ -38,11 +38,7 @@ function writeItem(server_id){
     let param = {
         TableName: tableName,
         Item: {
-            "server_id": server_id,
-            // "reactionrole_post_id": post_id,
-            // "reactionrole_channel_id": channel_id,
-            // "reaction_roles": reaction_roles,
-            // "default_role": default_role
+            "server_id": server_id
         }
     }
 
