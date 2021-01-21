@@ -1,4 +1,3 @@
-const {Message} = require('discord.js');
 const emojiRegex = require('emoji-regex/RGI_Emoji.js');
 const utilities = require('../utils/utilities');
 const rr_utilities = require('../utils/reactionrole_utilities.js');

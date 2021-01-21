@@ -24,6 +24,8 @@ function executeCommand(command, prefix, message, args, Discord, client){
     //modular reactionrole command ON STARTUP FIRST REACTION IS NOT READ, MESSAGE NEEDS TO BE CACHED ON STARTUP
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
+    else if(command === 'setmaxwarnings')
+        client.commands.get('setmaxwarnings').execute(message, prefix, args);
     else if(command === 'unban')
         client.commands.get('unban').execute(message, prefix, args);
     else if(command === 'warn')

@@ -46,6 +46,7 @@ module.exports = {
             //the user exists in the guild, continue with warning
             else{
                 let userItem = message.guild.members.cache.get(userId);
+                let maxWarnings;
                 let currentWarnings = 0;
                 let banned = false;
 
@@ -53,7 +54,7 @@ module.exports = {
                 //if the server exists, add a warning count to the user, if the user has over the max amount of warnings, ban the user
                 if(server){
                     let warnedUsers = server.Item.warned_users;
-                    let maxWarnings = server.Item.max_warnings;
+                    maxWarnings = server.Item.max_warnings;
 
                     //if the server does not have a max warnings, set it to the default
                     if(!maxWarnings || maxWarnings === ''){
@@ -94,6 +95,7 @@ module.exports = {
                         //if the users not found, add the user, a long with one warning count
                         if(!found){
                             warnedUsers.push(userId + ':1:1');
+                            currentWarnings = 1;
                         }
                     }
 
@@ -114,7 +116,7 @@ module.exports = {
                 let directMessage = '';
                 let channelMessage = '';
                 if(!banned){
-                    directMessage = 'You have been given a warning in the server: ' + message.guild.name + ', this is your ' + currentWarnings + utilities.numSuffix(currentWarnings) + ' warning out of ' + totalWarnings;
+                    directMessage = 'You have been given a warning in the server: ' + message.guild.name + ', this is your ' + currentWarnings + utilities.numSuffix(currentWarnings) + ' warning out of ' + maxWarnings;
                     channelMessage = '<@!' + userId + '> has been given their ' + currentWarnings + utilities.numSuffix(currentWarnings) + ' warning';
                 }
                 else{

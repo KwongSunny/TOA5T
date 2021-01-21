@@ -1,5 +1,3 @@
-const { Message } = require("discord.js")
-
 module.exports = {
     name: 'help',
     description: 'provides a list of commands',
@@ -12,7 +10,9 @@ module.exports = {
             embed.addField('Member Management',
                 '`ban`: bans a user from the server\n' +
                 '`kick`: kicks a user from the server\n' +
-                '`unban`: unbans a user from the server'
+                '`setmaxwarnings`: sets the max amount of warnings a user can get before a ban\n' +
+                '`unban`: unbans a user from the server\n' +
+                '`warn`: warns a user from the server, if the user exceeds the max warnings then ban them\n'
             );
             
             embed.addField('Role Management', 
