@@ -3,7 +3,7 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'ban',
     description: 'permanently bans a user, takes a mention or a user Id',
-    async execute(message, prefix, args){
+    async execute(message, prefix, args, Discord){
         args = args.trim();
         //checks for user permissions
         if(!message.member.hasPermission('BAN_MEMBERS')){
@@ -11,46 +11,83 @@ module.exports = {
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send("To ban a member, use the following format:\n\n`" + prefix + this.name + " @user reason[optional]`");
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Ban')
+                .setDescription(
+                    '**Description:**\n' +
+                    'Ban a user\n\n' + 
+                    '**Usage:**\n' +
+                    '`' + prefix + this.name + ' @user`\n\n' +
+                    "**Advanced Usage:**\n" +
+                    '`' + prefix + this.name + ' @user tags[optional] "reason[optional]"`\n\n' +
+                    '**Tags:**\n' +
+                    '`-n`: notify the user of their ban\n' + 
+                    '`-m`: include a reason for the ban\n\n' + 
+                    '**Example:**\n' +
+                    '`' + prefix + this.name + ' @Toast`\n' + 
+                    '`' + prefix + this.name + ' @Toast -n -m "spamming chat"`\n\n' +
+                    '**reasons must be preceeded with a -m tag and enclosed in quotes**' 
+                );
+            message.channel.send(embed);
         }
         //continue with the command
         else{
-            let user = '';
+            let userArg = '';
             let banReason = '';
             let userId = '';
-            let userTag = '';
+            let notifyUserFlag = false;
+            let messageFlag = false;
 
-            //checks if there is a reason for the ban
-            if(args.includes(' ')){
-                user = args.substring(0, args.indexOf(' '));
-                banReason = args.substring(args.indexOf(' ')).trim();
-            }
-            else{
-                user = args;
-            }
-    
-            //if the args is a mention, then parse it to just the ID
-            if(utilities.isUserMention(user))
-                userId = utilities.getUserId(user);
-            //if the args is numeric, it is an id
-            else if(utilities.isNumeric(user))
-                userId = user;
+            //split the arguments into userArgs, messageFlag, notifyUserFlag
+                //retrieve the indices of the flags and their last index, if there is none then it will be an empty array
+                let indexOfMessageAndFlag = utilities.getIndexOfMessageAndFlag(args);
+                let indexOfNotifyUserFlag = utilities.getIndexOfNotifyUserFlag(args);
 
-            userTag = message.guild.members.cache.find(member => member.id === userId);
-            if(userTag) userTag = userTag.user.tag;
+                //checks if there is a message and notify user flag
+                messageFlag = (indexOfMessageAndFlag.length > 0);
+                notifyUserFlag = (indexOfNotifyUserFlag.length > 0);
+
+                //extracts the kick reason from indices from getIndexOfMessageAndFlag
+                if(messageFlag)
+                    banReason = args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1).match(/"(.*?)"/g)[0];
+
+                //get the userArgument
+                userArg = args.substring(0, args.search(/>\s|>+$/g)+1);
+
+            //take out the user and flags from arguments, if there is leftover args, then there is uneccesary arguments, return an error to the user
+                args = args.replace(args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1), '');
+                args = args.replace(userArg, '');
+                args = args.replace('-n', '');
+
+                if(args.trim() !== ''){
+                    message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');
+                    return;
+                }
     
-            //checks if the user exists and bans
-            if(userTag !== '' && userTag){
-                let banMessage = userTag + ' has been banned';
-                if(banReason !== '') banMessage += ' for "' + banReason + '"';
+            //if the user argument is a mention, then parse it to just the ID
+            if(utilities.isUserMention(userArg))
+                userId = utilities.getUserId(userArg);
+
+            let user = message.guild.members.cache.find(member => member.id === userId);
+            //checks if the user exists
+            if(!user){
+                message.channel.send(userArg + ' could not be found, please use either the user Id or a user mention');
+            }
+            else {
+                //check if the user is an admin, or has the kick_members permission if so then disallow the kick
+                if(user.hasPermission('BAN_MEMBERS')){
+                    message.channel.send('You cannot ban this member');
+                    return;
+                }
+                else{
+                    if(banReason !== '') banReason = '\nReason: ' + banReason;
     
-                await message.channel.send(banMessage);
-                await message.guild.members.ban(userId, {reason: banReason});
-            }
-            //args should be the name of the user
-            else{
-                message.channel.send(user + ' could not be found, please use either the user Id or a user mention')
-            }
+                    if(notifyUserFlag) await user.send('You have been banned from the server: `' + message.guild.name + '`' + banReason);
+                    await message.channel.send('<@!' + userId + '> has been banned' + banReason);
+                    await message.guild.members.ban(userId, {reason: banReason});
+                }
+            }   
         }
     }
 }

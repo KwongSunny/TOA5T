@@ -2,8 +2,8 @@ const utilities = require('../utils/utilities.js');
 
 module.exports = {
     name: 'kick',
-    description: 'kicks a user, takes a mention or user id',
-    async execute(message, prefix, args){
+    description: 'kicks a user, takes a mention',
+    async execute(message, prefix, args, Discord){
         args = args.trim();
         //check for user permissions
         if(!message.member.hasPermission('KICK_MEMBERS')){
@@ -11,60 +11,83 @@ module.exports = {
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send(
-                "To kick a member, use the following format:\n\n`" +
-                prefix + this.name + ' @user tags(-n: notify user)[optional] "reason[optional]"`\n\n' +
-                'Example: `' + prefix + this.name + ' @Toast -n "spamming chat"`'
-            );
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Kick')
+                .setDescription(
+                    '**Description:**\n' +
+                    'Kick a user\n\n' +
+                    '**Usage:**\n' +
+                    '`' + prefix + this.name + ' @user`\n\n' +
+                    "**Advanced Usage:**\n" +
+                    '`' + prefix + this.name + ' @user tags[optional] "reason[optional]"`\n\n' +
+                    '**Tags:**\n' +
+                    '`-n`: notify the user of their kick\n' + 
+                    '`-m`: include a reason for the kick\n\n' + 
+                    '**Example:**\n' +
+                    '`' + prefix + this.name + ' @Toast`\n' + 
+                    '`' + prefix + this.name + ' @Toast -n -m "spamming chat"`\n\n' +
+                    '**reasons must be preceeded with a -m tag and enclosed in quotes**' 
+                );
+            message.channel.send(embed);
         }
         //continue with the command
         else{
             let userArg = '';
             let kickReason = '';
             let userId = '';
-            let notifyUser = false;
+            let notifyUserFlag = false;
+            let messageFlag = false;
+        
+            //split the arguments into userArgs, messageFlag, notifyUserFlag
+                //retrieve the indices of the flags and their last index, if there is none then it will be an empty array
+                let indexOfMessageAndFlag = utilities.getIndexOfMessageAndFlag(args);
+                let indexOfNotifyUserFlag = utilities.getIndexOfNotifyUserFlag(args);
 
-            //split the ags into user, notifyUser, and kickReason
-            if(args.search(/"(.*?)"/) !== -1){
-                userArg = args.substring(0, args.indexOf(' '));
-                notifyUser = args.indexOf('-n') !== -1;
-                kickReason = args.substring(args.search(/"(.*?)"/));
-            }
-            else{
-                if(args.substring(0, args.indexOf(' ') !== -1))
-                    userArg = args.substring(0, args.indexOf(' '));
-                else userArg = args;
-                notifyUser = args.indexOf('-n') !== -1;
-            }
-    
+                //checks if there is a message and notify user flag
+                messageFlag = (indexOfMessageAndFlag.length > 0);
+                notifyUserFlag = (indexOfNotifyUserFlag.length > 0);
+
+                //extracts the kick reason from indices from getIndexOfMessageAndFlag
+                if(messageFlag)
+                    kickReason = args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1).match(/"(.*?)"/g)[0];
+
+                //get the userArgument
+                userArg = args.substring(0, args.search(/>\s|>+$/g)+1);
+
+            //take out the user and flags from arguments, if there is leftover args, then there is uneccesary arguments, return an error to the user
+                args = args.replace(args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1), '');
+                args = args.replace(userArg, '');
+                args = args.replace('-n', '');
+
+                if(args.trim() !== ''){
+                    message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');
+                    return;
+                }
+
             //if the user argument is a mention, then parse it to just the ID
             if(utilities.isUserMention(userArg))
                 userId = utilities.getUserId(userArg);
-            //if the user argument is numeric, it is an id
-            else if(utilities.isNumeric(userArg))
-                userId = userArg;
-            //the user argument is not valid
-            else
-                message.channel.send(userArg + ' is not a valid id or mention, please try again')
 
             let user = message.guild.members.cache.find(member => member.id === userId);
-
-            //if the user exists
-            if(user){
-                //check if the user is an admin, or the caller, if so then cancel the kick
-                if(userId === message.author.id || user.hasPermission('KICK_MEMBERS')){
+            //checks if the user is in the guild
+            if(!user){
+                message.channel.send(userArg + ' could not be found, please use either the user Id or a user mention');
+            }
+            else {
+                //check if the user is an admin, or has the kick_members permission if so then disallow the kick
+                if(user.hasPermission('KICK_MEMBERS')){
                     message.channel.send('You cannot kick this member');
                     return;
                 }
                 else{
                     if(kickReason !== '') kickReason = '\nReason: ' + kickReason;
     
-                    if(notifyUser) await user.send('You have been kicked from the server: `' + message.guild.name + '`' + kickReason);
-                    await message.channel.send(userArg + ' has been kicked' + kickReason);
+                    if(notifyUserFlag) await user.send('You have been kicked from the server: `' + message.guild.name + '`' + kickReason);
+                    await message.channel.send('<@!' + userId + '> has been kicked' + kickReason);
                     await message.guild.members.cache.find(member => member.id === userId).kick(kickReason);
                 }
-            }
-            else message.channel.send(userArg + ' could not be found, please use either the user Id or a user mention')
+            }   
         }
     }
 }

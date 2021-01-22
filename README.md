@@ -3,12 +3,8 @@ Bot-Name: PixelBot (temporary name)
 Done utilities:
     
     Autorole - assigns a default role to a server, new members will get this role upon joining [DONE]
-
-    Random - random number generator, can also utilitize lists [DONE]
     
     Kick - kicks a user by mention or id [DONE - NO CHANGES NEEDED]
-    
-    Ban - bans a user permanently by mention or id [DONE]
 
     Unban - unbans a user by id [DONE]
     
@@ -16,9 +12,13 @@ Done utilities:
 
     Setmaxwarnings - changes the default maximum warnings of the server [DONE]
 
-    Warn - warns a user and logs it into the db, if the user has more than the max warnings, ban the user [DONE]
-
 In Development utilities:
+
+    Random - random number generator, can also utilitize lists [NEEDS TESTING]
+
+    Ban - bans a user permanently by mention or id [NEED TO ADD TEMPBAN TAG]
+
+    Warn - warns a user and records in db, if the user has over the max warnings, ban the user [DONE]
     
 Planned utilities:
 
@@ -37,4 +37,6 @@ Planned utilities:
     Music - plays music/videos from youtube
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
+
+    
     

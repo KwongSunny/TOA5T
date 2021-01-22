@@ -4,7 +4,7 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'warn',
     description: "warns a user, if the user has too many warnings they will get banned, default max warnings: 2, items in database: '<@!user_id>:current_warns:total_warns'",
-    async execute(message, prefix, args){
+    async execute(message, prefix, args, Discord){
         args = args.trim();
 
         //check for user permissions
@@ -13,39 +13,64 @@ module.exports = {
         }
         //sends a message on how to use the command if no args or args is help
         else if(args === 'help' || args === ''){
-            message.channel.send("To warn a member, use the following format:\n\n`" + prefix + this.name + " @user reason[optional]`\n\nThe default maximum warnings is 2 before a ban; to change this maximum, use:\n\n`" + prefix + "setmaxwarnings number`");
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Warn')
+                .setDescription(
+                    '**Description:**\n' +
+                    'Warn a user for an offense; the default max warnings is 2 before a ban, for more info use `~setmaxwarnings`\n\n' + 
+                    '**Usage:**\n' +
+                    '`' + prefix + this.name + ' @user "warning[optional]"`\n\n' +
+                    '**Example:**\n' +
+                    '`' + prefix + this.name + ' @Toast`\n' +
+                    '`' + prefix + this.name + ' @Toast "spam"`'
+                );
+            message.channel.send(embed);
         }
         //check for user and reason
         else{
             const defaultMaxWarnings = 2;
-            let user = '';
+            let userArg = '';
             let warnReason = '';
-            
-            //checks if there is a reason for the warning
-            if(args.includes(' ')){
-                user = args.substring(0, args.indexOf(' '));
-                warnReason = args.substring(args.indexOf(' ')).trim();
-            }
-            else{
-                user = args;
-            }
-
-            //parses the user into to userId
             let userId = '';
-            if(utilities.isUserMention(user))
-                userId = utilities.getUserId(user);
-            else if(utilities.isNumeric(user))
-                userId = user;
 
+            console.log('reason: ');
+            console.log(args.match(/"(.*?)"/g));
+
+            //split the args into user and warnReason
+                if(args.search(/"(.*?)"/g) !== -1){
+                    userArg = args.substring(0, args.indexOf(' '));
+                    warnReason = args.match(/"(.*?)"/g)[0];
+                }
+                else{
+                    if(args.indexOf(' ') !== -1)
+                    userArg = args.substring(0, args.indexOf(' '));
+                    else userArg = args;
+                }
+
+            //take our the user and warnReason, if there is leftover then there are uneccesary arguments, return an error to the user
+                args = args.replace(warnReason, '');
+                args = args.replace(userArg, '');
+
+                if(args.trim() !== ''){
+                    message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');
+                    return;
+                }
+
+
+            //if the user argument is a mention, then parse it to just the ID
+            if(utilities.isUserMention(userArg))
+                userId = utilities.getUserId(userArg);
+
+            let user = message.guild.members.cache.find(member => member.id === userId);
 
             //checks if the user is in the guild
-            if(!message.guild.members.cache.find(member => member.id === userId)){
-                message.channel.send(user + ' is not a member of the server, please check to make sure you have the correct user')
-                return;
+            if(!user){
+                message.channel.send(userArg + ' is not a member of the server, please check to make sure you have the correct user');
             }
             //the user exists in the guild, continue with warning
             else{
-                let userItem = message.guild.members.cache.get(userId);
+                //let userItem = message.guild.members.cache.get(userId);
                 let maxWarnings;
                 let currentWarnings = 0;
                 let banned = false;
@@ -116,19 +141,19 @@ module.exports = {
                 let directMessage = '';
                 let channelMessage = '';
                 if(!banned){
-                    directMessage = 'You have been given a warning in the server: ' + message.guild.name + ', this is your ' + currentWarnings + utilities.numSuffix(currentWarnings) + ' warning out of ' + maxWarnings;
+                    directMessage = 'You have been given a warning in the server: `' + message.guild.name + '`, this is your ' + currentWarnings + utilities.numSuffix(currentWarnings) + ' warning out of ' + maxWarnings;
                     channelMessage = '<@!' + userId + '> has been given their ' + currentWarnings + utilities.numSuffix(currentWarnings) + ' warning';
                 }
                 else{
-                    directMessage = 'You have been banned from the server: ' + message.guild.name + ' for exceeding the maximum amount of warnings';
+                    directMessage = 'You have been banned from the server: `' + message.guild.name + '` for exceeding the maximum amount of warnings';
                     channelMessage = '<@!' + userId + '> has been banned from the server for exceeding the maximum amount of warnings'
                 }
 
                 if(warnReason !== ''){
-                    directMessage += '\n\nReason: ' + warnReason;
-                    channelMessage += '\n\nReason: ' + warnReason;
+                    directMessage += '\nReason: ' + warnReason;
+                    channelMessage += '\nReason: ' + warnReason;
                 }
-                await userItem.send(directMessage);
+                await user.send(directMessage);
                 message.channel.send(channelMessage);
 
             }
