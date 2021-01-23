@@ -1,12 +1,13 @@
 require('dotenv').config();
 const Discord = require('discord.js');
 const fs = require('fs');
+const utilities = require('./utils/utilities.js');
 const aws_utilities = require('./utils/aws_utilities');
 const rr_utilities = require('./utils/reactionrole_utilities');
 const index_helpers = require('./index_helpers.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
-const prefix = '~';
+let prefix = '~';
 client.commands = new Discord.Collection();
 
 //read all commands from commands folder
@@ -20,11 +21,17 @@ for(const file of commandFiles){
 //on startup
 client.once('ready', () => {
     console.log('PixelBot, online!');
+
     
 })
 
 //persist while bot is alive
-client.on('message', message => {
+client.on('message', async message => {
+    //check for custom prefix
+    let server = await aws_utilities.getItem(message.guild.id);
+    let customPrefix = server.Item.custom_prefix;
+    if(customPrefix && customPrefix !== '') prefix = customPrefix.trim();
+
     //a bot command is being used
     if(message.content.startsWith(prefix)){
         let args = '';
@@ -77,7 +84,6 @@ client.on('guildMemberAdd', async(member) => {
 });
 
 let deploy = 'HEROKU';
-//let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{

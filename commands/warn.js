@@ -49,8 +49,8 @@ module.exports = {
                 }
 
             //take our the user and warnReason, if there is leftover then there are uneccesary arguments, return an error to the user
-                args = args.replace(warnReason, '');
-                args = args.replace(userArg, '');
+                let strings = [warnReason, userArg];
+                args = utilities.removeFromString(args, strings);
 
                 if(args.trim() !== ''){
                     message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');
@@ -124,6 +124,7 @@ module.exports = {
                         }
                     }
 
+                    //update the item
                     let keys = ['warned_users', 'max_warnings'];
                     let values = [warnedUsers, maxWarnings];
                     aws_utilities.updateItem(message.guild.id, keys, values); 

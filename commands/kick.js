@@ -56,9 +56,8 @@ module.exports = {
                 userArg = args.substring(0, args.search(/>\s|>+$/g)+1);
 
             //take out the user and flags from arguments, if there is leftover args, then there is uneccesary arguments, return an error to the user
-                args = args.replace(args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1), '');
-                args = args.replace(userArg, '');
-                args = args.replace('-n', '');
+                let strings = [args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1), userArg, '-n'];
+                args = utilities.removeFromString(args, strings);
 
                 if(args.trim() !== ''){
                     message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');

@@ -7,24 +7,30 @@ Done utilities:
     Kick - kicks a user by mention or id [DONE - NO CHANGES NEEDED]
 
     Unban - unbans a user by id [DONE]
-    
+
+    Random - random number generator, can also utilitize lists
+
     Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
+
+    Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision
 
     Setmaxwarnings - changes the default maximum warnings of the server [DONE]
 
+    Warn - warns a user and records in db, if the user has over the max warnings, banthe user [DONE]
+
 In Development utilities:
 
-    Random - random number generator, can also utilitize lists [NEEDS TESTING]
+    Help - always needs updates for every command
+
+    info
 
     Ban - bans a user permanently by mention or id [NEED TO ADD TEMPBAN TAG]
-
-    Warn - warns a user and records in db, if the user has over the max warnings, ban the user [DONE]
     
 Planned utilities:
 
-    Mod log - sets a channel as a mod log, sends messages on important events in the server
+    getwarnings - retrives a user's number of warnings (current and total)
 
-    Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision
+    Mod log - sets a channel as a mod log, sends messages on important events in the server
 
     Message filter - removes messages with slurs, spam, all-caps, etc
     
