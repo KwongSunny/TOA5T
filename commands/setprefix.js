@@ -2,7 +2,7 @@ const aws_utilities = require('../utils/aws_utilities.js');
 
 module.exports = {
     name: 'setprefix',
-    description: 'changes the default prefix to a custom one',
+    description: 'changes the default prefix to a custom one, pins the message and deletes the previous pinned prefix message',
     async execute(message, prefix, args, Discord){
         args = args.trim();
         //checks for user permissions
@@ -59,10 +59,16 @@ module.exports = {
                 if(prevPrefixMessageId !== ''){
                     let channels = message.guild.channels.cache;
                     channels.each(async channel => {
-                        if(channel.messages){
-                            let prevPrefixMessage = await channel.messages.fetch(prevPrefixMessageId);
-                            if(prevPrefixMessage)
+                        let messageManager = channel.messages;
+                        if(messageManager){
+                            try {
+                                let prevPrefixMessage = await channel.messages.fetch(prevPrefixMessageId);
                                 console.log(prevPrefixMessage);
+                                prevPrefixMessage.delete();
+                            }catch(e){
+                                if(e.message !== 'Unknown Message')
+                                    console.log(e.message);
+                            }
                         }
                     })
                 }

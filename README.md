@@ -12,7 +12,7 @@ Done utilities:
 
     Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
 
-    Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision
+    Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision [DONE]
 
     Setmaxwarnings - changes the default maximum warnings of the server [DONE]
 
