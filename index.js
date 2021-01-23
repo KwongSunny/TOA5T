@@ -7,7 +7,7 @@ const rr_utilities = require('./utils/reactionrole_utilities');
 const index_helpers = require('./index_helpers.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
-let prefix = '~';
+let defaultPrefix = '~';
 client.commands = new Discord.Collection();
 
 //read all commands from commands folder
@@ -32,13 +32,23 @@ client.on('message', async message => {
     let customPrefix = server.Item.custom_prefix;
     if(customPrefix && customPrefix !== '') prefix = customPrefix.trim();
 
+    let args = '';
+    if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
+    let command = '';
+
     //a bot command is being used
-    if(message.content.startsWith(prefix)){
-        let args = '';
-        if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
-        const command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
+    if(message.content.startsWith(customPrefix)){
+        command = message.content.slice(customPrefix.length).split(/ +/).shift().toLowerCase();
     
-        index_helpers.executeCommand(command, prefix, message, args, Discord, client);
+        index_helpers.executeCommand(command, customPrefix, message, args, Discord, client);
+    }
+    else if(message.content.startsWith(defaultPrefix)){
+        command = message.content.slice(defaultPrefix.length).split(/ +/).shift().toLowerCase();
+
+        if(command === 'getprefix')
+            client.commands.get('getprefix').execute(message, defaultPrefix, args, Discord);
+
+        
     }
     //ignore messages from bots
     else if(message.author.bot){
@@ -83,7 +93,7 @@ client.on('guildMemberAdd', async(member) => {
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{

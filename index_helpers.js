@@ -4,6 +4,8 @@ function executeCommand(command, prefix, message, args, Discord, client){
         client.commands.get('autorole').execute(message, prefix, args, Discord);
     else if(command === 'ban')
         client.commands.get('ban').execute(message, prefix, args, Discord);
+    if(command === 'getprefix')
+        client.commands.get('getprefix').execute(message, prefix, args, Discord);
     //provides a list of commands
     else if(command === 'help')
         client.commands.get('help').execute(message, args, Discord);

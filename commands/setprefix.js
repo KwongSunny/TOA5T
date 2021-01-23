@@ -33,25 +33,39 @@ module.exports = {
                 message.channel.send('There are unecessary arguments or prefixes');
             }
             else{
-                let server = aws_utilities.getItem(message.guild.id);
+                //pins a message letting users know the new prefix of the bot
+                let prefixMessage = await message.channel.send("This bot's prefix has been set to `" + prefixes[0] + '`');
+                await prefixMessage.pin();
+
+                let prevPrefixMessageId = '';
+
+                //check for a previous pinned prefix message in db as well as update the prefix
+                let server = await aws_utilities.getItem(message.guild.id);
                 //if the server is found update it
                 if(server){
-    
-                    //update the item with custom_prefix
-                    let keys = ['custom_prefix'];
-                    let values = [prefixes[0]];
-                    aws_utilities.updateItem(message.guild.id, keys, values);
+                    prevPrefixMessageId = server.Item.prefix_message_id;
                 }
                 //else write a new one
                 else{
-    
-                    //update the item with custom_prefix
                     aws_utilities.writeItem(message.guild.id);
-                    let keys = ['custom_prefix'];
-                    let values = [prefixes[0]];
-                    aws_utilities.updateItem(message.guild.id, keys, values);
                 }
-                message.channel.send("This bot's prefix has been set to `" + prefixes[0] + '`');
+
+                //update the item with custom_prefix
+                let keys = ['custom_prefix', 'prefix_message_id'];
+                let values = [prefixes[0], prefixMessage.id];
+                aws_utilities.updateItem(message.guild.id, keys, values);
+            
+                //look for and delete the previous pinned prefix message
+                if(prevPrefixMessageId !== ''){
+                    let channels = message.guild.channels.cache;
+                    channels.each(async channel => {
+                        if(channel.messages){
+                            let prevPrefixMessage = await channel.messages.fetch(prevPrefixMessageId);
+                            if(prevPrefixMessage)
+                                console.log(prevPrefixMessage);
+                        }
+                    })
+                }
             }
         }
     }
