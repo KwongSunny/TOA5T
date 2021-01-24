@@ -12,17 +12,19 @@ Done utilities:
 
     Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
 
-    Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision [DONE]
-
     Setmaxwarnings - changes the default maximum warnings of the server [DONE]
 
     Warn - warns a user and records in db, if the user has over the max warnings, banthe user [DONE]
 
 In Development utilities:
 
+    Set prefix - allows a moderator to reset the prefix of the bot, in case of bot collision, need to refactor "look for previous pinned message and delete"
+
+    Resetprefix - "need to refactor "look for previous pinned message and delete"
+
     Help - always needs updates for every command
 
-    info
+    info [ON HOLD]
 
     Ban - bans a user permanently by mention or id [NEED TO ADD TEMPBAN TAG]
     

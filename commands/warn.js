@@ -75,7 +75,7 @@ module.exports = {
                 let currentWarnings = 0;
                 let banned = false;
 
-                const server = await aws_utilities.getItem(message.guild.id);
+                const server = await aws_utilities.fetchServer(message.guild.id);
                 //if the server exists, add a warning count to the user, if the user has over the max amount of warnings, ban the user
                 if(server){
                     let warnedUsers = server.Item.warned_users;

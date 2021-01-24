@@ -9,7 +9,7 @@ module.exports = {
         
         }
         else if(args === ''){
-            let server = await aws_utilities.getItem(message.guild.id);
+            let server = await aws_utilities.fetchServer(message.guild.id);
             if(server.Item.custom_prefix)
                 prefix = server.Item.custom_prefix;
 

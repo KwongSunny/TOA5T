@@ -1,4 +1,4 @@
-function executeCommand(command, prefix, message, args, Discord, client){
+function executeCommand(command, prefix, defaultPrefix, message, args, Discord, client){
     //assigns a default role to every new member
     if(command === 'autorole')
         client.commands.get('autorole').execute(message, prefix, args, Discord);
@@ -26,6 +26,8 @@ function executeCommand(command, prefix, message, args, Discord, client){
     //modular reactionrole command ON STARTUP FIRST REACTION IS NOT READ, MESSAGE NEEDS TO BE CACHED ON STARTUP
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
+    else if(command === 'resetprefix')
+        client.commands.get('resetprefix').execute(message, prefix, defaultPrefix, args, Discord);
     else if(command === 'setmaxwarnings')
         client.commands.get('setmaxwarnings').execute(message, prefix, args);
     else if(command === 'setprefix')

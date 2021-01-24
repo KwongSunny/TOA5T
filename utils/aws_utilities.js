@@ -11,7 +11,7 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = 'pixelbot_servers';
 
 //returns a promise of the item from dynamodb using the server_id key
-function getItem(server_id){
+function fetchServer(server_id){
     let param = {
         TableName: tableName,
         Key: {
@@ -22,14 +22,35 @@ function getItem(server_id){
         docClient.get(param, function(err, data) {
             if (err) {
                 console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-                reject(err)
+                reject(err);
             } 
             else {
-                console.log("Read succeeded:", JSON.stringify(data, null, 2));
-                resolve(data)
+                //console.log("Read succeeded:", JSON.stringify(data, null, 2));
+                resolve(data);
             }
         });
     }) 
+}
+
+//looks for and fetches a message in a server by id
+async function fetchMessageFromGuild(guild, messageId){
+    return new Promise(async (resolve, reject) => {
+        let fetchedMessage;
+        let channels = guild.channels.cache;
+        channels.each(async channel => {
+            let messageManager = channel.messages;
+            if(messageManager){
+                try {
+                    fetchedMessage = await channel.messages.fetch(messageId);
+                    if(fetchedMessage) resolve(fetchedMessage);
+                }catch(e){
+                    if(e.message !== 'Unknown Message')
+                        console.log(e.message);
+                }
+            }
+        });
+        reject();
+    });
 }
 
 //writes an items to the dynamodb database
@@ -46,7 +67,7 @@ function writeItem(server_id){
             console.error("Unable to write item. Error JSON:", JSON.stringify(err, null, 2));
         } 
         else {
-            console.log("Write succeeded:", JSON.stringify(data, null, 2));
+            //console.log("Write succeeded:", JSON.stringify(data, null, 2));
         }
     });
 
@@ -79,7 +100,7 @@ function updateItem(server_id, keys, values){
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
         } 
         else {
-            console.log("Update succeeded:", JSON.stringify(data, null, 2));
+            //console.log("Update succeeded:", JSON.stringify(data, null, 2));
         }
     });
 }
@@ -99,14 +120,15 @@ function scanItemsPromise(){
                 reject(err)
             } 
             else {
-                console.log("Scan succeeded:", JSON.stringify(data, null, 2));
+                //console.log("Scan succeeded:", JSON.stringify(data, null, 2));
                 resolve(data);
             }
         });
     })
 }
 
-module.exports.getItem = getItem;
+module.exports.fetchServer = fetchServer;
+module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
 module.exports.scanItemsPromise = scanItemsPromise;

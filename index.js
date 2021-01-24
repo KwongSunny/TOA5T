@@ -8,6 +8,7 @@ const index_helpers = require('./index_helpers.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 let defaultPrefix = '~';
+let prefix = '~';
 client.commands = new Discord.Collection();
 
 //read all commands from commands folder
@@ -27,21 +28,24 @@ client.once('ready', () => {
 
 //persist while bot is alive
 client.on('message', async message => {
-    //check for custom prefix
-    let server = await aws_utilities.getItem(message.guild.id);
-    let customPrefix = server.Item.custom_prefix;
-    if(customPrefix && customPrefix !== '') prefix = customPrefix.trim();
 
-    let args = '';
-    if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
-    let command = '';
+    //check for custom prefix
+        let server = await aws_utilities.fetchServer(message.guild.id);
+        let customPrefix = server.Item.custom_prefix;
+        if(customPrefix && customPrefix !== '') prefix = customPrefix.trim();
+
+    //split args and command
+        let args = '';
+        if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
+        let command = '';
 
     //a bot command is being used
-    if(message.content.startsWith(customPrefix)){
-        command = message.content.slice(customPrefix.length).split(/ +/).shift().toLowerCase();
+    if(message.content.startsWith(prefix)){
+        command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
     
-        index_helpers.executeCommand(command, customPrefix, message, args, Discord, client);
+        index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, Discord, client);
     }
+    //getprefix will always utilize the default prefix as well as the custom prefix
     else if(message.content.startsWith(defaultPrefix)){
         command = message.content.slice(defaultPrefix.length).split(/ +/).shift().toLowerCase();
 
@@ -82,8 +86,8 @@ client.on('messageReactionRemove', async(reaction, user) => {
 });
 
 client.on('guildMemberAdd', async(member) => {
-    let server = await aws_utilities.getItem(member.guild.id);
-    
+    let server = await aws_utilities.fetchServer(member.guild.id);
+
     //checks if default_role exists and is not an empty string
     if(server.Item.default_role && server.Item.default_role !== ''){
         member.roles.add(member.guild.roles.cache.find(role => role.id === server.Item.default_role));
@@ -93,7 +97,7 @@ client.on('guildMemberAdd', async(member) => {
     }
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
