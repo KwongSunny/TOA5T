@@ -22,18 +22,18 @@ function executeCommand(command, prefix, defaultPrefix, message, args, Discord, 
         client.commands.get('kill').execute(message, client);
     //randomizer command, gives a random output based on the parameters
     else if(command === 'random')
-        client.commands.get('random').execute(message, args, Discord)
+        client.commands.get('random').execute(message, prefix, args, Discord)
     //modular reactionrole command ON STARTUP FIRST REACTION IS NOT READ, MESSAGE NEEDS TO BE CACHED ON STARTUP
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
     else if(command === 'resetprefix')
         client.commands.get('resetprefix').execute(message, prefix, defaultPrefix, args, Discord);
     else if(command === 'setmaxwarnings')
-        client.commands.get('setmaxwarnings').execute(message, prefix, args);
+        client.commands.get('setmaxwarnings').execute(message, prefix, args, Discord);
     else if(command === 'setprefix')
         client.commands.get('setprefix').execute(message, prefix, args, Discord);
     else if(command === 'unban')
-        client.commands.get('unban').execute(message, prefix, args);
+        client.commands.get('unban').execute(message, prefix, args, Discord);
     else if(command === 'warn')
         client.commands.get('warn').execute(message, prefix, args, Discord);
 }

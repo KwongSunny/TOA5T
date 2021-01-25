@@ -4,7 +4,7 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'setmaxwarnings',
     description: "sets the server's maximum warnings that a user can get before getting banned",
-    async execute(message, prefix, args){
+    async execute(message, prefix, args, Discord){
         args = args.trim();
 
         //check for user permissions
@@ -12,7 +12,14 @@ module.exports = {
             message.channel.send("You do not have sufficient permissions to use this command.");
         }
         else if(args === '' || args === 'help'){
-            message.channel.send('To use this command, use the format:\n\n`' + prefix + this.name + ' number`');
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Set Max Warnings')
+                .addField('Description', "Sets the server's max amount of warnings before a user get's banned")
+                .addField('Usage', '`' + prefix + this.name + ' number`')
+                .addField('Example' , '`' + prefix + this.name + ' 3`')
+                .addField('Related Commands', '`warn`')
+            message.channel.send(embed);
         }
         else if(utilities.isNumeric(args)){
             let server = await aws_utilities.fetchServer(message.guild.id);

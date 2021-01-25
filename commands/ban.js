@@ -14,21 +14,16 @@ module.exports = {
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Ban')
-                .setDescription(
-                    '**Description:**\n' +
-                    'Ban a user\n\n' + 
-                    '**Usage:**\n' +
-                    '`' + prefix + this.name + ' @user`\n\n' +
-                    "**Advanced Usage:**\n" +
-                    '`' + prefix + this.name + ' @user tags[optional] "reason[optional]"`\n\n' +
-                    '**Tags:**\n' +
+                .addField('Description', 'Bans a user')
+                .addField('Usage', '`' + prefix + this.name + ' @user`')
+                .addField('Advanced Usage', '`' + prefix + this.name + ' @user tags[optional] "reason[optional]"`')
+                .addField('Tags', 
                     '`-n`: notify the user of their ban\n' + 
-                    '`-m`: include a reason for the ban\n\n' + 
-                    '**Example:**\n' +
+                    '`-m`: include a reason for the ban')
+                .addField('Example', 
                     '`' + prefix + this.name + ' @Toast`\n' + 
-                    '`' + prefix + this.name + ' @Toast -n -m "spamming chat"`\n\n' +
-                    '**reasons must be preceeded with a -m tag and enclosed in quotes**' 
-                );
+                    '`' + prefix + this.name + ' @Toast -n -m "spamming chat"`')
+                .addField('Related Commands', '`kick`, `unban`, `warn`');
             message.channel.send(embed);
         }
         //continue with the command
@@ -56,8 +51,8 @@ module.exports = {
                 userArg = args.substring(0, args.search(/>\s|>+$/g)+1);
 
             //take out the user and flags from arguments, if there is leftover args, then there is uneccesary arguments, return an error to the user
-                let strings = [args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1), userArg, '-n'];
-                args = utilities.removeFromString(args, strings);
+                let stringsToBeRemoved = [args.substring(indexOfMessageAndFlag[0], indexOfMessageAndFlag[1]+1), userArg, '-n'];
+                args = utilities.removeFromString(args, stringsToBeRemoved);
 
                 if(args.trim() !== ''){
                     message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');

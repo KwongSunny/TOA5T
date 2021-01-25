@@ -7,7 +7,7 @@ const rr_utilities = require('./utils/reactionrole_utilities');
 const index_helpers = require('./index_helpers.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
-let defaultPrefix = '~';
+const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
 

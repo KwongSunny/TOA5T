@@ -22,7 +22,9 @@ module.exports = {
             );
 
             embed.addField('Miscellaneous',
+                "`getprefix`: retrieves the server's bot's prefix\n" +
                 '`random`: random number generator, can also use item lists\n' +
+                "`resetprefix`: resets the bot's prefix to its default\n" +
                 "`setprefix`: changes the bot's default prefix\n"
             );
         }

@@ -16,15 +16,12 @@ module.exports = {
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Warn')
-                .setDescription(
-                    '**Description:**\n' +
-                    'Warn a user for an offense; the default max warnings is 2 before a ban, for more info use `~setmaxwarnings`\n\n' + 
-                    '**Usage:**\n' +
-                    '`' + prefix + this.name + ' @user "warning[optional]"`\n\n' +
-                    '**Example:**\n' +
+                .addField('Description', 'Warn a user for an offense; the default max warnings is 2 before a ban')
+                .addField('Usage', '`' + prefix + this.name + ' @user "warning[optional]"`')
+                .addField('Example',
                     '`' + prefix + this.name + ' @Toast`\n' +
-                    '`' + prefix + this.name + ' @Toast "spam"`'
-                );
+                    '`' + prefix + this.name + ' @Toast "spam"`')
+                .addField('Related Commands', '`ban`, `kick`, `setmaxwarnings`, `unban`');
             message.channel.send(embed);
         }
         //check for user and reason

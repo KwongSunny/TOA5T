@@ -1,23 +1,34 @@
 const utilities = require('../utils/utilities');
-const {Message} = require('discord.js');
+const {Message, DiscordAPIError} = require('discord.js');
 
 module.exports = {
     name: 'random',
     description: 'random number generator',
-    async execute(message, args, Discord){
+    async execute(message, prefix, args, Discord){
         args = args.trim();
         //provides information on the command
         if(args === '' || args === 'help'){
-            message.channel.send(
-                'To get a random number between `1` and `n` use the following format:\n' +
-                '`~random n`\n\n' +
-                'To get a random number between `x` and `y` use the following format:\n' +
-                '`~random x y`\n\n' +
-                'To get a random item in a list use the following format:\n' +
-                '`~random item1, item2, item3...`\n\n' +
-                'To get a random item in a weighted list, use the following format:\n' +
-                '`~random item1:weight, item2:weight, item3:weight...`'
-            );
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Randomizer')
+                .addField('Description', 'Returns a random number or item from a range or list')
+                .addField('Usage',
+                    'To get a random number between `1` and `n` use the following format:\n' +
+                    '`' + prefix + this.name + ' n`\n\n' +
+                    'To get a random number between `x` and `y` use the following format:\n' +
+                    '`' + prefix + this.name + ' x y`\n\n' +
+                    'To get a random item in a list use the following format:\n' +
+                    '`' + prefix + this.name + ' item1, item2, item3...`\n\n' +
+                    'To get a random item in a weighted list, use the following format:\n' +
+                    '`' + prefix + this.name + ' item1:weight, item2:weight, item3:weight...`'
+                )
+                .addField('Example', 
+                    '`' + prefix + this.name + ' 5`\n' + 
+                    '`' + prefix + this.name + ' 5 10`\n' +
+                    '`' + prefix + this.name + ' red, green, blue`\n' +
+                    '`' + prefix + this.name + ' red:5, green:3, blue:1`'
+                );
+            message.channel.send(embed);
         }
         else if(args[0] === ',')
             message.channel.send('Incorrect syntax');

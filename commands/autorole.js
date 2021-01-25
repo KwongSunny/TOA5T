@@ -13,7 +13,13 @@ module.exports = {
         }
 
         if(args === '' || args === 'help'){
-            message.channel.send('To assign a default role to server members use the following command and format:\n\n`' + prefix + 'autorole @roleName`')
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Autorole')
+                .addField('Description', 'Sets a default role to the server, anyone who joins is automatically assigned this role')
+                .addField('Usage', '`' + prefix + this.name + ' @role`')
+                .addField('Related Commands', '`reactionrole`');
+            message.channel.send(embed);
         }
         else{
             
