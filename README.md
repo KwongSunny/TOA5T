@@ -3,6 +3,8 @@ Bot-Name: PixelBot (temporary name)
 Done utilities:
     
     Autorole - assigns a default role to a server, new members will get this role upon joining [DONE]
+
+    Ban - bans a user permanently by mention [DONE]
     
     Kick - kicks a user by mention or id [DONE - NO CHANGES NEEDED]
 
@@ -25,10 +27,12 @@ In Development utilities:
     Help - always needs updates for every command
 
     info [ON HOLD]
-
-    Ban - bans a user permanently by mention or id [NEED TO ADD TEMPBAN TAG]
     
 Planned utilities:
+
+    mute
+
+    deafen
 
     getwarnings - retrives a user's number of warnings (current and total)
 
@@ -43,8 +47,31 @@ Planned utilities:
     Temp ban - temporarily bans a user
     
     Music - plays music/videos from youtube
+
+        Play
+        
+        Pause
+
+        Stop
+
+Resume
+
+        Skip
+
+        Queue
+
+        Back
+
+        Clear
+
+        Loop
+
+        Join
+
+        Leave
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
+    Checkstock - checks the price of a stock
     
     

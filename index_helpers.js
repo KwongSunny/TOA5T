@@ -12,14 +12,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, Discord, 
     //gives basic information about the bot
     else if(command === 'info')
         client.commands.get('info').execute(message, prefix, Discord);
-    //test function
-    else if(command === 'ping')
-        client.commands.get('ping').execute(message);
     else if(command === 'kick')
         client.commands.get('kick').execute(message, prefix, args, Discord)
-    //stops the bot DONE, only to be used by bot admins
-    else if(command === 'kill')
-        client.commands.get('kill').execute(message, client);
     //randomizer command, gives a random output based on the parameters
     else if(command === 'random')
         client.commands.get('random').execute(message, prefix, args, Discord)
