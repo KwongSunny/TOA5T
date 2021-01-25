@@ -34,48 +34,31 @@ module.exports = {
             }
             else{
                 //pins a message letting users know the new prefix of the bot
-                let newPrefixMessage = await message.channel.send("This bot's prefix has been set to `" + prefixes[0] + '`');
-                await newPrefixMessage.pin();
+                    let newPrefixMessage = await message.channel.send("This bot's prefix has been set to `" + prefixes[0] + '`');
+                    await newPrefixMessage.pin();
 
-                let prevPrefixMessageId = '';
-
-                //check for a previous pinned prefix message in db as well as update the prefix
-                let server = await aws_utilities.fetchServer(message.guild.id);
-                //if the server is found update it
-                if(server){
-                    prevPrefixMessageId = server.Item.prefix_message_id;
-                }
-                //else write a new one
-                else{
-                    aws_utilities.writeItem(message.guild.id);
-                }
+                //check for a previous pinned prefix message in db
+                    let prevPrefixMessageId = '';
+                    let server = await aws_utilities.fetchServer(message.guild.id);
+                    //if the server is found update it
+                    if(server){
+                        prevPrefixMessageId = server.Item.prefix_message_id;
+                    }
+                    //else write a new one
+                    else{
+                        aws_utilities.writeItem(message.guild.id);
+                    }
 
                 //update the item with custom_prefix
-                let keys = ['custom_prefix', 'prefix_message_id'];
-                let values = [prefixes[0], newPrefixMessage.id];
-                aws_utilities.updateItem(message.guild.id, keys, values);
+                    let keys = ['custom_prefix', 'prefix_message_id'];
+                    let values = [prefixes[0], newPrefixMessage.id];
+                    aws_utilities.updateItem(message.guild.id, keys, values);
 
                 //look for and delete the previous pinned prefix message
-                if(prevPrefixMessageId !== ''){
-
-                    let fetchedMessage;
-                    let channels = message.guild.channels.cache;
-                    channels.each(async channel => {
-                        let messageManager = channel.messages;
-                        if(messageManager){
-                            try {
-                                fetchedMessage = await channel.messages.fetch(prevPrefixMessageId);
-                                if(fetchedMessage) fetchedMessage.delete();
-                            }catch(e){
-                                if(e.message !== 'Unknown Message')
-                                    console.log(e.message);
-                            }
-                        }
-                    });
-
-                    //let prevPrefixMessage = await aws_utilities.fetchMessageFromGuild(message.guild, prevPrefixMessageId).catch(console.error);
-                    //if(prevPrefixMessage) prevPrefixMessage.delete();
-                }
+                    if(prevPrefixMessageId !== ''){
+                        let fetchedMessage = await aws_utilities.fetchMessageFromGuild(message.guild, prevPrefixMessageId);
+                        fetchedMessage.delete();
+                    }
             }
         }
     }

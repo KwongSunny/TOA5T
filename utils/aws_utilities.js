@@ -6,7 +6,6 @@ AWS.config.update({
     region: "us-east-2"
 });
 
-const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = 'pixelbot_servers';
 
@@ -34,22 +33,20 @@ function fetchServer(server_id){
 
 //looks for and fetches a message in a server by id
 async function fetchMessageFromGuild(guild, messageId){
-    return new Promise(async (resolve, reject) => {
-        let fetchedMessage;
+    return new Promise((resolve, reject) => {
         let channels = guild.channels.cache;
         channels.each(async channel => {
             let messageManager = channel.messages;
             if(messageManager){
                 try {
-                    fetchedMessage = await channel.messages.fetch(messageId);
+                    let fetchedMessage = await channel.messages.fetch(messageId);
                     if(fetchedMessage) resolve(fetchedMessage);
                 }catch(e){
                     if(e.message !== 'Unknown Message')
-                        console.log(e.message);
+                        reject(e);
                 }
             }
         });
-        reject();
     });
 }
 
@@ -105,30 +102,7 @@ function updateItem(server_id, keys, values){
     });
 }
 
-
-function scanItemsPromise(){
-    let param = {
-        TableName: tableName,
-        FilterExpression: 'reactionrole_channel_id <> :id',
-        ExpressionAttributeValues: {':id': ""}
-    }
-
-    return new Promise((resolve, reject) => {
-        docClient.scan(param, function(err, data) {
-            if (err) {
-                console.error("Unable to scan table. Error JSON:", JSON.stringify(err, null, 2));
-                reject(err)
-            } 
-            else {
-                //console.log("Scan succeeded:", JSON.stringify(data, null, 2));
-                resolve(data);
-            }
-        });
-    })
-}
-
 module.exports.fetchServer = fetchServer;
 module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
-module.exports.scanItemsPromise = scanItemsPromise;

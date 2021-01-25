@@ -32,7 +32,10 @@ client.on('message', async message => {
     //check for custom prefix
         let server = await aws_utilities.fetchServer(message.guild.id);
         let customPrefix = server.Item.custom_prefix;
-        if(customPrefix && customPrefix !== '') prefix = customPrefix.trim();
+        //if the server has a custom prefix, use it
+        if(customPrefix !== '') prefix = customPrefix;
+        //if the server does not have a custom prefix, use the default prefix
+        if(customPrefix === '' || !customPrefix) prefix = defaultPrefix;
 
     //split args and command
         let args = '';
@@ -97,7 +100,7 @@ client.on('guildMemberAdd', async(member) => {
     }
 });
 
-let deploy = 'LOCAL';
+let deploy = 'HEROKU';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{

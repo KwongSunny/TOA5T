@@ -25,43 +25,36 @@ module.exports = {
         }
         //check for uneccesary arguments
         else if(args !== ''){
-            message.channel.send('Unecessary arguments in the command: ' + args);
+            message.channel.send('Unecessary arguments in the command: `' + args + '`');
         }
+        //continue with command
         else{
-            //search for the previous prefix message
-            let server = await aws_utilities.fetchServer(message.guild.id);
-            let prevPrefixMessageId = server.Item.prefix_message_id;
+            //pins a message letting users know the new prefix of the bot 
+                let newPrefixMessage = await message.channel.send("This bot's prefix has been reset to it's default: `" + defaultPrefix + '`');
+                await newPrefixMessage.pin();
 
-            //look for and delete the previous pinned prefix message
-            if(prevPrefixMessageId !== ''){
-
-                let fetchedMessage;
-                let channels = message.guild.channels.cache;
-                channels.each(async channel => {
-                    let messageManager = channel.messages;
-                    if(messageManager){
-                        try {
-                            fetchedMessage = await channel.messages.fetch(prevPrefixMessageId);
-                            if(fetchedMessage) fetchedMessage.delete();
-                        }catch(e){
-                            if(e.message !== 'Unknown Message')
-                                console.log(e.message);
-                        }
-                    }
-                });
-
-                //let prevPrefixMessage = await aws_utilities.fetchMessageFromGuild(message.guild, prevPrefixMessageId).catch(console.error);
-                //if(prevPrefixMessage) prevPrefixMessage.delete();
-            }
-
-            let newPrefixMessage = await message.channel.send("This bot's prefix has been reset to it's default: `" + defaultPrefix + '`');
-            await newPrefixMessage.pin();
+            //check for a previous pinned prefix message in db
+                let prevPrefixMessageId = '';
+                let server = await aws_utilities.fetchServer(message.guild.id);
+                //if the server is found update it
+                if(server){
+                    prevPrefixMessageId = server.Item.prefix_message_id;
+                }
+                //else write a new one
+                else{
+                    aws_utilities.writeItem(message.guild.id);
+                }
 
             //update the item
                 let keys = ['custom_prefix', 'prefix_message_id'];
                 let values = ['', newPrefixMessage.id];
                 aws_utilities.updateItem(message.guild.id, keys, values);
+
+            //look for and delete the previous pinned prefix message
+                if(prevPrefixMessageId !== ''){
+                    let fetchedMessage = await aws_utilities.fetchMessageFromGuild(message.guild, prevPrefixMessageId);
+                    fetchedMessage.delete();
+                }
         }
     }
-    
 }
