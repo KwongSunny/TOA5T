@@ -15,7 +15,7 @@ module.exports = {
             message.channel.send('To use this command, use the format:\n\n`' + prefix + this.name + ' number`');
         }
         else if(utilities.isNumeric(args)){
-            let server = await aws_utilities.getItem(message.guild.id);
+            let server = await aws_utilities.fetchServer(message.guild.id);
             
             //server exists, update the item
             if(server){

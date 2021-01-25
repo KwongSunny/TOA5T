@@ -83,7 +83,7 @@ module.exports = {
             }
 
             let commandPrefix = prefix + this.name;
-            let item = await aws_utilities.getItem(message.guild.id);
+            let item = await aws_utilities.fetchServer(message.guild.id);
             let keys;
             let values;
 

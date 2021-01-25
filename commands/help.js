@@ -23,7 +23,7 @@ module.exports = {
 
             embed.addField('Miscellaneous',
                 '`random`: random number generator, can also use item lists\n' +
-                ''
+                "`setprefix`: changes the bot's default prefix\n"
             );
         }
         message.channel.send(embed);

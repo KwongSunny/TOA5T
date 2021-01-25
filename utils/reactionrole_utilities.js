@@ -21,7 +21,7 @@ function splitReactionArgs(args){
 //To ONLY be used in client.on() where listener is 'messageReactionAdd'
 //adds a role to the user depending on their reaction on a reactionroles post
 async function addRoleFromReaction(reaction, user){
-    let response = await aws_utilities.getItem(reaction.message.guild.id.toString());
+    let response = await aws_utilities.fetchServer(reaction.message.guild.id.toString());
     //checks if the server is in the reactinroles db and the post being reacted to is the server's reactionroles post
     if(response && (reaction.message.id === response.Item.reactionrole_post_id)){
         let roleString = response.Item.reaction_roles;
@@ -60,7 +60,7 @@ async function addRoleFromReaction(reaction, user){
 //To ONLY be used in client.on() where listener is 'messageReactionRemove'
 //removes a role from the user depending on their reaction on a reactionroles post
 async function removeRoleFromReaction(reaction, user){
-    let response = await aws_utilities.getItem(reaction.message.guild.id.toString());
+    let response = await aws_utilities.fetchServer(reaction.message.guild.id.toString());
     if(reaction.message.id === response.Item.reactionrole_post_id){
         let roleString = response.Item.reaction_roles;
 

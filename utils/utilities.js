@@ -1,6 +1,7 @@
 //returns a random integer in [0, n-1]
 function getRandomInt(n){
-    return Math.floor(Math.random()*Math.floor(n));
+    let rand = Math.random()*Math.floor(n);
+    return Math.floor(rand);
 }
 
 //returns a boolean, checks whether n is a number or not
@@ -23,6 +24,19 @@ function numSuffix(n){
     else return 'th';
 }
 
+//removes strings from str and returns the leftover
+//str : the string to be removed from
+//removals : [] values of string that will be removed
+function removeFromString(str, removals){
+    result = str;
+
+    for(value = 0; value < removals.length; value++){
+        result = result.replace(removals[value], '');
+    }
+
+    return result;
+}
+
 //checks the string if it contains a message flag and a message (-m "message")
 //if it has more than one or no matches, then return []
 //returns an array [startIndex, lastIndex] of the flag and message
@@ -43,7 +57,7 @@ function getIndexOfMessageAndFlag(str){
 //returns an array [startIndex, lastIndex] of the flag
 function getIndexOfNotifyUserFlag(str){
     let results = str.match(/ -n\s| -n+$/);
-    
+
     if(!results || results.length !== 1){
         return [];
     }
@@ -82,6 +96,7 @@ module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
 module.exports.numSuffix = numSuffix;
+module.exports.removeFromString = removeFromString;
 module.exports.getIndexOfMessageAndFlag = getIndexOfMessageAndFlag;
 module.exports.getIndexOfNotifyUserFlag = getIndexOfNotifyUserFlag;
 module.exports.isUserMention = isUserMention;

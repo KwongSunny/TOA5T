@@ -49,8 +49,8 @@ module.exports = {
                 }
 
             //take our the user and warnReason, if there is leftover then there are uneccesary arguments, return an error to the user
-                args = args.replace(warnReason, '');
-                args = args.replace(userArg, '');
+                let strings = [warnReason, userArg];
+                args = utilities.removeFromString(args, strings);
 
                 if(args.trim() !== ''){
                     message.channel.send('There are invalid arguments: `' + args.trim() + '` please use `' + prefix + this.name + ' help` for more info');
@@ -75,7 +75,7 @@ module.exports = {
                 let currentWarnings = 0;
                 let banned = false;
 
-                const server = await aws_utilities.getItem(message.guild.id);
+                const server = await aws_utilities.fetchServer(message.guild.id);
                 //if the server exists, add a warning count to the user, if the user has over the max amount of warnings, ban the user
                 if(server){
                     let warnedUsers = server.Item.warned_users;
@@ -124,6 +124,7 @@ module.exports = {
                         }
                     }
 
+                    //update the item
                     let keys = ['warned_users', 'max_warnings'];
                     let values = [warnedUsers, maxWarnings];
                     aws_utilities.updateItem(message.guild.id, keys, values); 

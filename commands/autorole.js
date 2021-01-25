@@ -24,7 +24,7 @@ module.exports = {
                 roleId = role;
 
             if(roleId !== ''){
-                let server = await aws_utilities.getItem(message.guild.id);
+                let server = await aws_utilities.fetchServer(message.guild.id);
                 //if the server is in the database, update the item
                 if(server){
                     aws_utilities.updateItem(message.guild.id, ['default_role'], [roleId]);
