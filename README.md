@@ -26,6 +26,14 @@ In Development utilities:
 
     Help - always needs updates for every command
 
+    Music
+
+        Pause
+
+        Play
+
+        Queue
+
     info [ON HOLD]
     
 Planned utilities:
@@ -57,12 +65,6 @@ Planned utilities:
         Leave
 
         Loop
-
-        Pause
-
-        Play
-
-        Queue
 
         Resume
 

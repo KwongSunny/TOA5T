@@ -21,13 +21,30 @@ module.exports = {
                 let embed = new Discord.MessageEmbed()
                     .setColor('#f7c920')
                     .setTitle('Music Queue')
-                    .setDescription('**Volume:** ' + serverQueue.volume + '\n```');
+                    .setDescription('**Volume:** `' + serverQueue.volume + '`\n' + 
+                    '```');
                 
                 for(song = 0; song < serverQueue.songs.length; song++){
-                    embed.setDescription(
-                        embed.description + 
-                        (song+1) + ': ' + serverQueue.songs[song].title + '\n'
-                    )
+                    if(song === 0){
+                        if(serverQueue.playing){
+                            embed.setDescription(
+                                embed.description + 
+                                (song+1) + ': [PLAYING] ' + serverQueue.songs[song].title + '\n'
+                            )
+                        }
+                        else{
+                            embed.setDescription(
+                                embed.description + 
+                                (song+1) + ': [PAUSED] ' + serverQueue.songs[song].title + '\n'
+                            )
+                        }
+                    }
+                    else{
+                        embed.setDescription(
+                            embed.description + 
+                            (song+1) + ': ' + serverQueue.songs[song].title + '\n'
+                        )
+                    }
                 }
                 embed.setDescription(embed.description + '```');
                 return message.channel.send(embed);

@@ -2,22 +2,13 @@ const utilities = require('../utils/utilities.js');
 
 module.exports = {
     name: 'volume',
-    description: 'changes the volume of the music played in the queue',
+    description: 'Changes the volume of the bot',
     execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
         //check for permissions
         if(!message.member.hasPermission('ADMINISTRATOR')){
             return message.channel.send('You have insufficient permissions to use this command');
-        }
-        //sends a message on the current volume of the bot
-        else if(args === ''){
-            const serverQueue = songQueue.get(message.guild.id);
-            if(serverQueue){
-                const serverVolume = serverQueue.volume;
-                return message.channel.send('Volume: ' + serverVolume);
-            }
-            else return message.channel.send('There is no music being played currently');
         }
         //sends a message on how to use the command
         else if(args === 'help'){
@@ -32,21 +23,39 @@ module.exports = {
                 .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Pause`, `Play`, `Queue`, `Resume`, `Skip`, `Stop`');
             return message.channel.send(embed);
         }
+        //sends a message on the current volume of the bot
+        else if(args === ''){
+            const serverQueue = songQueue.get(message.guild.id);
+            if(serverQueue){
+                const serverVolume = serverQueue.volume;
+                return message.channel.send('Volume: `' + serverVolume + '`');
+            }
+            else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
+        }
         //user is changing the volume
         else if(utilities.isNumeric(args)){
             if(args > 200 || args < 0)
                 return message.channel.send('Please make sure the volume is between 0 and 200');
 
+            //retrieve the serverQueue
             let serverQueue = songQueue.get(message.guild.id);
-            serverQueue.volume = args;
-            songQueue.set(message.guild.id, serverQueue);
-
-            if(serverQueue.connection.dispatcher)
-                serverQueue.connection.dispatcher.setVolume(args * 0.01);
+            if(serverQueue){
+                //sets the recorded value to args
+                serverQueue.volume = args;
+                songQueue.set(message.guild.id, serverQueue);
+    
+                //sets the volume to args
+                const serverDispatcher = serverQueue.connection.dispatcher;
+                if(serverDispatcher){
+                    serverDispatcher.setVolume(args * 0.01);
+                    return message.channel.send("The bot's volume has been set to `" + args + '`');
+                }
+            }
+            else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }
         //unknown arguments
         else{
-            return message.channel.send('Unknown arguments detected for volume command');
+            return message.channel.send('Unknown arguments detected for the command');
         }
 
 

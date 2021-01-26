@@ -17,6 +17,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
     //randomizer command, gives a random output based on the parameters
     else if(command === 'play')
         client.commands.get('play').execute(message, prefix, args, songQueue, Discord);
+    else if(command === 'pause')
+        client.commands.get('pause').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'queue')
         client.commands.get('queue').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'random')
