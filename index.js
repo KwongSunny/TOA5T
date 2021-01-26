@@ -7,9 +7,10 @@ const rr_utilities = require('./utils/reactionrole_utilities');
 const index_helpers = require('./index_helpers.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
-let defaultPrefix = '~';
+const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
+const songQueue = new Map();
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -23,7 +24,6 @@ for(const file of commandFiles){
 client.once('ready', () => {
     console.log('PixelBot, online!');
 
-    
 })
 
 //persist while bot is alive
@@ -46,7 +46,7 @@ client.on('message', async message => {
     if(message.content.startsWith(prefix)){
         command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
     
-        index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, Discord, client);
+        index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client);
     }
     //getprefix will always utilize the default prefix as well as the custom prefix
     else if(message.content.startsWith(defaultPrefix)){

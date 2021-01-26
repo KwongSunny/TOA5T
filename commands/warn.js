@@ -9,22 +9,19 @@ module.exports = {
 
         //check for user permissions
         if(!message.member.hasPermission('BAN_MEMBERS')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //sends a message on how to use the command if no args or args is help
         else if(args === 'help' || args === ''){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Warn')
-                .setDescription(
-                    '**Description:**\n' +
-                    'Warn a user for an offense; the default max warnings is 2 before a ban, for more info use `~setmaxwarnings`\n\n' + 
-                    '**Usage:**\n' +
-                    '`' + prefix + this.name + ' @user "warning[optional]"`\n\n' +
-                    '**Example:**\n' +
+                .addField('Description', 'Warn a user for an offense; the default max warnings is 2 before a ban')
+                .addField('Usage', '`' + prefix + this.name + ' @user "warning[optional]"`')
+                .addField('Example',
                     '`' + prefix + this.name + ' @Toast`\n' +
-                    '`' + prefix + this.name + ' @Toast "spam"`'
-                );
+                    '`' + prefix + this.name + ' @Toast "spam"`')
+                .addField('Related Commands', '`ban`, `kick`, `setmaxwarnings`, `unban`');
             message.channel.send(embed);
         }
         //check for user and reason

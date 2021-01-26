@@ -6,7 +6,13 @@ module.exports = {
     async execute(message, prefix, args, Discord){
         args = args.trim();
         if(args === 'help'){
-        
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Set Prefix')
+                .addField('Description', "Retrieves the server's bot's prefix")
+                .addField('Usage', '`' + prefix + this.name + '`')
+                .addField('Related Commands', '`resetprefix`, `setprefix`');
+            return message.channel.send(embed);
         }
         else if(args === ''){
             let server = await aws_utilities.fetchServer(message.guild.id);

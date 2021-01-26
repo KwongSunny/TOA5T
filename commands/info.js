@@ -8,6 +8,6 @@ module.exports = {
             .setColor('#f7c920')
             .setTitle('PixelBot')
             .setDescription("Hi! I'm PixelBot, I am capable of numerous different functions and serves as a private learning tool as well as a public use Bot. For assistance on how to use my commands use `" + prefix + "help`");
-        message.channel.send(embed);
+        return message.channel.send(embed);
     }
 }

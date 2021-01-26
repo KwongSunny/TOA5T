@@ -14,11 +14,20 @@ module.exports = {
 
         //check for the user's permissions
         if(!message.member.hasPermission('MANAGE_ROLES')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //check for no arguments or if user is asking for help
         else if(args[0] === '' || args[0] === 'help'){ 
-            message.channel.send("Please use the following format, excluding brackets, to add a reaction roles post:\n`~reactionrole rolename:reaction, rolename2:reaction2...`\n\nTo reassign a reaction roles post, use command:\n`~reactionrole message-id`\n\nUse of custom emojis are currently not supported.");
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Reaction Roles')
+                .addField('Description', 'Creates a reaction post which assigns roles based on user reactions')
+                .addField('Usage', 
+                    'To create a post use the format:\n `' + prefix + this.name + ' @role:reaction, @role2:reaction2...`\n\n' +
+                    'To reassign a reaction post use:\n `' + prefix + this.name + ' messageId`'
+                )
+                .addField('Related Commands', '`autorole`')
+            message.channel.send(embed);
         }
         //if argument is an id, change the reactionrole_post_id
         else if(args.length === 1 && !args[0].includes(':')){

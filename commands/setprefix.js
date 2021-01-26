@@ -7,23 +7,20 @@ module.exports = {
         args = args.trim();
         //checks for user permissions
         if(!message.member.hasPermission('ADMINISTRATOR')){
-            message.channel.send('You do not have sufficient permissions to use this command');
+            return message.channel.send('You do not have sufficient permissions to use this command');
         }
         //send a message on how to use the command
         else if(args === 'help' || args === ''){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Set Prefix')
-                .setDescription(
-                    '**Description:**\n' +
-                    'Change the bot prefix to a custom one\n\n' +
-                    '**Usage:**\n' +
-                    '`' + prefix + this.name + ' prefix`\n\n' + 
-                    '**Example:**\n' +
-                    '`' + prefix + this.name + ' ~`\n' + 
-                    '`' + prefix + this.name + ' t/`' 
-                );
-                message.channel.send(embed);
+                .addField('Description', 'Change the bot prefix to a custom one')
+                .addField('Usage', '`' + prefix + this.name + ' prefix`')
+                .addField('Example', 
+                    '`' + prefix + this.name + ' ~`\n' +
+                    '`' + prefix + this.name + ' t/`')
+                .addField('Related Commands', '`getprefix`, `resetprefix`');
+            message.channel.send(embed);
         }
         //continue with command
         else{

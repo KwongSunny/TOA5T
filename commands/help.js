@@ -12,7 +12,8 @@ module.exports = {
                 '`kick`: kicks a user from the server\n' +
                 '`setmaxwarnings`: sets the max amount of warnings a user can get before a ban\n' +
                 '`unban`: unbans a user from the server\n' +
-                '`warn`: warns a user from the server, if the user exceeds the max warnings then ban them\n'
+                '`warn`: warns a user from the server, if the user exceeds the max warnings then ban them\n' +
+                ''
             );
             
             embed.addField('Role Management', 
@@ -21,9 +22,23 @@ module.exports = {
                 ''
             );
 
+            embed.addField('Music and Audio', 
+                '`pause`: pause the current audio playlist\n' +
+                '`play`: adds a song to the queue and plays the queue\n' +
+                '`queue`: returns the current audio playlist\n' +
+                '`resume`: resumes a paused playlist\n' +
+                '`volume`: set the volume of the bot\n' +
+                ''
+            );
+
             embed.addField('Miscellaneous',
+                "`getprefix`: retrieves the server's bot's prefix\n" +
+                '`help`: returns this page\n' +
+                '`info`: returns information about the bot\n' +
                 '`random`: random number generator, can also use item lists\n' +
-                "`setprefix`: changes the bot's default prefix\n"
+                "`resetprefix`: resets the bot's prefix to its default\n" +
+                "`setprefix`: changes the bot's default prefix\n" +
+                ''
             );
         }
         message.channel.send(embed);

@@ -3,15 +3,21 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'unban',
     description: 'unbans a user, only takes a user Id',
-    async execute(message, prefix, args){
+    async execute(message, prefix, args, Discord){
         args = args.trim();
         //checks for user permissions
         if(!message.member.hasPermission('BAN_MEMBERS')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
-            message.channel.send("To unban a member, use the following format: `" + prefix + this.name + " userId reason[optional]`");
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Unban')
+                .addField('Description', 'Unbans a member via their Discord Id')
+                .addField('Usage', '`' + prefix + this.name + ' userId`')
+                .addField('Example', '`' + prefix + this.name + ' 796307899290746880`');
+            message.channel.send(embed);
         }
         //continue with the command
         else{

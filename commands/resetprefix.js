@@ -8,19 +8,16 @@ module.exports = {
 
         //check for permissions
         if(!message.member.hasPermission('ADMINISTRATOR')){
-            message.channel.send('You do not have sufficient permissions to use this command.');
+            return message.channel.send('You do not have sufficient permissions to use this command.');
         }
         //check for help argument
         else if(args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Reset Prefix')
-                .setDescription(
-                    '**Description:**\n' +
-                    'Resets the custom prefix of the bot for the server to the default prefix: ' + defaultPrefix + '\n\n' +
-                    '**Related Commands:**\n' +
-                    '`' + prefix + 'setprefix`, `' + prefix + 'getprefix`'
-                );
+                .addField('Description', 'Resets the custom prefix of the bot for the server to the default prefix: `' + defaultPrefix + '`')
+                .addField('Usage', '`' + prefix + this.name + '`')
+                .addField('Related Commands', '`getprefix`, `setprefix`');
             message.channel.send(embed);
         }
         //check for uneccesary arguments
