@@ -12,7 +12,7 @@ module.exports = {
                 .addField('Description', "Retrieves the server's bot's prefix")
                 .addField('Usage', '`' + prefix + this.name + '`')
                 .addField('Related Commands', '`resetprefix`, `setprefix`');
-            message.channel.send(embed);
+            return message.channel.send(embed);
         }
         else if(args === ''){
             let server = await aws_utilities.fetchServer(message.guild.id);

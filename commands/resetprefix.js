@@ -8,7 +8,7 @@ module.exports = {
 
         //check for permissions
         if(!message.member.hasPermission('ADMINISTRATOR')){
-            message.channel.send('You do not have sufficient permissions to use this command.');
+            return message.channel.send('You do not have sufficient permissions to use this command.');
         }
         //check for help argument
         else if(args === 'help'){

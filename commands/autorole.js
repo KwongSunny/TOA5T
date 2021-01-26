@@ -8,8 +8,7 @@ module.exports = {
         let role = args.trim();
 
         if(!message.member.hasPermission('MANAGE_ROLES')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
-            return;
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
 
         if(args === '' || args === 'help'){
@@ -19,7 +18,7 @@ module.exports = {
                 .addField('Description', 'Sets a default role to the server, anyone who joins is automatically assigned this role')
                 .addField('Usage', '`' + prefix + this.name + ' @role`')
                 .addField('Related Commands', '`reactionrole`');
-            message.channel.send(embed);
+            return message.channel.send(embed);
         }
         else{
             

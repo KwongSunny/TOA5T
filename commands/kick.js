@@ -7,7 +7,7 @@ module.exports = {
         args = args.trim();
         //check for user permissions
         if(!message.member.hasPermission('KICK_MEMBERS')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //sends a message on how to use the command
         else if(args === 'help' || args === ''){
@@ -24,7 +24,7 @@ module.exports = {
                     '`' + prefix + this.name + ' @Toast`\n' + 
                     '`' + prefix + this.name + ' @Toast -n -m "spamming chat"`')
                 .addField('Related Commands', '`ban`, `unban`, `warn`');
-            message.channel.send(embed);
+            return message.channel.send(embed);
         }
         //continue with the command
         else{

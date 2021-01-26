@@ -9,7 +9,7 @@ module.exports = {
 
         //check for user permissions
         if(!message.member.hasPermission('BAN_MEMBERS')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //sends a message on how to use the command if no args or args is help
         else if(args === 'help' || args === ''){

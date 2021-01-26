@@ -14,7 +14,7 @@ module.exports = {
 
         //check for the user's permissions
         if(!message.member.hasPermission('MANAGE_ROLES')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         //check for no arguments or if user is asking for help
         else if(args[0] === '' || args[0] === 'help'){ 

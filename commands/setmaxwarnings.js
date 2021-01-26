@@ -9,7 +9,7 @@ module.exports = {
 
         //check for user permissions
         if(!message.member.hasPermission('ADMINISTRATOR')){
-            message.channel.send("You do not have sufficient permissions to use this command.");
+            return message.channel.send("You do not have sufficient permissions to use this command.");
         }
         else if(args === '' || args === 'help'){
             let embed = new Discord.MessageEmbed()

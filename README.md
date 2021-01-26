@@ -48,27 +48,29 @@ Planned utilities:
     
     Music - plays music/videos from youtube
 
-        Play
-        
-        Pause
-
-        Stop
-
-Resume
-
-        Skip
-
-        Queue
-
         Back
 
         Clear
 
-        Loop
-
         Join
 
         Leave
+
+        Loop
+
+        Pause
+
+        Play
+
+        Queue
+
+        Resume
+
+        Skip
+
+        Stop
+
+        Volume
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
