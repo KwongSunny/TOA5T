@@ -28,11 +28,15 @@ In Development utilities:
 
     Music
 
-        Pause
+        Pause [DONE]
 
-        Play
+        Play [*DONE]
 
-        Queue
+        Queue [*DONE]
+
+        Resume [DONE]
+
+        Volume [DONE]
 
     info [ON HOLD]
     
@@ -66,13 +70,9 @@ Planned utilities:
 
         Loop
 
-        Resume
-
         Skip
 
         Stop
-
-        Volume
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
