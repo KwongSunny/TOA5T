@@ -13,6 +13,7 @@ function playQueue(message, guildId, songQueue, Discord){
     //create a dispatcher to play the stream, on song 'close' it will play the next or leave
     const dispatcher = serverQueue.connection.play(ytdl(serverQueue.songs[0].url), {quality: 'highestaudio'})
         .on('start', () => {
+            console.log('DISPATCHER START');
             if(!serverQueue.loop && serverQueue.songs[0]){
                 let embed = new Discord.MessageEmbed()
                     .setColor('#f7c920')
@@ -24,12 +25,13 @@ function playQueue(message, guildId, songQueue, Discord){
         .on('close', () => {
             //check if the playlist has been stopped or not
             if(serverQueue.playing){
+                console.log('DISPATCHER CLOSED');
                 //if !loop, go to the next song
                 if(!serverQueue.loop){
                     serverQueue.prevSong = serverQueue.songs[0];
                     serverQueue.songs.shift();
+                    songQueue.set(message.guild.id, serverQueue);
                 }
-                songQueue.set(message.guild.id, serverQueue);
     
                 //play the queue
                 playQueue(message, guildId, songQueue, Discord);
