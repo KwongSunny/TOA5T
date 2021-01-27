@@ -1,3 +1,5 @@
+const music_utilities = require('../utils/music_utilities.js');
+
 module.exports = {
     name: 'resume',
     description: 'resumes the playlist',
@@ -24,12 +26,16 @@ module.exports = {
             if(serverQueue){
                 let serverDispatcher = serverQueue.connection.dispatcher;
                 if(serverDispatcher){
-                    message.channel.send('The playlist has been resumed');
                     serverQueue.paused = false;
                     serverDispatcher.resume();
-
                     songQueue.set(message.guild.id, serverQueue);
                 }
+                else{
+                    serverQueue.paused = false;
+                    songQueue.set(message.guild.id, serverQueue);
+                    music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                }
+                return message.channel.send('The playlist has been resumed');
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }

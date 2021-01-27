@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
-const queue = require('./queue');
+const music_utilities = require('../utils/music_utilities.js');
+const resume = require('./resume.js');
 
 module.exports = {
     name: 'play',
@@ -12,7 +13,7 @@ module.exports = {
             return message.channel.send('You have insufficient permissions to use this command');
         }
         //sends a message on how to use the command
-        else if(args === 'help' || args === ''){
+        else if(args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Play Audio')
@@ -21,6 +22,18 @@ module.exports = {
                 .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`,`Loop` , `Pause`, `Queue`, `Resume`, `Skip`, `Stop`, `Volume`');
             return message.channel.send(embed);
         }
+        //resume the playlist
+        else if(args === ''){
+            const serverQueue = songQueue.get(message.guild.id);
+            if(serverQueue){
+                if(!serverQueue.paused && serverQueue.playing) message.channel.send('The playlist is already playing');
+                else if(serverQueue.paused && serverQueue.playing) resume.execute(message, prefix, args, songQueue, Discord);
+                else if(!serverQueue.playing) music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                return;
+            }
+            else return message.channel.send("There doesn't appear to be any songs in your queue, use `" + prefix + "play youtubeLink` to add some songs");
+        }
+        //play a link
         else {
             //check if the user is in a voice channel
             const voiceChannel = message.member.voice.channel;
@@ -36,7 +49,8 @@ module.exports = {
 
             const songItem = {
                 title: songInfo.player_response.microformat.playerMicroformatRenderer.title.simpleText,
-                url: args
+                url: args,
+                requester: message.author.tag
             }
 
             //check the bot for a serverQueue
@@ -46,7 +60,9 @@ module.exports = {
                     voiceChannel: voiceChannel,
                     connection: null,
                     songs: [],
+                    prevSong: null,
                     volume: 50,
+                    loop: false,
                     paused: false,
                     playing: false
                 }
@@ -57,6 +73,7 @@ module.exports = {
 
             //join the server and add the connection to serverQueue
             let connection = await voiceChannel.join().catch(console.error);
+            if(!connection) return message.channel.send('An error occured attempting to join the channel, please try again');
             serverQueue.connection = connection;
 
             //add the serverQueue to the bot's songQueue
@@ -64,36 +81,7 @@ module.exports = {
 
             //play the queue
             if(!serverQueue.playing)
-                playQueue(message.guild.id, songQueue, Discord);
+                music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
         }
     }
-}
-
-function playQueue(guildId, songQueue, Discord){
-    const serverQueue = songQueue.get(guildId);
-    serverQueue.playing = true;
-    
-    //create a dispatcher to play the stream, on song 'close' it will play the next or leave
-    const dispatcher = serverQueue.connection.play(ytdl(serverQueue.songs[0].url), {quality: 'highestaudio'})
-        .on('close', () => {
-            serverQueue.songs.shift();
-            if(serverQueue.songs.length === 0){
-                serverQueue.voiceChannel.leave();
-                songQueue.delete(guildId);
-                return;
-            }
-            else
-                playQueue(guildId, songQueue);
-        })
-        .on('error', error => {
-            //message.channel.send('There was an error playing the video, please ensure it is a valid link');
-            console.error(error);
-        })
-        .on('start', () => {
-            let embed = new Discord.MessageEmbed()
-                .setColor('#f7c920')
-                .setTitle('Now Playing:')
-                .setDescription(serverQueue.songs[0].title)
-        })
-    dispatcher.setVolume(serverQueue.volume * 0.01);
 }
