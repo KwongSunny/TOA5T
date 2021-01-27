@@ -64,6 +64,8 @@ Planned utilities:
 
         Clear
 
+        Currentsong
+
         Join
 
         Leave
@@ -72,7 +74,7 @@ Planned utilities:
 
         Skip
 
-        Stop
+        Stop 
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 

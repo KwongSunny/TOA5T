@@ -26,6 +26,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('queue').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'resume')
         client.commands.get('resume').execute(message, prefix, args, songQueue, Discord);
+    else if(command === 'skip')
+        client.commands.get('skip').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'volume')
         client.commands.get('volume').execute(message, prefix, args, songQueue, Discord);
 

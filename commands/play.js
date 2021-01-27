@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
-const queue = require('./queue');
+const music_utilities = require('../utils/music_utilities.js');
+const resume = require('./resume.js');
 
 module.exports = {
     name: 'play',
@@ -12,7 +13,7 @@ module.exports = {
             return message.channel.send('You have insufficient permissions to use this command');
         }
         //sends a message on how to use the command
-        else if(args === 'help' || args === ''){
+        else if(args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Play Audio')
@@ -20,6 +21,10 @@ module.exports = {
                 .addField('Usage', '`' + prefix + this.name + ' youtubeLink`')
                 .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`,`Loop` , `Pause`, `Queue`, `Resume`, `Skip`, `Stop`, `Volume`');
             return message.channel.send(embed);
+        }
+        //resume the playlist
+        else if(args === ''){
+            return resume.execute(message, prefix, args, songQueue, Discord);
         }
         else {
             //check if the user is in a voice channel
@@ -57,6 +62,7 @@ module.exports = {
 
             //join the server and add the connection to serverQueue
             let connection = await voiceChannel.join().catch(console.error);
+            if(!connection) return message.channel.send('An error occured attempting to join the channel, please try again');
             serverQueue.connection = connection;
 
             //add the serverQueue to the bot's songQueue
@@ -64,36 +70,7 @@ module.exports = {
 
             //play the queue
             if(!serverQueue.playing)
-                playQueue(message.guild.id, songQueue, Discord);
+                music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
         }
     }
-}
-
-function playQueue(guildId, songQueue, Discord){
-    const serverQueue = songQueue.get(guildId);
-    serverQueue.playing = true;
-    
-    //create a dispatcher to play the stream, on song 'close' it will play the next or leave
-    const dispatcher = serverQueue.connection.play(ytdl(serverQueue.songs[0].url), {quality: 'highestaudio'})
-        .on('close', () => {
-            serverQueue.songs.shift();
-            if(serverQueue.songs.length === 0){
-                serverQueue.voiceChannel.leave();
-                songQueue.delete(guildId);
-                return;
-            }
-            else
-                playQueue(guildId, songQueue);
-        })
-        .on('error', error => {
-            //message.channel.send('There was an error playing the video, please ensure it is a valid link');
-            console.error(error);
-        })
-        .on('start', () => {
-            let embed = new Discord.MessageEmbed()
-                .setColor('#f7c920')
-                .setTitle('Now Playing:')
-                .setDescription(serverQueue.songs[0].title)
-        })
-    dispatcher.setVolume(serverQueue.volume * 0.01);
 }

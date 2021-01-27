@@ -26,7 +26,7 @@ module.exports = {
                 
                 for(song = 0; song < serverQueue.songs.length; song++){
                     if(song === 0){
-                        if(serverQueue.playing){
+                        if(!serverQueue.paused){
                             embed.setDescription(
                                 embed.description + 
                                 (song+1) + ': [PLAYING] ' + serverQueue.songs[song].title + '\n'
