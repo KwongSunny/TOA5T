@@ -24,8 +24,16 @@ module.exports = {
         }
         //resume the playlist
         else if(args === ''){
-            return resume.execute(message, prefix, args, songQueue, Discord);
+            const serverQueue = songQueue.get(message.guild.id);
+            if(serverQueue){
+                if(!serverQueue.paused && serverQueue.playing) message.channel.send('The playlist is already playing');
+                else if(serverQueue.paused && serverQueue.playing) resume.execute(message, prefix, args, songQueue, Discord);
+                else if(!serverQueue.playing) music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                return;
+            }
+            else return message.channel.send("There doesn't appear to be any songs in your queue, use `" + prefix + "play youtubeLink` to add some songs");
         }
+        //play a link
         else {
             //check if the user is in a voice channel
             const voiceChannel = message.member.voice.channel;
@@ -41,7 +49,8 @@ module.exports = {
 
             const songItem = {
                 title: songInfo.player_response.microformat.playerMicroformatRenderer.title.simpleText,
-                url: args
+                url: args,
+                requester: message.author.tag
             }
 
             //check the bot for a serverQueue
@@ -51,7 +60,9 @@ module.exports = {
                     voiceChannel: voiceChannel,
                     connection: null,
                     songs: [],
+                    prevSong: null,
                     volume: 50,
+                    loop: false,
                     paused: false,
                     playing: false
                 }

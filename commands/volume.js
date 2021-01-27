@@ -48,8 +48,8 @@ module.exports = {
                 const serverDispatcher = serverQueue.connection.dispatcher;
                 if(serverDispatcher){
                     serverDispatcher.setVolume(args * 0.01);
-                    return message.channel.send("The bot's volume has been set to `" + args + '`');
                 }
+                return message.channel.send("The bot's volume has been set to `" + args + '`');
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }

@@ -22,21 +22,35 @@ Done utilities:
 
     Warn - warns a user and records in db, if the user has over the max warnings, banthe user [DONE]
 
+    Music:
+        
+        Clear [DONE]
+
+        Join [DONE]
+
+        Leave [DONE]
+
+        Loop [DONE]
+
+        Pause [DONE]
+        
+        Resume [DONE]
+
+        Skip [DONE]
+
+        Stop [DONE]
+
+        Volume [DONE]
+
 In Development utilities:
 
     Help - always needs updates for every command
 
     Music
 
-        Pause [DONE]
+        Play [Needs further testing]
 
-        Play [*DONE]
-
-        Queue [*DONE]
-
-        Resume [DONE]
-
-        Volume [DONE]
+        Queue [Needs to be updated]
 
     info [ON HOLD]
     
@@ -62,19 +76,9 @@ Planned utilities:
 
         Back
 
-        Clear
-
         Currentsong
 
-        Join
-
-        Leave
-
-        Loop
-
-        Skip
-
-        Stop 
+        SetDJrole
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 

@@ -18,6 +18,14 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
 
     //Music and Audio
+    else if(command === 'clear')
+        client.commands.get('clear').execute(message, prefix, args, songQueue, Discord);
+    else if(command === 'join')
+        client.commands.get('join').execute(message, prefix, args, songQueue, Discord);
+    else if(command === 'leave')
+        client.commands.get('leave').execute(message, prefix, args, Discord, client);
+    else if(command === 'loop')
+        client.commands.get('loop').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'pause')
         client.commands.get('pause').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'play')
@@ -28,6 +36,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('resume').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'skip')
         client.commands.get('skip').execute(message, prefix, args, songQueue, Discord);
+    else if(command === 'stop')
+        client.commands.get('stop').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'volume')
         client.commands.get('volume').execute(message, prefix, args, songQueue, Discord);
 

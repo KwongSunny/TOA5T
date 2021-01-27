@@ -1,8 +1,7 @@
 module.exports = {
-    name: 'skip',
-    description: 'skips the current song in the queue',
-    execute(message, prefix, args, songQueue, Discord){ 
-
+    name: 'loop',
+    description: 'Toggles looping on the current song in the playlist',
+    execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
         //check permissions
@@ -13,28 +12,18 @@ module.exports = {
         else if(args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
-                .setTitle('Skip Song')
-                .addField('Description', 'Skips the current song in the queue')
+                .setTitle('Loop Song')
+                .addField('Description', 'Toggles looping on the current song in the playlist')
                 .addField('Usage', '`' + prefix + this.name + '`')
                 .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Play`, `Pause`, `Queue`, `Resume`, `Stop`, `Volume`');
             return message.channel.send(embed);  
         }
-        //skips the current video
         else if(args === ''){
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
-                //if there is a dispatcher, destroy it
-                if(serverQueue.connection.dispatcher)
-                    serverQueue.connection.dispatcher.destroy();
-                //if there isn't then just shift the first song
-                else
-                    serverQueue.songs.shift();
-
-                //turns off loop if loop is on
-                serverQueue.loop = false;
+                serverQueue.loop = !serverQueue.loop;
                 songQueue.set(message.guild.id, serverQueue);
-
-                return message.channel.send('You have successfully skipped ' + serverQueue.songs[0].title);
+                return message.channel.send('Loop has been set to `' + serverQueue.loop + '`');
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }

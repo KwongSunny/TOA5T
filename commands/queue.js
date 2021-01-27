@@ -4,13 +4,15 @@ module.exports = {
     async execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
+        //provides help on how to use the command
         if(args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Music Queue')
                 .addField('Description', 'Returns a queue of music to be played by the bot or add a song to the queue')
                 .addField('Usage', '`' + prefix + this.name + '`')
-                .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Pause`, `Play`, `Resume`, `Skip`, `Stop`, `Volume`')
+                .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Pause`, `Play`, `Resume`, `Skip`, `Stop`, `Volume`');
+            return message.channel.send(embed);
         }
         //return the current queue
         else if(args === ''){
@@ -57,5 +59,7 @@ module.exports = {
                 return message.channel.send(embed);
             }
         }
+        //unknown arguments
+        else return message.channel.send('Unknown arguments detected for the command');
     }
 }
