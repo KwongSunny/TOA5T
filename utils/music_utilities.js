@@ -22,9 +22,26 @@ function playQueue(message, guildId, songQueue, Discord){
                 message.channel.send(embed);
             }
         })    
-        .on('close', () => {
-            //check if the playlist has been stopped or not
-            console.log('DISPATCHER CLOSED');
+        // .on('close', () => {
+        //     //check if the playlist has been stopped or not
+        //     console.log('DISPATCHER CLOSED');
+        //     if(serverQueue.playing){
+        //         //if !loop, go to the next song
+        //         if(!serverQueue.loop){
+        //             serverQueue.prevSong = serverQueue.songs[0];
+        //             serverQueue.songs.shift();
+        //             songQueue.set(message.guild.id, serverQueue);
+        //         }
+    
+        //         //play the queue
+        //         playQueue(message, guildId, songQueue, Discord);
+        //     }
+        //     else{
+        //         return console.log('The playlist has been stopped');
+        //     }
+        // })
+        .on('finish', () => {
+            console.log('DISPATCHER FINISHED');
             if(serverQueue.playing){
                 //if !loop, go to the next song
                 if(!serverQueue.loop){

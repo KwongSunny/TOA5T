@@ -23,8 +23,9 @@ module.exports = {
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
                 serverQueue.playing = false;
-                if(serverQueue.connection.dispatcher)
-                    serverQueue.connection.dispatcher.destroy();
+                if(serverQueue.connection.dispatcher){
+                    serverQueue.connection.dispatcher.end();
+                }
                 songQueue.set(message.guild.id, serverQueue);
                 return message.channel.send('The queue has been stopped, use `' + prefix + 'play` to continue the queue');
             }
