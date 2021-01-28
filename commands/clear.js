@@ -28,8 +28,14 @@ module.exports = {
                     songQueue.set(message.guild.id, serverQueue);
                     return message.channel.send('You have successfully cleared the queue');
                 }
-                else{
-                    return message.channel.send('You cannot clear an empty queue');
+                if(serverQueue.songs.length <= 1){
+                    if(serverQueue.playing)
+                        return message.channel.send('You cannot clear an empty queue');
+                    else{
+                        serverQueue.songs = [serverQueue.songs[0]];
+                        songQueue.set(message.guild.id, serverQueue);
+                        return message.channel.send('You have successfully cleared the queue');
+                    }
                 }
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');

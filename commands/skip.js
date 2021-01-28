@@ -34,7 +34,7 @@ module.exports = {
                 serverQueue.loop = false;
                 songQueue.set(message.guild.id, serverQueue);
 
-                return message.channel.send('You have successfully skipped ' + serverQueue.songs[0].title);
+                return message.channel.send('You have successfully skipped `' + serverQueue.songs[0].title + '`');
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }
