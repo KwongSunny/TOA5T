@@ -1,15 +1,15 @@
 const ytdl = require('ytdl-core');
 
 function playQueue(message, guildId, songQueue, Discord){
+    //look for the server's Queue
     const serverQueue = songQueue.get(guildId);
-    serverQueue.playing = true;
+    if(!serverQueue) return console.log('no server queue');
+
+    serverQueue.stopped = false;
     serverQueue.paused = false;
     
-    //check if there are songs in the queue
-    if(serverQueue.songs.length === 0){
-        songQueue.delete(guildId);
-        return;
-    }
+    //check if there are songs in the queue, if none then delete the serverQueue
+    if(serverQueue.songs.length === 0) return songQueue.delete(guildId);
     
     //create a dispatcher to play the stream, on song 'close' it will play the next or leave
     const dispatcher = serverQueue.connection.play(ytdl(serverQueue.songs[0].url), {quality: 'highestaudio'})
@@ -25,23 +25,22 @@ function playQueue(message, guildId, songQueue, Discord){
         })
         .on('finish', () => {
             console.log('DISPATCHER FINISHED');
-            if(serverQueue.playing){
-                //if !loop, go to the next song
-                if(!serverQueue.loop){
-                    serverQueue.prevSong = serverQueue.songs[0];
-                    serverQueue.songs.shift();
-                    songQueue.set(message.guild.id, serverQueue);
-                }
-    
-                //play the queue
+            //if !loop, play the next song and shift
+            if(!serverQueue.loop && !serverQueue.stopped){
+                serverQueue.prevSong = serverQueue.songs[0];
+                serverQueue.songs.shift();
+                songQueue.set(message.guild.id, serverQueue);
+            }
+
+            //play the queue
+            if(!serverQueue.stopped)
                 playQueue(message, guildId, songQueue, Discord);
-            }
-            else{
-                return console.log('The playlist has been stopped');
-            }
+        })
+        //NEED TO ADD A LISTENER WHICH FORCE ENDS THE DISPATCHER IF THE TIME ELAPSED > SONG.LENGTH INCLUDING PAUSES
+        .on('speaking', ()=>{
+            //console.log("A");
         })
         .on('error', error => {
-            //message.channel.send('There was an error playing the video, please ensure it is a valid link');
             console.error(error);
         })
     dispatcher.setVolume(serverQueue.volume * 0.01);

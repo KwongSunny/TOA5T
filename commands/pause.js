@@ -27,7 +27,6 @@ module.exports = {
                     message.channel.send('The playlist has been put on pause');
                     serverQueue.paused = true;
                     serverDispatcher.pause();
-
                     songQueue.set(message.guild.id, serverQueue);
                 }
             }

@@ -48,6 +48,8 @@ In Development utilities:
 
     Music
 
+        Back permissions: play_music [I DONT EVEN REMEMBER MAKING THIS FILE?]
+
         Play [Needs further testing] play_music
 
         Queue [Needs to be updated] Permissions: play_music
@@ -75,8 +77,6 @@ Planned utilities:
     Temp ban - temporarily bans a user
     
     Music - plays music/videos from youtube
-
-        Back permissions: play_music
 
         Currentsong permissions: play_music
 

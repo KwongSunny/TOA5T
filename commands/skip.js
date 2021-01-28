@@ -23,18 +23,22 @@ module.exports = {
         else if(args === ''){
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
-                //if there is a dispatcher, end it, this will trigger the 'finish' event
-                if(serverQueue.connection.dispatcher)
-                    serverQueue.connection.dispatcher.end();
-                //if there isn't then just shift the first song
-                else
+                const skippedTitle = serverQueue.songs[0].title;
+
+                if(serverQueue.stopped && serverQueue.connection)
                     serverQueue.songs.shift();
+                else if(serverQueue.connection.dispatcher && !serverQueue.paused)
+                    serverQueue.connection.dispatcher.end();
+                else if(serverQueue.connection.dispatcher){
+                    serverQueue.connection.dispatcher.end();
+                    serverQueue.songs.shift();
+                }
 
                 //turns off loop if loop is on
                 serverQueue.loop = false;
                 songQueue.set(message.guild.id, serverQueue);
 
-                return message.channel.send('You have successfully skipped `' + serverQueue.songs[0].title + '`');
+                return message.channel.send('You have successfully skipped `' + skippedTitle + '`');
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }

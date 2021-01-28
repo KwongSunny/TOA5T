@@ -50,6 +50,7 @@ module.exports = {
             const songItem = {
                 title: songInfo.player_response.microformat.playerMicroformatRenderer.title.simpleText,
                 url: args,
+                lengthSeconds: songInfo.player_response.microformat.playerMicroformatRenderer.lengthSeconds,
                 requester: message.author.tag
             }
 
@@ -64,7 +65,7 @@ module.exports = {
                     volume: 30,
                     loop: false,
                     paused: false,
-                    playing: true
+                    stopped: false
                 }
             }
 
@@ -79,8 +80,8 @@ module.exports = {
             //add the serverQueue to the bot's songQueue
             songQueue.set(message.guild.id, serverQueue);
 
-            //play the queue if playing and paused
-            if(serverQueue.playing && serverQueue.paused)
+            //play the queue if it's the first song added
+            if(serverQueue.songs.length === 1)
                 music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
         }
     }

@@ -23,19 +23,20 @@ module.exports = {
             //retrieves the serverQueue
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
-                if(serverQueue.songs.length > 1){
+                //if a song is playing, then clear all but that song
+                if(!serverQueue.stopped && !serverQueue.paused){
                     serverQueue.songs = [serverQueue.songs[0]];
                     songQueue.set(message.guild.id, serverQueue);
                     return message.channel.send('You have successfully cleared the queue');
                 }
-                if(serverQueue.songs.length <= 1){
-                    if(serverQueue.playing)
-                        return message.channel.send('You cannot clear an empty queue');
-                    else{
-                        serverQueue.songs = [serverQueue.songs[0]];
-                        songQueue.set(message.guild.id, serverQueue);
-                        return message.channel.send('You have successfully cleared the queue');
-                    }
+                //if the bot is stopped or paused, delete everything
+                else if(serverQueue.stopped || serverQueue.paused){
+                    //if it's paused end the dispatcher
+                    if(serverQueue.connection.dispatcher && serverQueue.paused)
+                        serverQueue.connection.dispatcher.end();
+                    serverQueue.songs = [];
+                    songQueue.set(message.guild.id, serverQueue);
+                    return message.channel.send('You have successfully cleared the queue');
                 }
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');

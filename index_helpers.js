@@ -1,4 +1,7 @@
 function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client){
+    if(command === 'status') console.log(songQueue.get(message.guild.id).connection.dispatcher.streamTime);
+    if(command === 'songlength') console.log(songQueue.get(message.guild.id).songs[0].length);
+    
     //Member Management
     if(command === 'ban')
         client.commands.get('ban').execute(message, prefix, args, Discord);

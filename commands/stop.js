@@ -22,12 +22,13 @@ module.exports = {
         else if(args === ''){
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
-                serverQueue.playing = false;
+                serverQueue.stopped = true;
                 serverQueue.paused = true;
                 if(serverQueue.connection.dispatcher){
                     serverQueue.connection.dispatcher.end();
                 }
                 songQueue.set(message.guild.id, serverQueue);
+
                 return message.channel.send('The queue has been stopped, use `' + prefix + 'play` to continue the queue');
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');

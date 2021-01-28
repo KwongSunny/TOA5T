@@ -19,9 +19,9 @@ module.exports = {
             console.log(songQueue);
 
             let serverQueue = songQueue.get(message.guild.id);
-            if(serverQueue){
+            if(serverQueue && serverQueue.songs.length > 0){
                 let status;
-                if(!serverQueue.playing) status = 'Stopped';
+                if(serverQueue.stopped) status = 'Stopped';
                 else if(serverQueue.paused) status = 'Paused';
                 else status = 'Playing';
 
