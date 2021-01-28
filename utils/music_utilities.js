@@ -24,8 +24,8 @@ function playQueue(message, guildId, songQueue, Discord){
         })    
         .on('close', () => {
             //check if the playlist has been stopped or not
+            console.log('DISPATCHER CLOSED');
             if(serverQueue.playing){
-                console.log('DISPATCHER CLOSED');
                 //if !loop, go to the next song
                 if(!serverQueue.loop){
                     serverQueue.prevSong = serverQueue.songs[0];
