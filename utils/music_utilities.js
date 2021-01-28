@@ -3,6 +3,7 @@ const ytdl = require('ytdl-core');
 function playQueue(message, guildId, songQueue, Discord){
     const serverQueue = songQueue.get(guildId);
     serverQueue.playing = true;
+    serverQueue.paused = false;
     
     //check if there are songs in the queue
     if(serverQueue.songs.length === 0){
@@ -21,25 +22,7 @@ function playQueue(message, guildId, songQueue, Discord){
                     .setDescription('```' + serverQueue.songs[0].title + '```');
                 message.channel.send(embed);
             }
-        })    
-        // .on('close', () => {
-        //     //check if the playlist has been stopped or not
-        //     console.log('DISPATCHER CLOSED');
-        //     if(serverQueue.playing){
-        //         //if !loop, go to the next song
-        //         if(!serverQueue.loop){
-        //             serverQueue.prevSong = serverQueue.songs[0];
-        //             serverQueue.songs.shift();
-        //             songQueue.set(message.guild.id, serverQueue);
-        //         }
-    
-        //         //play the queue
-        //         playQueue(message, guildId, songQueue, Discord);
-        //     }
-        //     else{
-        //         return console.log('The playlist has been stopped');
-        //     }
-        // })
+        })
         .on('finish', () => {
             console.log('DISPATCHER FINISHED');
             if(serverQueue.playing){
@@ -62,6 +45,11 @@ function playQueue(message, guildId, songQueue, Discord){
             console.error(error);
         })
     dispatcher.setVolume(serverQueue.volume * 0.01);
+}
+
+//if the user puts in a title name instead of a link, the bot will search on youtube for that song and return the link
+function getLinkFromTitle(){
+
 }
 
 module.exports.playQueue = playQueue;

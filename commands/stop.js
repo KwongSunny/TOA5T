@@ -23,6 +23,7 @@ module.exports = {
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
                 serverQueue.playing = false;
+                serverQueue.paused = true;
                 if(serverQueue.connection.dispatcher){
                     serverQueue.connection.dispatcher.end();
                 }

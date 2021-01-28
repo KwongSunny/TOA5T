@@ -30,15 +30,17 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('pause').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'play')
         client.commands.get('play').execute(message, prefix, args, songQueue, Discord);
-    else if(command === 'queue')
+    else if(command === 'queue' || command === 'q')
         client.commands.get('queue').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'resume')
         client.commands.get('resume').execute(message, prefix, args, songQueue, Discord);
-    else if(command === 'skip')
+    else if(command === 'setmusicrole')
+        client.commands.get('setmusicrole').execute(message, prefix, args, Discord);
+    else if(command === 'skip' || command === 'next')
         client.commands.get('skip').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'stop')
         client.commands.get('stop').execute(message, prefix, args, songQueue, Discord);
-    else if(command === 'volume')
+    else if(command === 'volume' || command === 'vol')
         client.commands.get('volume').execute(message, prefix, args, songQueue, Discord);
 
     //Miscellaneous

@@ -61,10 +61,10 @@ module.exports = {
                     connection: null,
                     songs: [],
                     prevSong: null,
-                    volume: 50,
+                    volume: 30,
                     loop: false,
                     paused: false,
-                    playing: false
+                    playing: true
                 }
             }
 
@@ -79,8 +79,8 @@ module.exports = {
             //add the serverQueue to the bot's songQueue
             songQueue.set(message.guild.id, serverQueue);
 
-            //play the queue
-            if(!serverQueue.playing)
+            //play the queue if playing and paused
+            if(serverQueue.playing && serverQueue.paused)
                 music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
         }
     }
