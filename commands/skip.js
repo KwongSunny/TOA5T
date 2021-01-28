@@ -23,9 +23,9 @@ module.exports = {
         else if(args === ''){
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
-                //if there is a dispatcher, destroy it
+                //if there is a dispatcher, end it, this will trigger the 'finish' event
                 if(serverQueue.connection.dispatcher)
-                    serverQueue.connection.dispatcher.destroy();
+                    serverQueue.connection.dispatcher.end();
                 //if there isn't then just shift the first song
                 else
                     serverQueue.songs.shift();
