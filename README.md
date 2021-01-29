@@ -33,7 +33,11 @@ Done utilities:
         Loop [DONE] Permissions: manage_music
 
         Pause [DONE] Permissions: play_music
-        
+
+        Play [Needs further testing] play_music
+
+        Queue [Needs to be updated] Permissions: play_music
+
         Resume [DONE] Permissions: play_music
 
         Skip [DONE] permissions play_music
@@ -49,10 +53,6 @@ In Development utilities:
     Music
 
         Back permissions: play_music [I DONT EVEN REMEMBER MAKING THIS FILE?]
-
-        Play [Needs further testing] play_music
-
-        Queue [Needs to be updated] Permissions: play_music
         
         setmusicrole permissions: administrator
 
