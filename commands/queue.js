@@ -19,36 +19,46 @@ module.exports = {
             console.log(songQueue);
 
             let serverQueue = songQueue.get(message.guild.id);
-            if(serverQueue){
+            if(serverQueue && serverQueue.songs.length > 0){
+                let status;
+                if(serverQueue.stopped) status = 'Stopped';
+                else if(serverQueue.paused) status = 'Paused';
+                else status = 'Playing';
+
                 let embed = new Discord.MessageEmbed()
                     .setColor('#f7c920')
                     .setTitle('Music Queue')
-                    .setDescription('**Volume:** `' + serverQueue.volume + '`\n' + 
-                    '```');
+                    .setDescription('| **Status:** `' + status + '` | **Volume:** `' + serverQueue.volume + '` | **Loop:** `' + serverQueue.loop + '` |\n\n**Now Playing**\n```');
                 
-                for(song = 0; song < serverQueue.songs.length; song++){
+                for(song = 0; song < 5; song++){
                     if(song === 0){
-                        if(!serverQueue.paused){
+                        embed.setDescription(
+                            embed.description + serverQueue.songs[song].title + '```\n**Up next**\n```'
+                        )
+                    }
+                    else{
+                        //this will be empty
+                        if(song >= serverQueue.songs.length){
                             embed.setDescription(
                                 embed.description + 
-                                (song+1) + ': [PLAYING] ' + serverQueue.songs[song].title + '\n'
+                                '[' + (song) + ']\n'
                             )
                         }
+                        //display the song
                         else{
                             embed.setDescription(
                                 embed.description + 
-                                (song+1) + ': [PAUSED] ' + serverQueue.songs[song].title + '\n'
+                                '[' + (song) + '] ' + serverQueue.songs[song].title + '\n'
                             )
                         }
                     }
-                    else{
-                        embed.setDescription(
-                            embed.description + 
-                            (song+1) + ': ' + serverQueue.songs[song].title + '\n'
-                        )
-                    }
                 }
-                embed.setDescription(embed.description + '```');
+
+                //Math ceils the amount of pages of songs
+                let pages = Math.ceil((serverQueue.songs.length-1)/4);
+                if(pages === 0) pages++;
+                
+                embed.setDescription(embed.description + '```page 1/' + pages);
                 return message.channel.send(embed);
             }
             else{

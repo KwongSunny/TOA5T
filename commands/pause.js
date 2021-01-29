@@ -28,6 +28,9 @@ module.exports = {
                     serverQueue.paused = true;
                     serverDispatcher.pause();
 
+                    //pause the timer
+                    clearTimeout(serverQueue.timer);
+
                     songQueue.set(message.guild.id, serverQueue);
                 }
             }

@@ -19,8 +19,10 @@ module.exports = {
             return message.channel.send(embed);  
         }
         else if(args === ''){
+            //check for serverQueue
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
+                //toggle the loop and update
                 serverQueue.loop = !serverQueue.loop;
                 songQueue.set(message.guild.id, serverQueue);
                 return message.channel.send('Loop has been set to `' + serverQueue.loop + '`');

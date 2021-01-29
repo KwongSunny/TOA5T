@@ -25,9 +25,16 @@ module.exports = {
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
                 let serverDispatcher = serverQueue.connection.dispatcher;
+                console.log(serverDispatcher);
                 if(serverDispatcher){
                     serverQueue.paused = false;
                     serverDispatcher.resume();
+
+                    //resets the timer
+                    serverQueue.timer = setTimeout(() => {
+                        serverQueue.connection.dispatcher.end();
+                    }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
+
                     songQueue.set(message.guild.id, serverQueue);
                 }
                 else{

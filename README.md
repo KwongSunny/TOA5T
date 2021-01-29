@@ -24,23 +24,23 @@ Done utilities:
 
     Music:
         
-        Clear [DONE]
+        Clear [DONE] Permissions: manage_music
 
-        Join [DONE]
+        Join [DONE] Permissions: manage_music
 
-        Leave [DONE]
+        Leave [DONE] Permissions: manage_music
 
-        Loop [DONE]
+        Loop [DONE] Permissions: manage_music
 
-        Pause [DONE]
+        Pause [DONE] Permissions: play_music
         
-        Resume [DONE]
+        Resume [DONE] Permissions: play_music
 
-        Skip [DONE]
+        Skip [DONE] permissions play_music
 
-        Stop [DONE]
+        Stop [DONE] permissions: play_music
 
-        Volume [DONE]
+        Volume [DONE] permissions: play_music
 
 In Development utilities:
 
@@ -48,9 +48,13 @@ In Development utilities:
 
     Music
 
-        Play [Needs further testing]
+        Back permissions: play_music [I DONT EVEN REMEMBER MAKING THIS FILE?]
 
-        Queue [Needs to be updated]
+        Play [Needs further testing] play_music
+
+        Queue [Needs to be updated] Permissions: play_music
+        
+        setmusicrole permissions: administrator
 
     info [ON HOLD]
     
@@ -74,11 +78,9 @@ Planned utilities:
     
     Music - plays music/videos from youtube
 
-        Back
+        Currentsong permissions: play_music
 
-        Currentsong
-
-        SetDJrole
+        setmusicperms permissions: administrator
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
