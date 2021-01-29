@@ -29,6 +29,12 @@ module.exports = {
                 if(serverDispatcher){
                     serverQueue.paused = false;
                     serverDispatcher.resume();
+
+                    //resets the timer
+                    serverQueue.timer = setTimeout(() => {
+                        serverQueue.connection.dispatcher.end();
+                    }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
+
                     songQueue.set(message.guild.id, serverQueue);
                 }
                 else{

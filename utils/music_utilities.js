@@ -22,6 +22,13 @@ function playQueue(message, guildId, songQueue, Discord){
                     .setDescription('```' + serverQueue.songs[0].title + '```');
                 message.channel.send(embed);
             }
+
+            //force stop the audio when the song is over in case finish event doesn't fire
+            serverQueue.timer = setTimeout(() => {
+                console.log('DISPATCHER FORCED STOPPED');
+                serverQueue.connection.dispatcher.end();
+            }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
+            songQueue.set(message.guild.id, serverQueue);
         })
         .on('finish', () => {
             console.log('DISPATCHER FINISHED');
@@ -29,8 +36,11 @@ function playQueue(message, guildId, songQueue, Discord){
             if(!serverQueue.loop && !serverQueue.stopped){
                 serverQueue.prevSong = serverQueue.songs[0];
                 serverQueue.songs.shift();
-                songQueue.set(message.guild.id, serverQueue);
             }
+            //end the timer
+            clearTimeout(serverQueue.timer);
+
+            songQueue.set(message.guild.id, serverQueue);
 
             //play the queue
             if(!serverQueue.stopped)

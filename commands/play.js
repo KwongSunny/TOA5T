@@ -62,6 +62,7 @@ module.exports = {
                     connection: null,
                     songs: [],
                     prevSong: null,
+                    timer: null,
                     volume: 30,
                     loop: false,
                     paused: false,
