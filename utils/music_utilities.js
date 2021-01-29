@@ -23,12 +23,15 @@ function playQueue(message, guildId, songQueue, Discord){
                 message.channel.send(embed);
             }
 
-            //force stop the audio when the song is over in case finish event doesn't fire
-            serverQueue.timer = setTimeout(() => {
-                console.log('DISPATCHER FORCED STOPPED');
-                serverQueue.connection.dispatcher.end();
-            }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
-            songQueue.set(message.guild.id, serverQueue);
+            //check if the song is live or not
+            if(!serverQueue.songs[0].isLive){
+                //force stop the audio when the song is over in case finish event doesn't fire
+                serverQueue.timer = setTimeout(() => {
+                    console.log('DISPATCHER FORCED STOPPED');
+                    serverQueue.connection.dispatcher.end();
+                }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
+                songQueue.set(message.guild.id, serverQueue);
+            }
         })
         .on('finish', () => {
             console.log('DISPATCHER FINISHED');

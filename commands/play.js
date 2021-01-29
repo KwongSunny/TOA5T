@@ -51,8 +51,11 @@ module.exports = {
                 title: songInfo.player_response.microformat.playerMicroformatRenderer.title.simpleText,
                 url: args,
                 lengthSeconds: songInfo.player_response.microformat.playerMicroformatRenderer.lengthSeconds,
+                isLive: songInfo.formats[0].isLive,
                 requester: message.author.tag
             }
+
+            console.log(songItem.isLive);
 
             //check the bot for a serverQueue
             let serverQueue = songQueue.get(message.guild.id);
