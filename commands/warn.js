@@ -122,16 +122,16 @@ module.exports = {
                     }
 
                     //update the item
-                    let keys = ['warned_users', 'max_warnings'];
-                    let values = [warnedUsers, maxWarnings];
+                    let keys = ['warned_users', 'max_warnings', 'server_name'];
+                    let values = [warnedUsers, maxWarnings, message.guild.name];
                     aws_utilities.updateItem(message.guild.id, keys, values); 
                 }
                 //if the server does not exist, write a new item, set the default max warns to 2
                 else{
                     aws_utilities.writeItem(message.guild.id);
 
-                    let keys = ['warned_users', 'max_warnings'];
-                    let values = [[userId + ':1:1'], defaultMaxWarnings];
+                    let keys = ['warned_users', 'max_warnings', 'server_name'];
+                    let values = [[userId + ':1:1'], defaultMaxWarnings, message.guild.name];
                     aws_utilities.updateItem(message.guild.id, keys, values); 
                 }
 

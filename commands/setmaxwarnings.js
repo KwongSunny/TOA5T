@@ -25,15 +25,10 @@ module.exports = {
             let server = await aws_utilities.fetchServer(message.guild.id);
             
             //server exists, update the item
-            if(server){
-                aws_utilities.updateItem(message.guild.id, ['max_warnings'], [args])
-            }
-            //server does not exist, write an item
-            else{
+            if(!server){
                 aws_utilities.writeItem(message.guild.id);
-                aws_utilities.updateItem(message.guild.id, ['max_warnings'], [args])
             }
-
+            aws_utilities.updateItem(message.guild.id, ['max_warnings', 'server_name'], [args, message.guild.name])
             message.channel.send("The server's maximum amount of warnings has been set to " + args);
         }
         

@@ -32,7 +32,7 @@ module.exports = {
         //if argument is an id, change the reactionrole_post_id
         else if(args.length === 1 && !args[0].includes(':')){
             if(utilities.isNumeric(args[0])){
-                aws_utilities.updateItem(message.guild.id, ['reactionrole_post_id'], [args[0]]);
+                aws_utilities.updateItem(message.guild.id, ['reactionrole_post_id', 'server_name'], [args[0], message.guild.name]);
             }
         }
         //there are roles, create a new reaction post
@@ -98,15 +98,15 @@ module.exports = {
 
             //if server is in the database, update the item
             if(item){
-                keys = ['reactionrole_post_id', 'reaction_roles'];
-                values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim()];
+                keys = ['reactionrole_post_id', 'reaction_roles', 'server_name'];
+                values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim(), message.guild.name];
                 aws_utilities.updateItem(message.guild.id, keys, values);
             }
             //if the server is not in the database, write a new item
             else{
                 aws_utilities.writeItem(message.guild.id);
-                keys = ['reactionrole_post_id', 'reaction_roles'];
-                values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim()];
+                keys = ['reactionrole_post_id', 'reaction_roles', 'server_name'];
+                values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim(), message.guild.name];
                 aws_utilities.updateItem(message.guild.id, keys, values);
             }
         }
