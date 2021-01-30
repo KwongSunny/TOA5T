@@ -31,7 +31,8 @@ client.on('message', async message => {
 
     //check for custom prefix
         let server = await aws_utilities.fetchServer(message.guild.id);
-        let customPrefix = server.Item.custom_prefix;
+        let customPrefix = '';
+        if(server) customPrefix = server.Item.custom_prefix;
         //if the server has a custom prefix, use it
         if(customPrefix !== '') prefix = customPrefix;
         //if the server does not have a custom prefix, use the default prefix

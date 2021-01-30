@@ -55,8 +55,6 @@ module.exports = {
                 requester: message.author.tag
             }
 
-            console.log(songItem.isLive);
-
             //check the bot for a serverQueue
             let serverQueue = songQueue.get(message.guild.id);
             if(!serverQueue){
@@ -75,7 +73,7 @@ module.exports = {
 
             //add the songItem to the serverQueue
             serverQueue.songs.push(songItem);
-
+            
             //join the server and add the connection to serverQueue
             let connection = await voiceChannel.join().catch(console.error);
             if(!connection) return message.channel.send('An error occured attempting to join the channel, please try again');

@@ -1,7 +1,4 @@
 function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client){
-    if(command === 'status') console.log(songQueue.get(message.guild.id).connection.dispatcher.streamTime);
-    if(command === 'songlength') console.log(songQueue.get(message.guild.id).songs[0].length);
-    
     //Member Management
     if(command === 'ban')
         client.commands.get('ban').execute(message, prefix, args, Discord);
@@ -41,6 +38,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('setmusicrole').execute(message, prefix, args, Discord);
     else if(command === 'skip' || command === 'next')
         client.commands.get('skip').execute(message, prefix, args, songQueue, Discord);
+    else if(command === 'song')
+        client.commands.get('song').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'stop')
         client.commands.get('stop').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'volume' || command === 'vol')
