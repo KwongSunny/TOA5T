@@ -31,8 +31,8 @@ module.exports = {
                 if(!server)
                     aws_utilities.writeItem(message.guild.id);
 
-                let keys = ['music_roles'];
-                let values = [args + '[manage_music, play_music]'];
+                let keys = ['music_roles', 'server_name'];
+                let values = [args + '[manage_music, play_music]', message.guild.name];
 
                 aws_utilities.updateItem(message.guild.id, keys, values);
                 return message.channel.send(args + ' is now set as a music role with the following permissions:\n' + '`manage_music`, `play_music`');

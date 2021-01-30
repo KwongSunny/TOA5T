@@ -31,14 +31,10 @@ module.exports = {
             if(roleId !== ''){
                 let server = await aws_utilities.fetchServer(message.guild.id);
                 //if the server is in the database, update the item
-                if(server){
-                    aws_utilities.updateItem(message.guild.id, ['default_role'], [roleId]);
-                }
-                //if the server is not in the database, write a new item
-                else{
+                if(!server){
                     aws_utilities.writeItem(message.guild.id);
-                    aws_utilities.updateItem(message.guild.id, ['default_role'], [roleId]);
                 }
+                aws_utilities.updateItem(message.guild.id, ['default_role', 'server_name'], [roleId, message.guild.name]);
                 message.channel.send("The server's default role is now " + role + ", new members will now automatically be assigned this role");
             }
             else{

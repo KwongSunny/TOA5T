@@ -47,8 +47,8 @@ module.exports = {
                     }
 
                 //update the item with custom_prefix
-                    let keys = ['custom_prefix', 'prefix_message_id'];
-                    let values = [prefixes[0], newPrefixMessage.id];
+                    let keys = ['custom_prefix', 'prefix_message_id', 'server_name'];
+                    let values = [prefixes[0], newPrefixMessage.id, message.guild.name];
                     aws_utilities.updateItem(message.guild.id, keys, values);
 
                 //look for and delete the previous pinned prefix message
