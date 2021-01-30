@@ -16,8 +16,6 @@ module.exports = {
         }
         //return the current queue
         else if(args === ''){
-            console.log(songQueue);
-
             let serverQueue = songQueue.get(message.guild.id);
             if(serverQueue && serverQueue.songs.length > 0){
                 let status;

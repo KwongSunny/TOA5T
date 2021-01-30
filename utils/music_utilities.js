@@ -11,6 +11,8 @@ function playQueue(message, guildId, songQueue, Discord){
     //check if there are songs in the queue, if none then delete the serverQueue
     if(serverQueue.songs.length === 0) return songQueue.delete(guildId);
     
+    console.log(serverQueue);
+
     //create a dispatcher to play the stream, on song 'close' it will play the next or leave
     const dispatcher = serverQueue.connection.play(ytdl(serverQueue.songs[0].url), {quality: 'highestaudio'})
         .on('start', () => {
@@ -48,10 +50,6 @@ function playQueue(message, guildId, songQueue, Discord){
             //play the queue
             if(!serverQueue.stopped)
                 playQueue(message, guildId, songQueue, Discord);
-        })
-        //NEED TO ADD A LISTENER WHICH FORCE ENDS THE DISPATCHER IF THE TIME ELAPSED > SONG.LENGTH INCLUDING PAUSES
-        .on('speaking', ()=>{
-            //console.log("A");
         })
         .on('error', error => {
             console.error(error);
