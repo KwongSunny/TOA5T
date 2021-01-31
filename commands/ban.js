@@ -63,7 +63,7 @@ module.exports = {
             if(utilities.isUserMention(userArg))
                 userId = utilities.getUserId(userArg);
 
-            let user = message.guild.members.cache.find(member => member.id === userId);
+            let user = message.guild.members.cache.get(userId);
             //checks if the user exists
             if(!user){
                 message.channel.send(userArg + ' could not be found, please use either the user Id or a user mention');

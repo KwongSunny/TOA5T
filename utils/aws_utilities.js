@@ -51,11 +51,12 @@ async function fetchMessageFromGuild(guild, messageId){
 }
 
 //writes an items to the dynamodb database
-function writeItem(server_id){
+function writeItem(server){
     let param = {
         TableName: tableName,
         Item: {
-            "server_id": server_id
+            "server_id": server.id,
+            "server_name": server.name
         }
     }
 

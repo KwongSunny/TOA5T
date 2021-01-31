@@ -94,7 +94,7 @@ client.on('guildMemberAdd', async(member) => {
 
     //checks if default_role exists and is not an empty string
     if(server.Item.default_role && server.Item.default_role !== ''){
-        member.roles.add(member.guild.roles.cache.find(role => role.id === server.Item.default_role));
+        member.roles.add(member.guild.roles.cache.get(server.Item.default_role));
     }
     else{
         console.log('This role could not be given. Server: ' + server.Item.server_id);

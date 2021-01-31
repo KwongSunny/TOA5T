@@ -59,7 +59,7 @@ module.exports = {
             if(utilities.isUserMention(userArg))
                 userId = utilities.getUserId(userArg);
 
-            let user = message.guild.members.cache.find(member => member.id === userId);
+            let user = message.guild.members.cache.get(userId);
 
             //checks if the user is in the guild
             if(!user){
@@ -128,7 +128,7 @@ module.exports = {
                 }
                 //if the server does not exist, write a new item, set the default max warns to 2
                 else{
-                    aws_utilities.writeItem(message.guild.id);
+                    aws_utilities.writeItem(message.guild);
 
                     let keys = ['warned_users', 'max_warnings', 'server_name'];
                     let values = [[userId + ':1:1'], defaultMaxWarnings, message.guild.name];

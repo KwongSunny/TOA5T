@@ -36,9 +36,9 @@ async function addRoleFromReaction(reaction, user){
         let roleList = []; 
         for(i = 0; i < args.length; i++){
             if(utilities.isRoleMention(roleArgs[i][0]))
-                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === utilities.getRoleId(roleArgs[i][0])));
+                roleList.push(reaction.message.guild.roles.cache.get(utilities.getRoleId(roleArgs[i][0])));
             else if(utilities.isNumeric(roleArgs[i][0]))
-                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === roleArgs[i][0]));
+                roleList.push(reaction.message.guild.roles.cache.get(roleArgs[i][0]));
             else{
                 console.log(roleArgs[i][0] + ' is not a valid role, please check the database');
                 return;
@@ -74,9 +74,9 @@ async function removeRoleFromReaction(reaction, user){
         let roleList = []; 
         for(i = 0; i < args.length; i++){
             if(utilities.isRoleMention(roleArgs[i][0]))
-                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === utilities.getRoleId(roleArgs[i][0])));
+                roleList.push(reaction.message.guild.roles.cache.get(utilities.getRoleId(roleArgs[i][0])));
             else if(utilities.isNumeric(roleArgs[i][0]))
-                roleList.push(reaction.message.guild.roles.cache.find(role => role.id === roleArgs[i][0]));
+                roleList.push(reaction.message.guild.roles.cache.get(roleArgs[i][0]));
             else{
                 console.log(roleArgs[i][0] + ' is not a valid role, please check the database');
                 return;

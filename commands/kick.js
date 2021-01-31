@@ -63,7 +63,7 @@ module.exports = {
             if(utilities.isUserMention(userArg))
                 userId = utilities.getUserId(userArg);
 
-            let user = message.guild.members.cache.find(member => member.id === userId);
+            let user = message.guild.members.cache.get(userId);
             //checks if the user is in the guild
             if(!user){
                 message.channel.send(userArg + ' could not be found, please use either the user Id or a user mention');
@@ -79,7 +79,7 @@ module.exports = {
     
                     if(notifyUserFlag) await user.send('You have been kicked from the server: `' + message.guild.name + '`' + kickReason);
                     await message.channel.send('<@!' + userId + '> has been kicked' + kickReason);
-                    await message.guild.members.cache.find(member => member.id === userId).kick(kickReason);
+                    await message.guild.members.cache.get(userId).kick(kickReason);
                 }
             }   
         }

@@ -29,7 +29,7 @@ module.exports = {
             if(utilities.isRoleMention(args)){
                 const server = await aws_utilities.fetchServer(message.guild.id);
                 if(!server)
-                    aws_utilities.writeItem(message.guild.id);
+                    aws_utilities.writeItem(message.guild);
 
                 let keys = ['music_roles', 'server_name'];
                 let values = [args + '[manage_music, play_music]', message.guild.name];
