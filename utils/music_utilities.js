@@ -9,7 +9,7 @@ function playQueue(message, guildId, songQueue, Discord){
     serverQueue.paused = false;
     
     //check if there are songs in the queue, if none then delete the serverQueue
-    if(serverQueue.songs.length === 0) return songQueue.delete(guildId);
+    if(serverQueue.songs.length === 0) return;
     
     console.log(serverQueue);
 

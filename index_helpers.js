@@ -18,6 +18,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
 
     //Music and Audio
+    else if(command === 'back')
+        client.commands.get('back').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'clear')
         client.commands.get('clear').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'join')

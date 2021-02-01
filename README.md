@@ -56,9 +56,13 @@ In Development utilities:
         
         setmusicrole permissions: administrator
 
+        Currentsong permissions: play_music
+
     info [ON HOLD]
     
 Planned utilities:
+
+    purge - removes messages within the last x amount of days, from all users or a certain use
 
     mute
 
@@ -77,8 +81,6 @@ Planned utilities:
     Temp ban - temporarily bans a user
     
     Music - plays music/videos from youtube
-
-        Currentsong permissions: play_music
 
         setmusicperms permissions: administrator
     

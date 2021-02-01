@@ -25,8 +25,10 @@ module.exports = {
             if(serverQueue){
                 const skippedTitle = serverQueue.songs[0].title;
 
+                //if the dispatcher is stopped, skip
                 if(serverQueue.stopped && serverQueue.connection)
                     serverQueue.songs.shift();
+                //if it's not pasued, end current song, trigger 'finish' event
                 else if(serverQueue.connection.dispatcher && !serverQueue.paused)
                     serverQueue.connection.dispatcher.end();
                 else if(serverQueue.connection.dispatcher){
