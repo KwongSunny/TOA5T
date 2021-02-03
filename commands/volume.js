@@ -4,7 +4,7 @@ const music_utilities = require('../utils/music_utilities.js');
 module.exports = {
     name: 'volume',
     description: 'Changes the volume of the bot',
-    execute(message, prefix, args, songQueue, Discord){
+    async execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
         const permissions = ['play_music'];

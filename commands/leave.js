@@ -3,7 +3,7 @@ const music_utilities = require('../utils/music_utilities.js');
 module.exports = {
     name: 'leave',
     description: 'Makes the bot leave their voice channel',
-    execute(message, prefix, args, Discord, client){
+    async execute(message, prefix, args, Discord, client){
         args = args.trim();
 
         const permissions = ['manage_music'];

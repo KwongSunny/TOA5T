@@ -3,7 +3,7 @@ const music_utilities = require('../utils/music_utilities.js');
 module.exports = {
     name: 'skip',
     description: 'skips the current song in the queue',
-    execute(message, prefix, args, songQueue, Discord){ 
+    async execute(message, prefix, args, songQueue, Discord){ 
 
         args = args.trim();
 

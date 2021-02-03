@@ -3,7 +3,7 @@ const music_utilities = require('../utils/music_utilities.js');
 module.exports = {
     name: 'loop',
     description: 'Toggles looping on the current song in the playlist',
-    execute(message, prefix, args, songQueue, Discord){
+    async execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
         const permissions = ['manage_music'];
