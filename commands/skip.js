@@ -1,3 +1,5 @@
+const music_utilities = require('../utils/music_utilities.js');
+
 module.exports = {
     name: 'skip',
     description: 'skips the current song in the queue',
@@ -5,8 +7,11 @@ module.exports = {
 
         args = args.trim();
 
-        //check permissions
-        if(!message.member.hasPermission('ADMINISTRATOR')){
+        const permissions = ['play_music'];
+        let hasMusicPermissions = await music_utilities.checkMusicPermissions(message, permissions);
+
+        //check for permissions
+        if(!message.member.hasPermission('ADMINISTRATOR') || !hasMusicPermissions){
             return message.channel.send('You have insufficient permission to use this command');
         }
         //sends a message telling the user how to use this command

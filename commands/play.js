@@ -8,8 +8,11 @@ module.exports = {
     async execute(message, prefix, args, songQueue, Discord) {
         args = args.trim();
 
+        const permissions = ['play_music'];
+        const hasMusicPermissions = await music_utilities.checkMusicPermissions(message, permissions);
+
         //check permissions
-        if(!message.member.hasPermission('ADMINISTRATOR')){
+        if(!message.member.hasPermission('ADMINISTRATOR') || !hasMusicPermissions){
             return message.channel.send('You have insufficient permissions to use this command');
         }
         //sends a message on how to use the command

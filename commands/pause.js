@@ -1,11 +1,17 @@
+const aws_utilities = require('../utils/aws_utilities.js');
+const music_utilities = require ('../utils/music_utilities.js');
+
 module.exports = {
     name: 'pause',
     description: 'Pauses the music',
-    execute(message, prefix, args, songQueue, Discord){
+    async execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
+        const permissions = ['play_music'];
+        let hasMusicPermissions = await music_utilities.checkMusicPermissions(message, permissions);
+
         //check for permissions
-        if(!message.member.hasPermission('ADMINISTRATOR')){
+        if(!message.member.hasPermission('ADMINISTRATOR') || !hasMusicPermissions){
             return message.channel.send('You have insufficient permissions to use this command')
         }
         //send a message on how to use the command

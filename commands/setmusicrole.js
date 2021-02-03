@@ -31,14 +31,19 @@ module.exports = {
                 if(!server)
                     aws_utilities.writeItem(message.guild);
 
+                let musicRoles = server.Item.music_roles;
+                if(!musicRoles) musicRoles = [];
+                musicRoles.push(args + ':manage_music, play_music')
+
                 let keys = ['music_roles', 'server_name'];
-                let values = [args + '[manage_music, play_music]', message.guild.name];
+                let values = [musicRoles, message.guild.name];
 
                 aws_utilities.updateItem(message.guild.id, keys, values);
                 return message.channel.send(args + ' is now set as a music role with the following permissions:\n' + '`manage_music`, `play_music`');
             }
+            //unknown arguments
             else{
-                return message.channel.send('This role does not exist, please make sure you are using a mention to the role');
+                return message.channel.send('Unknown arguments detected');
             }
         }
     }

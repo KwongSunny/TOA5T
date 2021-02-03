@@ -1,4 +1,6 @@
 const ytdl = require('ytdl-core');
+const aws_utilities = require('./aws_utilities.js');
+const utilities = require('./utilities.js');
 
 function playQueue(message, guildId, songQueue, Discord){
     //look for the server's Queue
@@ -57,9 +59,38 @@ function playQueue(message, guildId, songQueue, Discord){
     dispatcher.setVolume(serverQueue.volume * 0.01);
 }
 
-//if the user puts in a title name instead of a link, the bot will search on youtube for that song and return the link
-function getLinkFromTitle(){
+//checks if the user has a specific permission, returns a promise which returns true or false
+//only works if the user has one DJ role
+async function checkMusicPermissions(message, permissions){
 
+    return new Promise(async (resolve) => {
+        let hasMusicPermissions = false;
+        const server = await aws_utilities.fetchServer(message.guild.id);
+        if(server){
+            const serverMusicRoles = server.Item.music_roles;
+            if(serverMusicRoles && serverMusicRoles !== []){
+                for(role = 0; role < serverMusicRoles.length; role++){
+    
+                    const roleMention = serverMusicRoles[role].substring(0, serverMusicRoles[role].indexOf('>')+1);
+                    const roleId = utilities.getRoleId(roleMention);
+                    const rolePermissions = utilities.removeFromString(serverMusicRoles[role], [roleMention, ':']).split(/,\s/g);
+    
+                    const memberRole = message.member.roles.cache.get(roleId);
+                    if(memberRole && rolePermissions.length > 1){
+                        //permissions required for this command
+                        for(perm = 0; perm < permissions.length; perm++){
+                            if(rolePermissions.includes(permissions[perm])){
+                                hasMusicPermissions = true;
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        resolve(hasMusicPermissions);
+    })
 }
 
 module.exports.playQueue = playQueue;
+module.exports.checkMusicPermissions = checkMusicPermissions;

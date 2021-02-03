@@ -6,12 +6,8 @@ module.exports = {
     execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
-        //check permissions
-        if(!message.member.hasPermission('ADMINISTRATOR')){
-            return message.channel.send('You have insufficient permissions to use this command');
-        }
         //send a message on how to use this command
-        else if(args === 'help'){
+        if(args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Song Info')
