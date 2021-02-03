@@ -10,7 +10,7 @@ module.exports = {
         let hasMusicPermissions = await music_utilities.checkMusicPermissions(message, permissions);
 
         //check for permissions
-        if(!message.member.hasPermission('ADMINISTRATOR') || !hasMusicPermissions){
+        if(!message.member.hasPermission('ADMINISTRATOR') && !hasMusicPermissions){
             return message.channel.send('You have insufficient permissions to use this command');
         }
         //send a message telling the user how to use this command
