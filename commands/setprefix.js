@@ -43,7 +43,7 @@ module.exports = {
                     }
                     //else write a new one
                     else{
-                        aws_utilities.writeItem(message.guild.id);
+                        aws_utilities.writeItem(message.guild);
                     }
 
                 //update the item with custom_prefix

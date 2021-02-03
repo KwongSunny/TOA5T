@@ -69,7 +69,7 @@ module.exports = {
                 const regex = emojiRegex();
 
                 //checks if the role exists in the guild
-                const guildRoleExists = message.guild.roles.cache.find(role => role.id === roleId) !== undefined;
+                const guildRoleExists = message.guild.roles.cache.get(roleId) !== undefined;
 
                 //check if the emoji is a valid emoji or guild emoji and the role exists
                 if(!guildRoleExists){
@@ -104,7 +104,7 @@ module.exports = {
             }
             //if the server is not in the database, write a new item
             else{
-                aws_utilities.writeItem(message.guild.id);
+                aws_utilities.writeItem(message.guild);
                 keys = ['reactionrole_post_id', 'reaction_roles', 'server_name'];
                 values = [messageEmbed.id, message.content.slice(commandPrefix.length).trim(), message.guild.name];
                 aws_utilities.updateItem(message.guild.id, keys, values);

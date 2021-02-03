@@ -26,7 +26,7 @@ module.exports = {
             
             //server exists, update the item
             if(!server){
-                aws_utilities.writeItem(message.guild.id);
+                aws_utilities.writeItem(message.guild);
             }
             aws_utilities.updateItem(message.guild.id, ['max_warnings', 'server_name'], [args, message.guild.name])
             message.channel.send("The server's maximum amount of warnings has been set to " + args);

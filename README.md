@@ -24,6 +24,8 @@ Done utilities:
 
     Music:
         
+        Back [DONE] permissions: play_music
+
         Clear [DONE] Permissions: manage_music
 
         Join [DONE] Permissions: manage_music
@@ -36,7 +38,7 @@ Done utilities:
 
         Play [Needs further testing] play_music
 
-        Queue [Needs to be updated] Permissions: play_music
+        Queue [Needs to be updated] Permissions: n/a
 
         Resume [DONE] Permissions: play_music
 
@@ -51,14 +53,16 @@ In Development utilities:
     Help - always needs updates for every command
 
     Music
-
-        Back permissions: play_music [I DONT EVEN REMEMBER MAKING THIS FILE?]
         
         setmusicrole permissions: administrator
+
+        song permissions: play_music
 
     info [ON HOLD]
     
 Planned utilities:
+
+    purge - removes messages within the last x amount of days, from all users or a certain use
 
     mute
 
@@ -77,8 +81,6 @@ Planned utilities:
     Temp ban - temporarily bans a user
     
     Music - plays music/videos from youtube
-
-        Currentsong permissions: play_music
 
         setmusicperms permissions: administrator
     
