@@ -20,7 +20,7 @@ Done utilities:
 
     Setmaxwarnings - changes the default maximum warnings of the server [DONE]
 
-    Warn - warns a user and records in db, if the user has over the max warnings, banthe user [DONE]
+    Warn - warns a user and records in db, if the user has over the max warnings, ban the user [DONE]
 
     Music:
         
@@ -42,6 +42,8 @@ Done utilities:
 
         Resume [DONE] Permissions: play_music
 
+        Setmusicrole permissions: administrator
+
         Skip [DONE] permissions play_music
 
         Stop [DONE] permissions: play_music
@@ -53,10 +55,8 @@ In Development utilities:
     Help - always needs updates for every command
 
     Music
-        
-        setmusicrole permissions: administrator
 
-        song permissions: play_music
+        Song permissions: n/a
 
     info [ON HOLD]
     

@@ -23,10 +23,17 @@ module.exports = {
             );
 
             embed.addField('Music and Audio', 
+                '`clear`: clears the queue\n' +
+                '`join`: joins the voice channel\n' +
+                '`leave`: leaves the voice channel\n' +
+                '`loop`: sets the current song on loop\n' +
                 '`pause`: pause the current audio playlist\n' +
                 '`play`: adds a song to the queue and plays the queue\n' +
                 '`queue`: returns the current audio playlist\n' +
                 '`resume`: resumes a paused playlist\n' +
+                '`setmusicrole`: designates a role that can play music\n' +
+                '`skip`: skips the current song\n' +
+                '`stop`: stops the current song and queue\n' +
                 '`volume`: set the volume of the bot\n' +
                 ''
             );
