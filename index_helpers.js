@@ -1,9 +1,11 @@
 function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client){
-    //Member Management
+    //Server Management
     if(command === 'ban')
         client.commands.get('ban').execute(message, prefix, args, Discord);
     else if(command === 'kick')
         client.commands.get('kick').execute(message, prefix, args, Discord);
+    else if(command === 'purge')
+        client.commands.get('purge').execute(message, prefix, args, Discord);
     else if(command === 'setmaxwarnings')
         client.commands.get('setmaxwarnings').execute(message, prefix, args, Discord);
     else if(command === 'unban')

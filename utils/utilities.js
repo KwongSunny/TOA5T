@@ -37,6 +37,20 @@ function removeFromString(str, removals){
     return result;
 }
 
+//converts time to minutes, comes in m,d,h
+function convertToMinutes(time){
+    const unit = time.match(/[mhd]/g);
+    let amount = time.match(/\d+/g);
+
+    if(unit === 'h'){
+        amount = amount * 60;
+    }
+    else if(unit === 'd'){
+        amount = amount * 60 * 24;
+    }
+    return amount;
+}
+
 //checks the string if it contains a message flag and a message (-m "message")
 //if it has more than one or no matches, then return []
 //returns an array [startIndex, lastIndex] of the flag and message
@@ -92,10 +106,33 @@ function getUserId(userMention){
     return result.substring(3, result.length-1);
 }
 
+async function fetchAllMessages(textChannel){
+    let resultArray = [];
+    let messageCount = 100;
+    let lastMessage = textChannel.lastMessage;
+
+    while(messageCount === 100){
+        if(lastMessage){
+            let hundredMessages = await textChannel.messages.fetch({limit: 100, before:lastMessage.id})
+
+            resultArray.concat(hundredMessages);
+    
+            lastMessage = hundredMessages[0];
+    
+            messageCount = hundredMessages.size;
+    
+            console.log(messageCount);
+        }
+    }
+
+    return resultArray;
+}
+
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
 module.exports.numSuffix = numSuffix;
+module.exports.convertToMinutes = convertToMinutes;
 module.exports.removeFromString = removeFromString;
 module.exports.getIndexOfMessageAndFlag = getIndexOfMessageAndFlag;
 module.exports.getIndexOfNotifyUserFlag = getIndexOfNotifyUserFlag;
@@ -103,3 +140,4 @@ module.exports.isUserMention = isUserMention;
 module.exports.isRoleMention = isRoleMention;
 module.exports.getRoleId = getRoleId;
 module.exports.getUserId = getUserId;
+module.exports.fetchAllMessages = fetchAllMessages;
