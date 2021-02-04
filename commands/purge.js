@@ -2,7 +2,7 @@ const utilities = require('../utils/utilities.js');
 
 module.exports = {
     name: 'purge',
-    description: 'deletes all the messages of a user within a given time span',
+    description: 'deletes all the messages of a user in this channel within the past n amount of messages (default: 100 messages)',
     async execute(message, prefix, args, Discord){
         args = args.trim();
 
@@ -15,14 +15,14 @@ module.exports = {
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle('Purge Messages')
-                .addField('Description', 'Removes all messages from a user within a time span')
+                .addField('Description', 'Removes all messages from a user in a channel within the past n amount of messages(default: 100 messages)')
                 .addField('Usage',
-                    '`' + prefix + this.name + ' @user time[m/h/d]')
+                    '`' + prefix + this.name + ' @user numberOfMessages')
                 .addField('Usage',
-                    '`' + prefix + this.name + ' @user -a[all channels] time[m/h/d]')
+                    '`' + prefix + this.name + ' @user numberOfMessages')
                 .addField('Example', 
-                    '`' + prefix + this.name + ' @TOA5T 50m\n' +
-                    '`' + prefix + this.name + ' @TOA5T 1d');
+                    '`' + prefix + this.name + ' @TOA5T\n' +
+                    '`' + prefix + this.name + ' @TOA5T 53\n');
             return message.channel.send(embed);
         }
         //continue with the command
@@ -30,47 +30,23 @@ module.exports = {
             //look for userMention
             const userMention = args.substring(args.indexOf('<'), args.indexOf('>') + 1);
             if(!utilities.isUserMention(userMention)){
-                return message.channel.send('Invalid role mention, please make sure it is a user mention');
-            }
-            //look for time argument
-            const time = args.match(/\s\d+[mhd]/g);
-            console.log(time);
-            if(!time || time.length !== 1){
-                return message.channel.send('Incorrect time arguments, make sure you use `m` (minutes), `h` (hours), `d` (days) for time values');
+                return message.channel.send('Invalid mention, please make sure it is a user mention');
             }
 
-            //check for -a tag
-            let allChannels = (args.indexOf('-a') > -1);
+            let limit = args.match(/\s\d+(\s|$)/g);
 
-            let removals = [userMention, time[0]];
-            if(allChannels) removals.push('-a');
+            let removals = [userMention, limit];
 
             let trimmedArgs = utilities.removeFromString(args, removals);
             if(trimmedArgs.trim() !== ''){
                 return message.channel.send('Invalid arguments taken: `' + trimmedArgs + '`');
             }
 
-
-            //delete messages from channel(s)
-            if(allChannels){
-                const textChannels = message.guild.channels.cache.filter(channel => channel.type === 'text');
-
-                console.log(textChannels[0].messages.cache);
-
-            }
-            else{
-                utilities.fetchAllMessages(message.channel);
-
-            }
-
-
-
-
-
-
+            if(!utilities.isNumeric(limit)) limit = 100;
+            let messages = await message.channel.messages.fetch({limit: limit});
+            messages = messages.filter(m => m.author.id === utilities.getUserId(userMention));
+            console.log('Deleted: ' + messages.size);
+            return await message.channel.bulkDelete(messages, true);
         }
-
-
-
     }
 }

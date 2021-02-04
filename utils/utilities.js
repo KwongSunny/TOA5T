@@ -107,25 +107,9 @@ function getUserId(userMention){
 }
 
 async function fetchAllMessages(textChannel){
-    let resultArray = [];
-    let messageCount = 100;
-    let lastMessage = textChannel.lastMessage;
-
-    while(messageCount === 100){
-        if(lastMessage){
-            let hundredMessages = await textChannel.messages.fetch({limit: 100, before:lastMessage.id})
-
-            resultArray.concat(hundredMessages);
-    
-            lastMessage = hundredMessages[0];
-    
-            messageCount = hundredMessages.size;
-    
-            console.log(messageCount);
-        }
-    }
-
-    return resultArray;
+    return new Promise(async (resolve) => {
+        resolve(await textChannel.awaitMessages((message) => {message.author.id === 184783523624910858}));
+    })
 }
 
 module.exports.getRandomInt = getRandomInt;
