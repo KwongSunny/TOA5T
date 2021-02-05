@@ -36,7 +36,9 @@ Done utilities:
 
         Pause [DONE] Permissions: play_music
 
-        Play [Needs further testing] play_music
+        Play [DONE] permissions: play_music
+
+        Purge [DONE] - removes messages within the last n amount of messages (default: 100) from a certain user
 
         Queue [Needs to be updated] Permissions: n/a
 
@@ -61,8 +63,6 @@ In Development utilities:
     info [ON HOLD]
     
 Planned utilities:
-
-    purge - removes messages within the last x amount of days, from all users or a certain use
 
     mute
 
