@@ -37,8 +37,7 @@ module.exports = {
                 let embed = new Discord.MessageEmbed()
                     .setColor('#f7c920')
                     .setTitle('Current Song')
-                    .addField('Title', '```' + serverQueue.songs[0].title + '```')
-                    .setDescription('`[' + progressBar + ']`');
+                    .setDescription('**Title**\n```' + serverQueue.songs[0].title + '```\n' + '**Progress**\n`[' + progressBar + ']`\n\n' + '**Requested by** `' + `${serverQueue.songs[0].requester}` + '`');
     
                 return message.channel.send(embed);
             }

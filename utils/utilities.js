@@ -106,12 +106,6 @@ function getUserId(userMention){
     return result.substring(3, result.length-1);
 }
 
-async function fetchAllMessages(textChannel){
-    return new Promise(async (resolve) => {
-        resolve(await textChannel.awaitMessages((message) => {message.author.id === 184783523624910858}));
-    })
-}
-
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
@@ -124,4 +118,3 @@ module.exports.isUserMention = isUserMention;
 module.exports.isRoleMention = isRoleMention;
 module.exports.getRoleId = getRoleId;
 module.exports.getUserId = getUserId;
-module.exports.fetchAllMessages = fetchAllMessages;
