@@ -29,9 +29,9 @@ module.exports = {
         else if(args === ''){
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
-                if(!serverQueue.paused && serverQueue.playing) message.channel.send('The playlist is already playing');
-                else if(serverQueue.paused && serverQueue.playing) resume.execute(message, prefix, args, songQueue, Discord);
-                else if(!serverQueue.playing) music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                if(!serverQueue.paused && !serverQueue.stopped) message.channel.send('The playlist is already playing');
+                else if(serverQueue.paused && !serverQueue.stopped) resume.execute(message, prefix, args, songQueue, Discord);
+                else if(serverQueue.stopped) music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
                 return;
             }
             else return message.channel.send("There doesn't appear to be any songs in your queue, use `" + prefix + "play youtubeLink` to add some songs");
@@ -61,17 +61,7 @@ module.exports = {
             //check the bot for a serverQueue
             let serverQueue = songQueue.get(message.guild.id);
             if(!serverQueue){
-                serverQueue = {
-                    voiceChannel: voiceChannel,
-                    connection: null,
-                    songs: [],
-                    prevSong: null,
-                    timer: null,
-                    volume: 30,
-                    loop: false,
-                    paused: false,
-                    stopped: false
-                }
+                serverQueue = music_utilities.generateServerQueue(voiceChannel);
             }
 
             //add the songItem to the serverQueue
