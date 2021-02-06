@@ -41,11 +41,11 @@ module.exports = {
 
             //check for existing serverQueue, if there is then update the voiceChannel
             let serverQueue = songQueue.get(message.guild.id);
-            if(serverQueue){
-                serverQueue.connection = connection;
-                songQueue.set(message.guild.id, serverQueue);
+            if(!serverQueue){
+                serverQueue = music_utilities.generateServerQueue(voiceChannel);
             }
-            else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
+            serverQueue.connection = connection;
+            return songQueue.set(message.guild.id, serverQueue);
         }
         //unknown arguments
         else return message.channel.send('Unknown arguments detected for the command');

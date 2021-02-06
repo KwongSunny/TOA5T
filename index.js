@@ -101,6 +101,23 @@ client.on('guildMemberAdd', async(member) => {
     }
 });
 
+client.on('voiceStateUpdate', (voiceState) => {
+    let serverQueue = songQueue.get(voiceState.guild.id);
+
+
+    //disconnect after 1 minute if no one is in the channel
+    if(serverQueue){
+        if(serverQueue && serverQueue.voiceChannel.members.size === 1){
+            let disconnectTimer = setTimeout(() => {songQueue.get(voiceState.guild.id).voiceChannel.leave()}, 60000);
+            serverQueue.disconnectTimer = disconnectTimer;
+        }
+        else if(serverQueue && serverQueue.voiceChannel.members.size > 1){
+            clearTimeout(songQueue.get(voiceState.guild.id).disconnectTimer);
+        }
+        songQueue.set(voiceState.guild.id, serverQueue);
+    }
+});
+
 let deploy = 'HEROKU';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 

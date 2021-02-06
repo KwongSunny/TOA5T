@@ -2,6 +2,21 @@ const ytdl = require('ytdl-core-discord');
 const aws_utilities = require('./aws_utilities.js');
 const utilities = require('./utilities.js');
 
+function generateServerQueue(voiceChannel){
+    return {
+        voiceChannel: voiceChannel,
+        connection: null,
+        songs: [],
+        prevSong: null,
+        timer: null,
+        volume: 30,
+        loop: false,
+        paused: false,
+        stopped: false,
+        disconnectTimer: null
+    };
+}
+
 async function playQueue(message, guildId, songQueue, Discord){
     //look for the server's Queue
     const serverQueue = songQueue.get(guildId);
@@ -33,7 +48,8 @@ async function playQueue(message, guildId, songQueue, Discord){
                 //force stop the audio when the song is over in case finish event doesn't fire
                 serverQueue.timer = setTimeout(() => {
                     console.log('DISPATCHER FORCED STOPPED');
-                    serverQueue.connection.dispatcher.end();
+                    if(serverQueue.connection.dispatcher)
+                        serverQueue.connection.dispatcher.end();
                 }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
 
                 songQueue.set(message.guild.id, serverQueue);
@@ -106,5 +122,6 @@ async function checkMusicPermissions(message, permissions){
     })
 }
 
+module.exports.generateServerQueue = generateServerQueue;
 module.exports.playQueue = playQueue;
 module.exports.checkMusicPermissions = checkMusicPermissions;
