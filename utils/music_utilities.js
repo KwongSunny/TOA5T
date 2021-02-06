@@ -1,8 +1,8 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 const aws_utilities = require('./aws_utilities.js');
 const utilities = require('./utilities.js');
 
-function playQueue(message, guildId, songQueue, Discord){
+async function playQueue(message, guildId, songQueue, Discord){
     //look for the server's Queue
     const serverQueue = songQueue.get(guildId);
     if(!serverQueue) return console.log('no server queue');
@@ -12,13 +12,14 @@ function playQueue(message, guildId, songQueue, Discord){
     
     //check if there are songs in the queue, if none then delete the serverQueue
     if(serverQueue.songs.length === 0) return;
-    
-    console.log(serverQueue);
+
+    console.log(serverQueue.songs[0].url);
 
     //create a dispatcher to play the stream, on song 'close' it will play the next or leave
-    const dispatcher = serverQueue.connection.play(ytdl(serverQueue.songs[0].url), {quality: 'highestaudio'})
+    const dispatcher = serverQueue.connection.play(await ytdl(serverQueue.songs[0].url), {type: 'opus'})
         .on('start', () => {
             console.log('DISPATCHER START');
+            //create a NOW PLAYING embed to be send
             if(!serverQueue.loop && serverQueue.songs[0]){
                 let embed = new Discord.MessageEmbed()
                     .setColor('#f7c920')
@@ -34,6 +35,7 @@ function playQueue(message, guildId, songQueue, Discord){
                     console.log('DISPATCHER FORCED STOPPED');
                     serverQueue.connection.dispatcher.end();
                 }, ((serverQueue.songs[0].lengthSeconds * 1000) - serverQueue.connection.dispatcher.streamTime));
+
                 songQueue.set(message.guild.id, serverQueue);
             }
         })
@@ -54,7 +56,19 @@ function playQueue(message, guildId, songQueue, Discord){
                 playQueue(message, guildId, songQueue, Discord);
         })
         .on('error', error => {
-            console.error(error);
+            if(error.code === 'EPIPE'){
+                console.log('EPIPE write error')
+            }
+            else{
+                console.log(error);
+            }
+
+            //skip the song that errored
+            serverQueue.songs.shift();
+
+            songQueue.set(message.guild.id, serverQueue);
+
+            return message.channel.send('Something went wrong, please try another video');
         })
     dispatcher.setVolume(serverQueue.volume * 0.01);
 }

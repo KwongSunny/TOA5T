@@ -7,7 +7,7 @@ module.exports = {
         args = args.trim();
 
         //check permissions
-        if(!message.member.hasPermission('MANAGE_MESSAGES')){
+        if(!message.member.hasPermission('ADMINISTRATOR')){
             return message.channel.send('You have insufficient permissions to use this command');
         }
         //send a message on how to use this command
