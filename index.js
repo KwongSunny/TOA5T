@@ -5,6 +5,7 @@ const utilities = require('./utils/utilities.js');
 const aws_utilities = require('./utils/aws_utilities');
 const rr_utilities = require('./utils/reactionrole_utilities');
 const index_helpers = require('./index_helpers.js');
+const messageFilter = require('./utils/messageFilter.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
 const defaultPrefix = '~';
@@ -29,43 +30,47 @@ client.once('ready', () => {
 //persist while bot is alive
 client.on('message', async message => {
 
-    //check for custom prefix
-        let server = await aws_utilities.fetchServer(message.guild.id);
-        let customPrefix = '';
-        if(server && server.Item) customPrefix = server.Item.custom_prefix;
-        //if the server has a custom prefix, use it
-        if(customPrefix !== '') prefix = customPrefix;
-        //if the server does not have a custom prefix, use the default prefix
-        if(customPrefix === '' || !customPrefix) prefix = defaultPrefix;
+    //messages that appear in a server
+    if(message.guild){
+        //check for custom prefix
+            let server = await aws_utilities.fetchServer(message.guild.id);
+            let customPrefix = '';
+            if(server && server.Item) customPrefix = server.Item.custom_prefix;
+            //if the server has a custom prefix, use it
+            if(customPrefix !== '') prefix = customPrefix;
+            //if the server does not have a custom prefix, use the default prefix
+            if(customPrefix === '' || !customPrefix) prefix = defaultPrefix;
 
-    //split args and command
-        let args = '';
-        if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
-        let command = '';
+        //split args and command
+            let args = '';
+            if(message.content.includes(' ')) args = message.content.slice(message.content.search(" ")+1);
+            let command = '';
 
-    //a bot command is being used
-    if(message.content.startsWith(prefix)){
-        command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
-    
-        index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client);
-    }
-    //getprefix will always utilize the default prefix as well as the custom prefix
-    else if(message.content.startsWith(defaultPrefix)){
+        //a bot command is being used
+        if(message.content.startsWith(prefix)){
+            command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
+
+            index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client);
+        }
+        //getprefix will always utilize the default prefix as well as the custom prefix
+        else if(message.content.startsWith(defaultPrefix)){
         command = message.content.slice(defaultPrefix.length).split(/ +/).shift().toLowerCase();
 
         if(command === 'getprefix')
             client.commands.get('getprefix').execute(message, defaultPrefix, args, Discord);
 
         
+        }
+        //ignore messages from bots
+        else if(message.author.bot){
+            return;
+        }
+        //every other message sent by users
+        else{
+            messageFilter.filterMessage(message);
+        }
     }
-    //ignore messages from bots
-    else if(message.author.bot){
-        return;
-    }
-    //every other message sent by users
-    else{
 
-    }
 
 });
 

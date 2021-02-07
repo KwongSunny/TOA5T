@@ -25,7 +25,6 @@ module.exports = {
         }
         //continue with the command
         else if(args === ''){
-            console.log(client.voice.connections);
             const currentGuild = client.voice.connections.get(message.guild.id);
             if(currentGuild){
                 const voiceChannel = currentGuild.channel;

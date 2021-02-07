@@ -31,8 +31,8 @@ module.exports = {
             let warnReason = '';
             let userId = '';
 
-            console.log('reason: ');
-            console.log(args.match(/"(.*?)"/g));
+            // console.log('reason: ');
+            // console.log(args.match(/"(.*?)"/g));
 
             //split the args into user and warnReason
                 if(args.search(/"(.*?)"/g) !== -1){

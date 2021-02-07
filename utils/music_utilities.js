@@ -28,8 +28,6 @@ async function playQueue(message, guildId, songQueue, Discord){
     //check if there are songs in the queue, if none then delete the serverQueue
     if(serverQueue.songs.length === 0) return;
 
-    console.log(serverQueue.songs[0].url);
-
     //create a dispatcher to play the stream, on song 'close' it will play the next or leave
     const dispatcher = serverQueue.connection.play(await ytdl(serverQueue.songs[0].url), {type: 'opus'})
         .on('start', () => {
