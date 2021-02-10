@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KwongSunny/PixelBot.git"
+    "url": "git+https://github.com/KwongSunny/TOA5T.git"
   },
   "author": "Sunny Kwong",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/KwongSunny/PixelBot/issues"
+    "url": "https://github.com/KwongSunny/TOA5T/issues"
   },
-  "homepage": "https://github.com/KwongSunny/PixelBot#readme",
+  "homepage": "https://github.com/KwongSunny/TOA5T#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "aws-sdk": "^2.824.0",

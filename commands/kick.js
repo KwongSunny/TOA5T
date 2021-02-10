@@ -71,15 +71,14 @@ module.exports = {
             else {
                 //check if the user is an admin, or has the kick_members permission if so then disallow the kick
                 if(user.hasPermission('KICK_MEMBERS')){
-                    message.channel.send('You cannot kick this member');
-                    return;
+                    return message.channel.send('You cannot kick this member');
                 }
                 else{
                     if(kickReason !== '') kickReason = '\nReason: ' + kickReason;
     
                     if(notifyUserFlag) await user.send('You have been kicked from the server: `' + message.guild.name + '`' + kickReason);
                     await message.channel.send('<@!' + userId + '> has been kicked' + kickReason);
-                    await message.guild.members.cache.get(userId).kick(kickReason);
+                    return message.guild.members.cache.get(userId).kick(kickReason);
                 }
             }   
         }

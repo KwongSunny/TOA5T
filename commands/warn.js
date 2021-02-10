@@ -67,6 +67,9 @@ module.exports = {
             }
             //the user exists in the guild, continue with warning
             else{
+                //if the user has the ban_members perm, they cannot be warned/banned
+                if(user.hasPermission('BAN_MEMBERS')) return message.channel.send('You cannot warn this member');
+
                 //let userItem = message.guild.members.cache.get(userId);
                 let maxWarnings;
                 let currentWarnings = 0;
@@ -152,8 +155,7 @@ module.exports = {
                     channelMessage += '\nReason: ' + warnReason;
                 }
                 await user.send(directMessage);
-                message.channel.send(channelMessage);
-
+                return message.channel.send(channelMessage);
             }
         }
     }
