@@ -70,6 +70,8 @@ Planned utilities:
 
     getwarnings - retrives a user's number of warnings (current and total)
 
+    resetwarnings
+
     Mod log - sets a channel as a mod log, sends messages on important events in the server
 
     Message filter - removes messages with slurs, spam, all-caps, etc
