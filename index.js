@@ -109,7 +109,6 @@ client.on('guildMemberAdd', async(member) => {
 client.on('voiceStateUpdate', (voiceState) => {
     let serverQueue = songQueue.get(voiceState.guild.id);
 
-
     //disconnect after 1 minute if no one is in the channel
     if(serverQueue){
         if(serverQueue && serverQueue.voiceChannel.members.size === 1){
@@ -121,9 +120,19 @@ client.on('voiceStateUpdate', (voiceState) => {
         }
         songQueue.set(voiceState.guild.id, serverQueue);
     }
+
+    //if bot leaves, delete the queue
+    if(voiceState.member.id === client.user.id){
+        console.log(voiceState.channel.members);
+        if(!voiceState.channel.members.get(client.user.id))
+        {
+            console.log("A");
+        }
+    }
+
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{

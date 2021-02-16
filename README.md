@@ -57,12 +57,18 @@ In Development utilities:
     Help - always needs updates for every command
 
     Music
+    
+        IF THE BOT DISCONNECTS, CLEAR THE QUEUE
 
         Song permissions: n/a
 
     info [ON HOLD]
     
 Planned utilities:
+
+    Raffle
+
+    Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event
 
     mute
 
