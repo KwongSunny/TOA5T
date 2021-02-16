@@ -12,6 +12,7 @@ const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
 const songQueue = new Map();
+const raffles = new Set();
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -50,7 +51,7 @@ client.on('message', async message => {
         if(message.content.startsWith(prefix)){
             command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
 
-            index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client);
+            index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, raffles, Discord, client);
         }
         //getprefix will always utilize the default prefix as well as the custom prefix
         else if(message.content.startsWith(defaultPrefix)){
@@ -121,12 +122,11 @@ client.on('voiceStateUpdate', (voiceState) => {
         songQueue.set(voiceState.guild.id, serverQueue);
     }
 
-    //if bot leaves, delete the queue
+    //if bot leaves, delete the server's song queue
     if(voiceState.member.id === client.user.id){
-        console.log(voiceState.channel.members);
-        if(!voiceState.channel.members.get(client.user.id))
-        {
-            console.log("A");
+        //check if there is a connection to a channel
+        if(!voiceState.connection){
+            songQueue.delete(voiceState.guild.id);
         }
     }
 

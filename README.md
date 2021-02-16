@@ -57,8 +57,6 @@ In Development utilities:
     Help - always needs updates for every command
 
     Music
-    
-        IF THE BOT DISCONNECTS, CLEAR THE QUEUE
 
         Song permissions: n/a
 
