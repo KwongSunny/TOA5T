@@ -12,7 +12,7 @@ const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
 const songQueue = new Map();
-const raffles = new Set();
+const raffles = new Map();
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
