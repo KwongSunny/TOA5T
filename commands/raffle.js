@@ -163,7 +163,7 @@ module.exports = {
         }
         //deletes a raffle
         else if(args.includes('delete')){
-
+            
         }
         //force finishes a raffle
         else if(args.includes('force')){
