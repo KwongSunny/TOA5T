@@ -1,4 +1,4 @@
-function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, Discord, client){
+function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, raffles, Discord, client){
     //Server Management
     if(command === 'ban')
         client.commands.get('ban').execute(message, prefix, args, Discord);
@@ -56,6 +56,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('help').execute(message, args, Discord);
     else if(command === 'info')
         client.commands.get('info').execute(message, prefix, Discord);
+    else if(command === 'raffle')
+        client.commands.get('raffle').execute(message, prefix, args, raffles, Discord);
     else if(command === 'random')
         client.commands.get('random').execute(message, prefix, args, Discord)
     else if(command === 'resetprefix')

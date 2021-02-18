@@ -61,8 +61,12 @@ In Development utilities:
         Song permissions: n/a
 
     info [ON HOLD]
+
+    Raffle
     
 Planned utilities:
+
+    Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event
 
     mute
 
