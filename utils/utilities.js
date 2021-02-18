@@ -106,6 +106,10 @@ function getUserId(userMention){
     return result.substring(3, result.length-1);
 }
 
+function getDaysInMonth(month, year){
+    return new Date(year, month, 0).getDate();
+}
+
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
@@ -118,3 +122,4 @@ module.exports.isUserMention = isUserMention;
 module.exports.isRoleMention = isRoleMention;
 module.exports.getRoleId = getRoleId;
 module.exports.getUserId = getUserId;
+module.exports.getDaysInMonth = getDaysInMonth;

@@ -27,16 +27,112 @@ const removeRaffle = (raffle, serverRaffles) => {
     return serverRaffles.splice(serverRaffles.indexOf(raffle), 1);
 }
 
-const askTime = (dmChannel) => {
-    return new Promise(async (resolve) => {
-        response = await dmChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
+//the user must give an input of dd/mm/yyyy ex: 02/18/2021
+const askDate = (dmChannel) => {
+    const date = new Date();
 
-        if(!utilities.isNumeric(response.last().content)){
+    return new Promise(async (resolve) => {
+        let response = await dmChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
+
+        response = response.last().content;
+
+        if(!isValidRaffleDate(response, date)){ 
+            dmChannel.send('Sorry that is an invalid date, try again.')
+            resolve(askDate(dmChannel));
+        }
+        else {
+            resolve(response.split('/'));
+        }
+    });
+}
+
+//user response must be in the format dd/mm/yyyy
+const isValidRaffleDate = (userResponse, date) => {
+    let dayMonthYear = userResponse.split('/');
+
+    if(dayMonthYear.length !== 3){
+        return false;
+    }
+    else{
+        let day = dayMonthYear[0];
+        let month = dayMonthYear[1];
+        let year = dayMonthYear[2];
+        
+        let userDate = new Date(year, month-1, day);
+
+        //check if userDate is within 30 days
+        if(userDate - date > 30 * 24 * 60 * 60 * 1000){
+            return false
+        }
+    }
+    return true;
+};
+
+//date comes in form: [day, month, year]
+const isToday = (date) => {
+    const day = new Date();
+
+    if(day.getFullYear() !== parseInt(date[2])) return false;
+    if(day.getMonth()+1 !== parseInt(date[1])) return false;
+    if(day.getDate() !== parseInt(date[0])) return false;
+    return true;
+}
+
+//the user must give an input of hour:min in military time (24 hour clock)
+const askTime = (dmChannel, isToday) => {
+
+    return new Promise(async (resolve) => {
+        let response = await dmChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
+
+        response = response.last().content;
+
+        if(!isValidRaffleTime(response, isToday)){
             dmChannel.send('Sorry that is an invalid time, try again.');
-            resolve(askTime(dmChannel));
+            resolve(askTime(dmChannel, isToday));
         }
         else{
-            resolve(parseInt(response.last().content));
+            resolve(response);
+        }   
+    });
+}
+
+//time must come in the format hour:min in military time (24 hour clock)
+const isValidRaffleTime = (userResponse, isToday) => {
+    let hourMinute = userResponse.split(':');
+    const date = new Date();
+
+    if(hourMinute.length !== 2){
+        return false;        
+    }
+    else{
+        let hour = hourMinute[0];
+        let minute = hourMinute[1];
+
+        //check that hour and minute are numbers
+        if(!utilities.isNumeric(hour) || !utilities.isNumeric(minute)) return false;
+
+        if(hour > 23  || minute > 59) return false;
+
+        //check if the time has passed
+        if(isToday){
+            if(date.getHours() > hour || date.getHours() === hour && date.getMinutes() > minute) return false;
+        }
+    }
+    return true;
+}
+
+const askTimeZone = (dmChannel) => {
+    return new Promise(async (resolve) => {
+        let response = await dmChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
+
+        response = response.last().content;
+
+        if(!isValidRaffleTimeZone(response)){
+            dmChannel.send('Sorry that is an invalid time zone, try again.');
+            resolve(askTimeZone(dmChannel));
+        }
+        else{
+            resolve(response);
         }   
     });
 }
@@ -76,8 +172,12 @@ module.exports = {
             let newRaffle = {
                 name: '',
                 description: '',
-                timer: null,
-                raffleId: null,
+                year: null,
+                month: null,
+                day: null,
+                time: null,
+                timeZone: null,
+                messageId: null,
                 host: message.author.tag
             }
 
@@ -96,19 +196,33 @@ module.exports = {
 
                 newRaffle.description = askedDesc.last().content;
 
-                //ask and record time for raffle
-                directMessageChannel.send('How long will the raffle last? Give a number in terms of seconds.');
-                let askedTime = await askTime(directMessageChannel);
+                //ask and record endDate for raffle
+                directMessageChannel.send('What date will the raffle end? Please use the format dd/mm/yyyy, the date cannot be over 30 days.')
+                let askedDate = await askDate(directMessageChannel);
 
-                //finished asking questions, notify the user that a raffle has been created
-                directMessageChannel.send('Your raffle has been created in the ' + message.channel.name + ' channel.');
+                //askedDate is in form [day, month, year]
+                newRaffle.day = askedDate[0];
+                newRaffle.month = askedDate[1];
+                newRaffle.year = askedDate[2];
+
+                const today = isToday(askedDate);
+
+                //ask and record endTime for raffle
+                directMessageChannel.send('What time will the raffle end? Please use the format hour:minute in military time (24 hour clock).')
+                let askedTime = await askTime(directMessageChannel, today);
+
+                newRaffle.time = askedTime;
+
+            //finished asking questions, notify the user that a raffle has been created
+            directMessageChannel.send('Your raffle has been created in the ' + message.channel.name + ' channel.');
 
             //create, send and react to a new raffle message
             let raffleMsg = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Time', askedTime)
+                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year)
+                .addField('Time', newRaffle.time)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
             let sentMessage = await message.channel.send(raffleMsg);
@@ -117,16 +231,20 @@ module.exports = {
             //get the server
             let serverRaffles = raffles.get(message.guild.id);
 
-            //create timer
-            newRaffle.timer = setTimeout(() => {finishRaffle(sentMessage, newRaffle, serverRaffles)}, askedTime * 1000) 
-            newRaffle.raffleId = sentMessage.id;
+            newRaffle.messageId = sentMessage.id;
 
             //create an array of raffles for the server, if there already exists one then add a raffle to the array
             if(serverRaffles)
                 serverRaffles.push(newRaffle);
             else serverRaffles = [newRaffle];
             raffles.set(message.guild.id, serverRaffles);
+
+            console.log(newRaffle);
         }
+
+
+
+
         //lists all raffles
         else if(args.includes('list')){
             serverRaffles = raffles.get(message.guild.id);
@@ -163,11 +281,14 @@ module.exports = {
         }
         //deletes a raffle
         else if(args.includes('delete')){
-            
+
         }
         //force finishes a raffle
         else if(args.includes('force')){
 
+        }
+        else{
+            return message.channel.send('Unknown arguments detected for the command.')
         }
 
     }
