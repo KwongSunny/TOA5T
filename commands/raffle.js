@@ -29,14 +29,12 @@ const removeRaffle = (raffle, serverRaffles) => {
 
 //the user must give an input of dd/mm/yyyy ex: 02/18/2021
 const askDate = (dmChannel) => {
-    const date = new Date();
-
     return new Promise(async (resolve) => {
         let response = await dmChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
 
         response = response.last().content;
 
-        if(!isValidRaffleDate(response, date)){ 
+        if(!isValidRaffleDate(response)){ 
             dmChannel.send('Sorry that is an invalid date, try again.')
             resolve(askDate(dmChannel));
         }
@@ -47,8 +45,10 @@ const askDate = (dmChannel) => {
 }
 
 //user response must be in the format dd/mm/yyyy
-const isValidRaffleDate = (userResponse, date) => {
+const isValidRaffleDate = (userResponse) => {
     let dayMonthYear = userResponse.split('/');
+    let date = new Date();
+    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     if(dayMonthYear.length !== 3){
         return false;
@@ -61,7 +61,7 @@ const isValidRaffleDate = (userResponse, date) => {
         let userDate = new Date(year, month-1, day);
 
         //check if userDate is within 30 days
-        if(userDate - date > 30 * 24 * 60 * 60 * 1000){
+        if(userDate - date > 30 * 24 * 60 * 60 * 1000 || userDate - date < 0){
             return false
         }
     }
@@ -99,7 +99,7 @@ const askTime = (dmChannel, isToday) => {
 //time must come in the format hour:min in military time (24 hour clock)
 const isValidRaffleTime = (userResponse, isToday) => {
     let hourMinute = userResponse.split(':');
-    const date = new Date();
+    const today = new Date();
 
     if(hourMinute.length !== 2){
         return false;        
@@ -111,11 +111,13 @@ const isValidRaffleTime = (userResponse, isToday) => {
         //check that hour and minute are numbers
         if(!utilities.isNumeric(hour) || !utilities.isNumeric(minute)) return false;
 
-        if(hour > 23  || minute > 59) return false;
+        if(hour > 23  || minute > 59 || hour < 0 || minute < 0) return false;
 
         //check if the time has passed
         if(isToday){
-            if(date.getHours() > hour || date.getHours() === hour && date.getMinutes() > minute) return false;
+            let raffleTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hour, minute);
+
+            if(raffleTime - today < 0) return false;
         }
     }
     return true;
