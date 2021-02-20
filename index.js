@@ -1,6 +1,7 @@
 require('dotenv').config();
 const Discord = require('discord.js');
 const fs = require('fs');
+const CronJob = require('cron').CronJob;
 const utilities = require('./utils/utilities.js');
 const aws_utilities = require('./utils/aws_utilities');
 const rr_utilities = require('./utils/reactionrole_utilities');
@@ -12,7 +13,7 @@ const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
 const songQueue = new Map();
-const raffles = new Map();
+let raffles = [];
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -23,10 +24,21 @@ for(const file of commandFiles){
 }
 
 //on startup
-client.once('ready', () => {
-    console.log('PixelBot, online!');
-
+client.once('ready', async () => {
+    console.log('TOA5T is now online!');
+    
+    raffles = await aws_utilities.fetchRaffles();
+    raffles = raffles.Items;
+    console.log(raffles);
 })
+
+const job = new CronJob(
+    '*/1 * * * *', 
+    () => {
+        console.log("CronJob Activated");
+    }
+)
+job.start();
 
 //persist while bot is alive
 client.on('message', async message => {
@@ -59,8 +71,6 @@ client.on('message', async message => {
 
         if(command === 'getprefix')
             client.commands.get('getprefix').execute(message, defaultPrefix, args, Discord);
-
-        
         }
         //ignore messages from bots
         else if(message.author.bot){
@@ -98,7 +108,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
 client.on('guildMemberAdd', async(member) => {
     let server = await aws_utilities.fetchServer(member.guild.id);
 
-    //checks if default_role exists and is not an empty string
+    //gives new members, server default roles
     if(server.Item.default_role && server.Item.default_role !== ''){
         member.roles.add(member.guild.roles.cache.get(server.Item.default_role));
     }

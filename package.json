@@ -19,6 +19,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "aws-sdk": "^2.824.0",
+    "cron": "^1.8.2",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "emoji-regex": "^9.2.0",

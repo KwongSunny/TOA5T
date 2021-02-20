@@ -57,7 +57,7 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
     else if(command === 'info')
         client.commands.get('info').execute(message, prefix, Discord);
     else if(command === 'raffle')
-        client.commands.get('raffle').execute(message, prefix, args, raffles, Discord);
+        client.commands.get('raffle').execute(message, prefix, args, raffles, Discord, client);
     else if(command === 'random')
         client.commands.get('random').execute(message, prefix, args, Discord)
     else if(command === 'resetprefix')
