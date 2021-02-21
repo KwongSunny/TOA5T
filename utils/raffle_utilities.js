@@ -198,7 +198,7 @@ function isValidRaffleTime(userResponse, raffle){
 
         if(hour > 23  || minute > 59 || hour < 0 || minute < 0) return false;
 
-        const raffleDate = new Date(raffle.year, raffle.month-1, raffle.day, hour, minute);
+        const raffleDate = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(hour) - parseInt(raffle.timeZone), minute);
 
         if(raffleDate - today <= 0) return false;
 
