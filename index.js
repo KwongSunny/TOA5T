@@ -42,7 +42,7 @@ client.once('ready', async () => {
     raffles = raffle_utilities.removeCompletedRaffles(raffles);
 })
 
-//Check Raffles daily
+//Check Raffles every 6th hour of every day
 const job = new CronJob(
     '0 */6 * * *', 
     () => {
