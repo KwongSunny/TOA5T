@@ -1,30 +1,66 @@
 const utilities = require('./utilities.js');
+const aws_utilities = require('./aws_utilities.js');
 
-//generate list of users who reacted, then choose a random reacter
-async function finishRaffle(raffleMessage, raffle, serverRaffles){
+//check every day and on startup
+function checkRaffles(raffles, activeRaffles, client){
+    raffles.forEach((raffle) => {
+        let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, raffle.time.split(':')[0],  raffle.time.split(':')[1]);
+        let present = new Date();
 
-    let users = [];
+        console.log(raffle.message_id, ': ', raffleEnd - present, 'ms away.');
+        if(raffleEnd - present < 0){
+            console.log('This Raffle is past due. Force conclude it.')
+            finishRaffle(raffle, raffles, activeRaffles, client);
+        }
+        else if(raffleEnd - present < 24 * 60 * 60 * 1000){
+            activeRaffles.push(startRaffle(raffle, raffleEnd - present, raffles, activeRaffles, client));
+        }
 
-    raffleMessage.reactions.cache.each((reaction) => {
-        reaction.users.cache.each((user) => {
-            if(!users.includes(user.id)) {
-                users.push(user.id)}
-        })
-    });
 
-    let userMention = '<@!' + users[utilities.getRandomInt(users.length)] + '>';
-
-    removeRaffle(raffle, serverRaffles);
-
-    return await raffleMessage.channel.send(userMention + ' has won the raffle[' + raffle.name + ']!');
+    })
 }
 
-function removeRaffle(raffle, serverRaffles){
-    //cancel the timer
-    clearTimeout(raffle.timer)
+//create a timer for the raffle
+function startRaffle(raffle, milliseconds, raffles, activeRaffles, client){
+    return setTimeout(()=>{
+        console.log("Concluding Raffle");
+        finishRaffle(raffle, raffles, activeRaffles, client)
+    }, milliseconds);
+}
 
-    //remove from raffles list
-    return serverRaffles.splice(serverRaffles.indexOf(raffle), 1);
+//generate list of users who reacted, then choose a random reacter, delete raffle from lists
+async function finishRaffle(raffle, raffles, activeRaffles, client){
+
+    //retrieve the raffle message
+    const channel = client.channels.cache.get(raffle.channel_id);
+    const raffleMessage = await utilities.fetchMessageFromChannel(channel, raffle.message_id);
+
+    //for each reaction, record the users
+    const userSet = new Set();
+    await utilities.fetchReactionUsers(raffleMessage, null, userSet);
+
+    //remove the bot from the raffles
+    userSet.delete(client.user.id);
+
+    const userArr = Array.from(userSet);
+
+    let userMention = '<@!' + userArr[utilities.getRandomInt(userArr.length)] + '>';
+
+    removeRaffle(raffle, raffles, activeRaffles);
+
+    return await raffleMessage.channel.send(userMention + ' has won the raffle [' + raffle.name + ']!');
+}
+
+function removeRaffle(raffle, raffles, activeRaffles){
+    clearTimeout(raffle.timer);
+
+    let index = 0;
+    raffles.forEach((element) => {if(element.message_id === raffle.message_id){raffles.slice(index, 1)}; index++;});
+    
+    index = 0;
+    activeRaffles.forEach((element) => {if(element.message_id === raffle.message_id){activeRaffles.slice(index, 1)}; index++;});
+
+    aws_utilities.deleteRaffle(raffle.message_id);
 }
 
 //the user must give an input of dd/mm/yyyy ex: 02/18/2021
@@ -60,7 +96,6 @@ function isValidRaffleDate(userResponse){
         let year = dayMonthYear[2];
         
         let daysInMonth = new Date(year, month, 0).getDate();
-        console.log(daysInMonth);
 
         if(day > daysInMonth){
             return false;
@@ -153,6 +188,7 @@ function isValidRaffleTimeZone(userResponse){
     else return false;
 }
 
+module.exports.checkRaffles = checkRaffles;
 module.exports.finishRaffle = finishRaffle;
 module.exports.removeRaffle = removeRaffle;
 module.exports.askDate = askDate;

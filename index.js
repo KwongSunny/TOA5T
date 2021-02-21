@@ -5,6 +5,7 @@ const CronJob = require('cron').CronJob;
 const utilities = require('./utils/utilities.js');
 const aws_utilities = require('./utils/aws_utilities');
 const rr_utilities = require('./utils/reactionrole_utilities');
+const raffle_utilities = require('./utils/raffle_utilities.js');
 const index_helpers = require('./index_helpers.js');
 const messageFilter = require('./utils/messageFilter.js');
 
@@ -14,6 +15,7 @@ let prefix = '~';
 client.commands = new Discord.Collection();
 const songQueue = new Map();
 let raffles = [];
+const activeRaffles = [];
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -30,12 +32,15 @@ client.once('ready', async () => {
     raffles = await aws_utilities.fetchRaffles();
     raffles = raffles.Items;
     console.log(raffles);
+
+    raffle_utilities.checkRaffles(raffles, activeRaffles, client);
 })
 
 const job = new CronJob(
     '*/1 * * * *', 
     () => {
         console.log("CronJob Activated");
+        raffle_utilities.checkRaffles(raffles, activeRaffles, client);
     }
 )
 job.start();

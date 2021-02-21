@@ -110,6 +110,65 @@ function getDaysInMonth(month, year){
     return new Date(year, month, 0).getDate();
 }
 
+//looks for and fetches a message in a server by id
+async function fetchMessageFromGuild(guild, messageId){
+    return new Promise((resolve, reject) => {
+        let channels = guild.channels.cache;
+        channels.each(async channel => {
+            let messageManager = channel.messages;
+            if(messageManager){
+                try {
+                    let fetchedMessage = await channel.messages.fetch(messageId);
+                    if(fetchedMessage) resolve(fetchedMessage);
+                }catch(e){
+                    if(e.message !== 'Unknown Message')
+                        reject(e);
+                }
+            }
+        });
+    });
+}
+
+//looks for and fetches a message in a server by id
+async function fetchMessageFromChannel(channel, messageId){
+    return new Promise(async (resolve, reject) => {
+        let messageManager = channel.messages;
+        if(messageManager){
+            try {
+                let fetchedMessage = await channel.messages.fetch(messageId);
+                if(fetchedMessage) resolve(fetchedMessage);
+            }catch(e){
+                if(e.message !== 'Unknown Message')
+                    reject(e);
+            }
+        }
+    });
+}
+
+//requires a set for items to be placed into
+//returns a promise, recursively fetches reactions and puts the results in resultSet
+function fetchReactionUsers(message, lastFetchedUser, resultSet){
+    return new Promise(async (resolve) => {
+        const fetchLimit = 100;
+        message.reactions.cache.each(async (reaction) => {
+            const fetchedReaction = await reaction.fetch();
+            const fetchedUsers = await fetchedReaction.users.fetch({limit: fetchLimit, after: lastFetchedUser});
+            
+            const userArray = fetchedUsers.keyArray();
+            userArray.forEach((user) => {
+                resultSet.add(user)
+            });
+
+            if(fetchedUsers.size === fetchLimit){
+                resolve(await fetchReactionUsers(message, fetchedUsers.last(1)[0].id, resultSet));
+            }
+            else{
+                resolve();
+            }
+        })
+    })
+}
+
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
@@ -123,3 +182,6 @@ module.exports.isRoleMention = isRoleMention;
 module.exports.getRoleId = getRoleId;
 module.exports.getUserId = getUserId;
 module.exports.getDaysInMonth = getDaysInMonth;
+module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
+module.exports.fetchMessageFromChannel = fetchMessageFromChannel;
+module.exports.fetchReactionUsers = fetchReactionUsers;

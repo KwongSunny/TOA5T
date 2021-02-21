@@ -32,25 +32,6 @@ function fetchServer(server_id){
     }) 
 }
 
-//looks for and fetches a message in a server by id
-async function fetchMessageFromGuild(guild, messageId){
-    return new Promise((resolve, reject) => {
-        let channels = guild.channels.cache;
-        channels.each(async channel => {
-            let messageManager = channel.messages;
-            if(messageManager){
-                try {
-                    let fetchedMessage = await channel.messages.fetch(messageId);
-                    if(fetchedMessage) resolve(fetchedMessage);
-                }catch(e){
-                    if(e.message !== 'Unknown Message')
-                        reject(e);
-                }
-            }
-        });
-    });
-}
-
 //writes an items to the dynamodb database
 function writeItem(server){
     let param = {
@@ -126,7 +107,7 @@ function writeRaffle(raffle){
     let param = {
         TableName: raffleTable,
         Item: {
-            'message_id': raffle.messageId,
+            'message_id': raffle.message_id,
             'name': raffle.name,
             'description': raffle.description,
             'year': raffle.year,
@@ -134,8 +115,8 @@ function writeRaffle(raffle){
             'day': raffle.day,
             'time': raffle.time,
             'timeZone': raffle.timeZone,
-            "channel_id": raffle.channelId,
-            "server_id": raffle.serverId,
+            "channel_id": raffle.channel_id,
+            "server_id": raffle.server_id,
             'host': raffle.host
         }
     }
@@ -167,7 +148,6 @@ function deleteRaffle(raffleMessageId){
 }
 
 module.exports.fetchServer = fetchServer;
-module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
 

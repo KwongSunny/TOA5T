@@ -42,9 +42,10 @@ module.exports = {
                 day: null,
                 time: null,
                 timeZone: null,
-                messageId: null,
-                channelId: message.channel.id,
-                serverId: message.guild.id,
+                timer: null,
+                message_id: null,
+                channel_id: message.channel.id,
+                server_id: message.guild.id,
                 host: message.author.tag
             }
 
@@ -102,7 +103,7 @@ module.exports = {
             await sentRaffleMessage.react('🎟️');
 
             //set the newRaffle messageId
-            newRaffle.messageId = sentRaffleMessage.id;
+            newRaffle.message_id = sentRaffleMessage.id;
 
             //push the newRaffle to the list of local raffles
             raffles.push(newRaffle);
