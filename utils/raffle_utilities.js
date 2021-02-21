@@ -2,11 +2,11 @@ const utilities = require('./utilities.js');
 const aws_utilities = require('./aws_utilities.js');
 
 //removes past due raffles in the times the bot was offline
-function removePastDueRaffles(raffles){
+function removePastDueRaffles(raffles, client){
     let resultRaffles = raffles;
 
     raffles.forEach((raffle) => {
-        let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, raffle.time.split(':')[0],  raffle.time.split(':')[1]);
+        let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(raffle.time.split(':')[0]) - parseInt(raffle.timeZone),  raffle.time.split(':')[1]);
         let present = new Date();
 
         console.log(raffle.message_id, ': ', raffleEnd - present, 'ms away.');
@@ -14,13 +14,14 @@ function removePastDueRaffles(raffles){
         if(raffleEnd - present < 0){
             console.log('This Raffle is past due. Remove it from the list of raffles.')
 
-            //remove from local list raffles
-            resultRaffles.splice(resultRaffles.indexOf(raffle), 1);
-
-            //remove from dynamodb
-            aws_utilities.deleteRaffle(raffle.message_id);
+            if(raffle.raffle_status !== 'complete'){
+                console.log("Ending raffle: " + raffle.name);
+                declareRaffleWinner(raffle, client);
+                raffle.raffle_status = 'complete';
+            }
         }
-    })
+    });
+
     return resultRaffles;
 }
 
@@ -30,9 +31,11 @@ function activateRaffles(raffles, client){
 
     raffles.forEach((raffle) => {
         if(raffle.timer === null){
-            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, raffle.time.split(':')[0] + raffle.timeZone,  raffle.time.split(':')[1]);
+            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(raffle.time.split(':')[0]),  raffle.time.split(':')[1]);
             let present = new Date();
     
+            console.log('raffleEnd: ' + raffleEnd);
+            console.log('present: ' + present);
             console.log(raffle.message_id, ': ', raffleEnd - present, 'ms away.');
 
             //6 hours
@@ -53,8 +56,11 @@ function startRaffleTimer(raffle, milliseconds, client){
 
     resultRaffle.timer = setTimeout(() => {
         console.log("Ending raffle: " + raffle.name);
+
         declareRaffleWinner(raffle, client);
-        raffle.status = 'complete';
+        raffle.raffle_status = 'complete';
+        aws_utilities.updateRaffle(raffle.message_id, ['raffle_status'], [raffle.raffle_status]);
+
     }, milliseconds);
 
     return resultRaffle;
@@ -91,7 +97,7 @@ function removeCompletedRaffles(raffles){
     
     //remove completed raffles from the list, and delete from dynamodb
     resultRaffles.forEach((raffle) => {
-        if(raffle.status === 'complete'){
+        if(raffle.raffle_status === 'complete'){
             resultRaffles.splice(resultRaffles.indexOf(raffle), 1);
             aws_utilities.deleteRaffle(raffle.message_id);
         }
@@ -158,16 +164,16 @@ function isToday(date){
 }
 
 //the user must give an input of hour:min in military time (24 hour clock)
-function askTime(dmChannel, isToday, client){
+function askTime(dmChannel, raffle, client){
 
     return new Promise(async (resolve) => {
         let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
 
         response = response.last().content;
 
-        if(!isValidRaffleTime(response, isToday)){
+        if(!isValidRaffleTime(response, raffle)){
             dmChannel.send('Sorry that is an invalid time, try again.');
-            resolve(askTime(dmChannel, isToday, client));
+            resolve(askTime(dmChannel, raffle, client));
         }
         else{
             resolve(response);
@@ -176,7 +182,7 @@ function askTime(dmChannel, isToday, client){
 }
 
 //time must come in the format hour:min in military time (24 hour clock)
-function isValidRaffleTime(userResponse, isToday){
+function isValidRaffleTime(userResponse, raffle){
     let hourMinute = userResponse.split(':');
     const today = new Date();
 
@@ -192,12 +198,11 @@ function isValidRaffleTime(userResponse, isToday){
 
         if(hour > 23  || minute > 59 || hour < 0 || minute < 0) return false;
 
-        //check if the time has passed
-        if(isToday){
-            let raffleTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hour, minute);
+        const raffleDate = new Date(raffle.year, raffle.month-1, raffle.day, hour, minute);
 
-            if(raffleTime - today < 0) return false;
-        }
+        if(raffleDate - today <= 0) return false;
+
+
     }
     return true;
 }
