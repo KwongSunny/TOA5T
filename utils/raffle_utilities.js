@@ -31,7 +31,7 @@ function activateRaffles(raffles, client){
 
     raffles.forEach((raffle) => {
         if(raffle.timer === null){
-            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(raffle.time.split(':')[0]),  raffle.time.split(':')[1]);
+            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(raffle.time.split(':')[0]) - parseInt(raffle.timeZone),  raffle.time.split(':')[1]);
             let present = new Date();
     
             console.log('raffleEnd: ' + raffleEnd);
