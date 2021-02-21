@@ -30,7 +30,7 @@ function activateRaffles(raffles, client){
 
     raffles.forEach((raffle) => {
         if(raffle.timer === null){
-            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, raffle.time.split(':')[0] - raffle.timeZone,  raffle.time.split(':')[1]);
+            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, raffle.time.split(':')[0] + raffle.timeZone,  raffle.time.split(':')[1]);
             let present = new Date();
     
             console.log(raffle.message_id, ': ', raffleEnd - present, 'ms away.');
