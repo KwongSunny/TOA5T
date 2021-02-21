@@ -44,7 +44,7 @@ client.once('ready', async () => {
 
 //Check Raffles daily
 const job = new CronJob(
-    '*/10 * * * *', 
+    '0 */6 * * *', 
     () => {
         console.log("Daily Raffle Check");
         console.log(raffles);
