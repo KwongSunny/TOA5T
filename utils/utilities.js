@@ -169,6 +169,11 @@ function fetchReactionUsers(message, lastFetchedUser, resultSet){
     })
 }
 
+//turns utc offset to ms offset
+function hourToMs(offset){
+    return offset * 60 * 60 * 1000;
+}
+
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
@@ -185,3 +190,4 @@ module.exports.getDaysInMonth = getDaysInMonth;
 module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.fetchMessageFromChannel = fetchMessageFromChannel;
 module.exports.fetchReactionUsers = fetchReactionUsers;
+module.exports.hourToMs = hourToMs

@@ -65,12 +65,12 @@ module.exports = {
 
                 newRaffle.description = askedDesc.last().content;
 
-                //ask and record TIMEZONE for raffle NOT DONE YET
-                // directMessageChannel.send(
-                //     'What UTC offset is this raffle based in? Enter an offset between -12 and +14\n'+
-                //     'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
-                // let askedTimeZone = await raffle_utilities.askTimeZone(directMessageChannel, client);
-                // newRaffle.timeZone = askedTimeZone;
+                //ask and record TIMEZONE for raffle
+                directMessageChannel.send(
+                    'What UTC offset is this raffle based in? Enter an offset between -12 and +14\n'+
+                    'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
+                let askedTimeZone = await raffle_utilities.askTimeZone(directMessageChannel, client);
+                newRaffle.timeZone = askedTimeZone;
 
                 //ask and record DAY,MONTH,YEAR for raffle
                 directMessageChannel.send('What date will the raffle end? Please use the format dd/mm/yyyy, the date cannot be over 30 days.')
@@ -96,7 +96,7 @@ module.exports = {
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + newRaffle.time)
+                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + newRaffle.time + ' UTC' + newRaffle.timeZone)
                 //.addField('Time', newRaffle.time + ' UTC' + newRaffle.timeZone)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
