@@ -15,7 +15,6 @@ let prefix = '~';
 client.commands = new Discord.Collection();
 const songQueue = new Map();
 let raffles = [];
-const activeRaffles = [];
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -33,14 +32,31 @@ client.once('ready', async () => {
     raffles = raffles.Items;
     console.log(raffles);
 
-    raffle_utilities.checkRaffles(raffles, activeRaffles, client);
+    //remove past due raffles (this will remove raffles that ended in between bot downtime)
+    raffles = raffle_utilities.removePastDueRaffles(raffles);
+
+    //activate raffles if they're ending within a day
+    raffles = raffle_utilities.activateRaffles(raffles, client);
+
+    //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
+    raffles = raffle_utilities.removeCompletedRaffles(raffles);
 })
 
+//Check Raffles daily
 const job = new CronJob(
-    '*/1 * * * *', 
+    '*/10 * * * *', 
     () => {
-        console.log("CronJob Activated");
-        raffle_utilities.checkRaffles(raffles, activeRaffles, client);
+        console.log("Daily Raffle Check");
+        console.log(raffles);
+
+        //remove past due raffles (this will remove raffles that ended in between bot downtime)
+        raffles = raffle_utilities.removePastDueRaffles(raffles);
+
+        //activate raffles if they're ending within a day
+        raffles = raffle_utilities.activateRaffles(raffles, client);
+
+        //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
+        raffles = raffle_utilities.removeCompletedRaffles(raffles);
     }
 )
 job.start();
@@ -147,7 +163,7 @@ client.on('voiceStateUpdate', (voiceState) => {
 
 });
 
-let deploy = 'LOCAL';
+let deploy = 'HEROKU';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{

@@ -1,6 +1,6 @@
 const utilities = require('../utils/utilities.js');
 const aws_utilities = require('../utils/aws_utilities.js');
-const raffle_utils = require('../utils/raffle_utilities.js');
+const raffle_utilities = require('../utils/raffle_utilities.js');
 
 module.exports = {
     name: 'raffle',
@@ -44,6 +44,7 @@ module.exports = {
                 timeZone: null,
                 timer: null,
                 message_id: null,
+                status: 'initialized',
                 channel_id: message.channel.id,
                 server_id: message.guild.id,
                 host: message.author.tag
@@ -65,15 +66,15 @@ module.exports = {
                 newRaffle.description = askedDesc.last().content;
 
                 //ask and record TIMEZONE for raffle NOT DONE YET
-                directMessageChannel.send(
-                    'What UTC offset is this raffle based in? Enter an offset between -12 and +14\n'+
-                    'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
-                let askedTimeZone = await raffle_utils.askTimeZone(directMessageChannel, client);
-                newRaffle.timeZone = askedTimeZone;
+                // directMessageChannel.send(
+                //     'What UTC offset is this raffle based in? Enter an offset between -12 and +14\n'+
+                //     'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
+                // let askedTimeZone = await raffle_utilities.askTimeZone(directMessageChannel, client);
+                // newRaffle.timeZone = askedTimeZone;
 
                 //ask and record DAY,MONTH,YEAR for raffle
                 directMessageChannel.send('What date will the raffle end? Please use the format dd/mm/yyyy, the date cannot be over 30 days.')
-                let askedDate = await raffle_utils.askDate(directMessageChannel, client);
+                let askedDate = await raffle_utilities.askDate(directMessageChannel, client);
 
                 //askedDate is in form [day, month, year]
                 newRaffle.day = askedDate[0];
@@ -81,9 +82,9 @@ module.exports = {
                 newRaffle.year = askedDate[2];
 
                 //ask and record TIME for raffle
-                const today = raffle_utils.isToday(askedDate);
+                const today = raffle_utilities.isToday(askedDate);
                 directMessageChannel.send('What time will the raffle end? Please use the format hour:minute in military time (24 hour clock).')
-                let askedTime = await raffle_utils.askTime(directMessageChannel, today, client);
+                let askedTime = await raffle_utilities.askTime(directMessageChannel, today, client);
 
                 newRaffle.time = askedTime;
 
@@ -95,8 +96,8 @@ module.exports = {
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year)
-                .addField('Time', newRaffle.time + ' UTC' + newRaffle.timeZone)
+                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + newRaffle.time)
+                //.addField('Time', newRaffle.time + ' UTC' + newRaffle.timeZone)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
             let sentRaffleMessage = await message.channel.send(raffleMsg);
@@ -111,6 +112,9 @@ module.exports = {
             //write the newRaffle to the db
             aws_utilities.writeRaffle(newRaffle);
 
+            //activate any unactivated raffles, including the new one
+            raffle_utilities.activateRaffles(raffles, client);
+
             console.log(raffles);
         }
 
@@ -119,33 +123,7 @@ module.exports = {
 
         //lists all raffles
         else if(args.includes('list')){
-            serverRaffles = raffles.get(message.guild.id);
-            let embed = new Discord.MessageEmbed()
-                .setColor('#f7c920')
-                .setTitle('Raffles')
-
-            let desc = '```';
-
-            if(serverRaffles && serverRaffles.length > 0){
-                for(raffle = 0; raffle < 4; raffle++){
-                    if(serverRaffles[raffle])
-                        desc += '[' + (raffle + 1) + '] ' + serverRaffles[raffle].name + ' by ' + serverRaffles[raffle].host + '\n';
-                    else
-                        desc += '[' + (raffle + 1) + ']\n';
-                }
-    
-                //Math ceils the amount of pages of songs
-                let pages = Math.ceil((serverRaffles.length-1)/4);
-                if(pages === 0) pages++;
-                
-                desc += '```page 1/' + pages;
-            }
-            else
-                desc += 'There are no raffles active. Use ' + prefix + this.name + ' new to create one!```';
-
-            embed.setDescription(desc);
-            return await message.channel.send(embed);
-
+            console.log('raffles:\n', raffles);
         }
         //returns information on a specific raffle
         else if(args.includes('info')){
