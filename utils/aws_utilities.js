@@ -115,6 +115,7 @@ function writeRaffle(raffle){
             'day': raffle.day,
             'time': raffle.time,
             'timeZone': raffle.timeZone,
+            'raffle_status': raffle.raffle_status,
             "channel_id": raffle.channel_id,
             "server_id": raffle.server_id,
             'host': raffle.host
@@ -128,6 +129,39 @@ function writeRaffle(raffle){
             //console.log("Update succeeded:", JSON.stringify(data, null, 2));
         }
     });
+}
+
+function updateRaffle(raffleMessageId, keys, values){
+    let updateExpression = 'set ';
+    let expressionAttributeValues = {};
+    for(key = 0; key < keys.length; key++){
+        if(key === keys.length-1)
+            updateExpression += keys[key] + '=:' + key;
+        else
+            updateExpression += keys[key] + '=:' + key + ', ';
+        expressionAttributeValues[':' + key] = values[key];
+    }
+
+    let param = {
+        TableName: raffleTable,
+        Key: {
+            "message_id": raffleMessageId
+        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ReturnValues: "UPDATED_NEW"
+    };
+
+    docClient.update(param, function(err, data) {
+        if (err) {
+            console.error("Unable to update raffle. Error JSON:", JSON.stringify(err, null, 2));
+        } 
+        else {
+            //console.log("Update succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+
+
 }
 
 function deleteRaffle(raffleMessageId){
@@ -153,4 +187,5 @@ module.exports.updateItem = updateItem;
 
 module.exports.fetchRaffles = fetchRaffles;
 module.exports.writeRaffle = writeRaffle;
+module.exports.updateRaffle = updateRaffle;
 module.exports.deleteRaffle = deleteRaffle;

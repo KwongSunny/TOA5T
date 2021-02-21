@@ -33,9 +33,9 @@ client.once('ready', async () => {
     console.log(raffles);
 
     //remove past due raffles (this will remove raffles that ended in between bot downtime)
-    raffles = raffle_utilities.removePastDueRaffles(raffles);
+    raffles = raffle_utilities.removePastDueRaffles(raffles, client);
 
-    //activate raffles if they're ending within a day
+    //activate raffles if they're ending within 6 hours
     raffles = raffle_utilities.activateRaffles(raffles, client);
 
     //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
@@ -50,7 +50,7 @@ const job = new CronJob(
         console.log(raffles);
 
         //remove past due raffles (this will remove raffles that ended in between bot downtime)
-        raffles = raffle_utilities.removePastDueRaffles(raffles);
+        raffles = raffle_utilities.removePastDueRaffles(raffles, client);
 
         //activate raffles if they're ending within a day
         raffles = raffle_utilities.activateRaffles(raffles, client);

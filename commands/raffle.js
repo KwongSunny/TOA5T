@@ -44,7 +44,7 @@ module.exports = {
                 timeZone: null,
                 timer: null,
                 message_id: null,
-                status: 'initialized',
+                raffle_status: 'initialized',
                 channel_id: message.channel.id,
                 server_id: message.guild.id,
                 host: message.author.tag
@@ -84,7 +84,7 @@ module.exports = {
                 //ask and record TIME for raffle
                 const today = raffle_utilities.isToday(askedDate);
                 directMessageChannel.send('What time will the raffle end? Please use the format hour:minute in military time (24 hour clock).')
-                let askedTime = await raffle_utilities.askTime(directMessageChannel, today, client);
+                let askedTime = await raffle_utilities.askTime(directMessageChannel, newRaffle, client);
 
                 newRaffle.time = askedTime;
 
