@@ -8,6 +8,7 @@ AWS.config.update({
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = 'pixelbot_servers';
+const raffleTable = 'toast_raffles';
 
 //returns a promise of the item from dynamodb using the server_id key
 function fetchServer(server_id){
@@ -29,25 +30,6 @@ function fetchServer(server_id){
             }
         });
     }) 
-}
-
-//looks for and fetches a message in a server by id
-async function fetchMessageFromGuild(guild, messageId){
-    return new Promise((resolve, reject) => {
-        let channels = guild.channels.cache;
-        channels.each(async channel => {
-            let messageManager = channel.messages;
-            if(messageManager){
-                try {
-                    let fetchedMessage = await channel.messages.fetch(messageId);
-                    if(fetchedMessage) resolve(fetchedMessage);
-                }catch(e){
-                    if(e.message !== 'Unknown Message')
-                        reject(e);
-                }
-            }
-        });
-    });
 }
 
 //writes an items to the dynamodb database
@@ -103,7 +85,72 @@ function updateItem(server_id, keys, values){
     });
 }
 
+function fetchRaffles(){
+    let param = {
+        TableName: raffleTable
+    }
+    return new Promise((resolve, reject)=>{
+        docClient.scan(param, function(err, data) {
+            if (err) {
+                console.error("Unable to scan table. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err);
+            } 
+            else {
+                //console.log("Read succeeded:", JSON.stringify(data, null, 2));
+                resolve(data);
+            }
+        });
+    }) 
+}
+
+function writeRaffle(raffle){
+    let param = {
+        TableName: raffleTable,
+        Item: {
+            'message_id': raffle.message_id,
+            'name': raffle.name,
+            'description': raffle.description,
+            'year': raffle.year,
+            'month': raffle.month,
+            'day': raffle.day,
+            'time': raffle.time,
+            'timeZone': raffle.timeZone,
+            "channel_id": raffle.channel_id,
+            "server_id": raffle.server_id,
+            'host': raffle.host
+        }
+    }
+    docClient.put(param, function(err, data) {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+        } 
+        else {
+            //console.log("Update succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+}
+
+function deleteRaffle(raffleMessageId){
+    let param = {
+        TableName: raffleTable,
+        Key: {
+            "message_id": raffleMessageId
+        }
+    }
+    docClient.delete(param, function(err, data) {
+        if (err) {
+            console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+        } 
+        else {
+            //console.log("Update succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+}
+
 module.exports.fetchServer = fetchServer;
-module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
+
+module.exports.fetchRaffles = fetchRaffles;
+module.exports.writeRaffle = writeRaffle;
+module.exports.deleteRaffle = deleteRaffle;

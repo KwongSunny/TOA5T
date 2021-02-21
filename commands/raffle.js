@@ -1,45 +1,6 @@
 const utilities = require('../utils/utilities.js');
-
-//generate list of users who reacted, then choose a random reacter
-const finishRaffle = async (raffleMessage, raffle, serverRaffles) => {
-
-    let users = [];
-
-    raffleMessage.reactions.cache.each((reaction) => {
-        reaction.users.cache.each((user) => {
-            if(!users.includes(user.id)) {
-                users.push(user.id)}
-        })
-    });
-
-    let userMention = '<@!' + users[utilities.getRandomInt(users.length)] + '>';
-
-    removeRaffle(raffle, serverRaffles);
-
-    return await raffleMessage.channel.send(userMention + ' has won the raffle[' + raffle.name + ']!');
-}
-
-const removeRaffle = (raffle, serverRaffles) => {
-    //cancel the timer
-    clearTimeout(raffle.timer)
-
-    //remove from raffles list
-    return serverRaffles.splice(serverRaffles.indexOf(raffle), 1);
-}
-
-const askTime = (dmChannel) => {
-    return new Promise(async (resolve) => {
-        response = await dmChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
-
-        if(!utilities.isNumeric(response.last().content)){
-            dmChannel.send('Sorry that is an invalid time, try again.');
-            resolve(askTime(dmChannel));
-        }
-        else{
-            resolve(parseInt(response.last().content));
-        }   
-    });
-}
+const aws_utilities = require('../utils/aws_utilities.js');
+const raffle_utilities = require('../utils/raffle_utilities.js');
 
 module.exports = {
     name: 'raffle',
@@ -76,86 +37,93 @@ module.exports = {
             let newRaffle = {
                 name: '',
                 description: '',
+                year: null,
+                month: null,
+                day: null,
+                time: null,
+                timeZone: null,
                 timer: null,
-                raffleId: null,
+                message_id: null,
+                status: 'initialized',
+                channel_id: message.channel.id,
+                server_id: message.guild.id,
                 host: message.author.tag
             }
 
             const directMessageChannel = await message.author.createDM();
 
             //ask questions to the user to create the raffle
-                //ask and record name for raffle
+                //ask and record NAME for raffle
                 directMessageChannel.send('What would you like to name the raffle?');
-                let askedName = await directMessageChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
+                let askedName = await directMessageChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
 
                 newRaffle.name = askedName.last().content;
 
-                //ask and record description for raffle
+                //ask and record DESCRIPTION for raffle
                 directMessageChannel.send('Give a description of the raffle.');
-                let askedDesc = await directMessageChannel.awaitMessages(m => m, {max:2, time: 60000, errors:['time']});
+                let askedDesc = await directMessageChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
 
                 newRaffle.description = askedDesc.last().content;
 
-                //ask and record time for raffle
-                directMessageChannel.send('How long will the raffle last? Give a number in terms of seconds.');
-                let askedTime = await askTime(directMessageChannel);
+                //ask and record TIMEZONE for raffle NOT DONE YET
+                // directMessageChannel.send(
+                //     'What UTC offset is this raffle based in? Enter an offset between -12 and +14\n'+
+                //     'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
+                // let askedTimeZone = await raffle_utilities.askTimeZone(directMessageChannel, client);
+                // newRaffle.timeZone = askedTimeZone;
 
-                //finished asking questions, notify the user that a raffle has been created
-                directMessageChannel.send('Your raffle has been created in the ' + message.channel.name + ' channel.');
+                //ask and record DAY,MONTH,YEAR for raffle
+                directMessageChannel.send('What date will the raffle end? Please use the format dd/mm/yyyy, the date cannot be over 30 days.')
+                let askedDate = await raffle_utilities.askDate(directMessageChannel, client);
+
+                //askedDate is in form [day, month, year]
+                newRaffle.day = askedDate[0];
+                newRaffle.month = askedDate[1];
+                newRaffle.year = askedDate[2];
+
+                //ask and record TIME for raffle
+                const today = raffle_utilities.isToday(askedDate);
+                directMessageChannel.send('What time will the raffle end? Please use the format hour:minute in military time (24 hour clock).')
+                let askedTime = await raffle_utilities.askTime(directMessageChannel, today, client);
+
+                newRaffle.time = askedTime;
+
+            //finished asking questions, notify the user that a raffle has been created
+            directMessageChannel.send('Your raffle has been created in the ' + message.channel.name + ' channel.');
 
             //create, send and react to a new raffle message
             let raffleMsg = new Discord.MessageEmbed()
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Time', askedTime)
+                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + newRaffle.time)
+                //.addField('Time', newRaffle.time + ' UTC' + newRaffle.timeZone)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
-            let sentMessage = await message.channel.send(raffleMsg);
-            await sentMessage.react('🎟️');
+            let sentRaffleMessage = await message.channel.send(raffleMsg);
+            await sentRaffleMessage.react('🎟️');
 
-            //get the server
-            let serverRaffles = raffles.get(message.guild.id);
+            //set the newRaffle messageId
+            newRaffle.message_id = sentRaffleMessage.id;
 
-            //create timer
-            newRaffle.timer = setTimeout(() => {finishRaffle(sentMessage, newRaffle, serverRaffles)}, askedTime * 1000) 
-            newRaffle.raffleId = sentMessage.id;
+            //push the newRaffle to the list of local raffles
+            raffles.push(newRaffle);
 
-            //create an array of raffles for the server, if there already exists one then add a raffle to the array
-            if(serverRaffles)
-                serverRaffles.push(newRaffle);
-            else serverRaffles = [newRaffle];
-            raffles.set(message.guild.id, serverRaffles);
+            //write the newRaffle to the db
+            aws_utilities.writeRaffle(newRaffle);
+
+            //activate any unactivated raffles, including the new one
+            raffle_utilities.activateRaffles(raffles, client);
+
+            console.log(raffles);
         }
+
+
+
+
         //lists all raffles
         else if(args.includes('list')){
-            serverRaffles = raffles.get(message.guild.id);
-            let embed = new Discord.MessageEmbed()
-                .setColor('#f7c920')
-                .setTitle('Raffles')
-
-            let desc = '```';
-
-            if(serverRaffles && serverRaffles.length > 0){
-                for(raffle = 0; raffle < 4; raffle++){
-                    if(serverRaffles[raffle])
-                        desc += '[' + (raffle + 1) + '] ' + serverRaffles[raffle].name + ' by ' + serverRaffles[raffle].host + '\n';
-                    else
-                        desc += '[' + (raffle + 1) + ']\n';
-                }
-    
-                //Math ceils the amount of pages of songs
-                let pages = Math.ceil((serverRaffles.length-1)/4);
-                if(pages === 0) pages++;
-                
-                desc += '```page 1/' + pages;
-            }
-            else
-                desc += 'There are no raffles active. Use ' + prefix + this.name + ' new to create one!```';
-
-            embed.setDescription(desc);
-            return await message.channel.send(embed);
-
+            console.log('raffles:\n', raffles);
         }
         //returns information on a specific raffle
         else if(args.includes('info')){
@@ -163,11 +131,14 @@ module.exports = {
         }
         //deletes a raffle
         else if(args.includes('delete')){
-            
+
         }
         //force finishes a raffle
         else if(args.includes('force')){
 
+        }
+        else{
+            return message.channel.send('Unknown arguments detected for the command.')
         }
 
     }
