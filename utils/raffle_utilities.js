@@ -6,13 +6,19 @@ function removePastDueRaffles(raffles, client){
     let resultRaffles = raffles;
 
     raffles.forEach((raffle) => {
-        let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(raffle.time.split(':')[0]) - parseInt(raffle.timeZone),  raffle.time.split(':')[1]);
+        const hour = raffle.time.split(':')[0];
+        const minute = raffle.time.split(':')[1];
+
+        //create a UTC raffle date, displayed in local time
+        const raffleEnd = createRaffleDate(raffle.year, raffle.month-1, raffle.day, hour, minute, raffle.timeZone);
+
         let present = new Date();
 
-        console.log(raffle.message_id, ': ', raffleEnd - present, 'ms away.');
+        // console.log('Checking Past Due Raffles');
+        // console.log(raffle.name + '(' + raffle.message_id + '): ', raffleEnd - present, 'ms away.');
 
         if(raffleEnd - present < 0){
-            console.log('This Raffle is past due. Remove it from the list of raffles.')
+            console.log('This Raffle is past due. Remove it from the list of raffles. [' + raffle.name + ', ' + raffle.message_id + ']');
 
             if(raffle.raffle_status !== 'complete'){
                 console.log("Ending raffle: " + raffle.name);
@@ -30,18 +36,22 @@ function activateRaffles(raffles, client){
     let resultRaffles = raffles;
 
     raffles.forEach((raffle) => {
-        if(raffle.timer === null){
-            let raffleEnd = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(raffle.time.split(':')[0]) - parseInt(raffle.timeZone),  raffle.time.split(':')[1]);
+        if(raffle.timer === null || !raffle.timer){
+            const hour = raffle.time.split(':')[0];
+            const minute = raffle.time.split(':')[1];
+    
+            //create a UTC raffle date, displayed in local time
+            const raffleEnd = createRaffleDate(raffle.year, raffle.month-1, raffle.day, hour, minute, raffle.timeZone);
+
             let present = new Date();
     
-            console.log('raffleEnd: ' + raffleEnd);
-            console.log('present: ' + present);
-            console.log(raffle.message_id, ': ', raffleEnd - present, 'ms away.');
+            // console.log('Activating Raffles');
+            // console.log(raffle.name + '(' + raffle.message_id + '): ', raffleEnd - present, 'ms away.');
 
             //6 hours
             const ms = 6 * 60 * 60 * 1000;
 
-            if(raffleEnd - present < ms){
+            if(raffleEnd - present < ms && raffle.raffle_status !== 'complete'){
                 raffle = startRaffleTimer(raffle, raffleEnd - present, client);
             }
         }
@@ -52,6 +62,7 @@ function activateRaffles(raffles, client){
 
 //returns the raffle with a timeout
 function startRaffleTimer(raffle, milliseconds, client){
+    console.log("This Raffle's timer is now being started [" + raffle.name + ', ' + raffle.message_id + ']');
     resultRaffle = raffle;
 
     resultRaffle.timer = setTimeout(() => {
@@ -59,6 +70,7 @@ function startRaffleTimer(raffle, milliseconds, client){
 
         declareRaffleWinner(raffle, client);
         raffle.raffle_status = 'complete';
+        raffle.timer = null;
         aws_utilities.updateRaffle(raffle.message_id, ['raffle_status'], [raffle.raffle_status]);
 
     }, milliseconds);
@@ -127,7 +139,7 @@ function askDate(dmChannel, client){
 function isValidRaffleDate(userResponse){
     let dayMonthYear = userResponse.split('/');
     let date = new Date();
-    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 
     //check there is a day, month and year
     if(dayMonthYear.length !== 3){
@@ -138,7 +150,7 @@ function isValidRaffleDate(userResponse){
         let month = dayMonthYear[1];
         let year = dayMonthYear[2];
         
-        let daysInMonth = new Date(year, month, 0).getDate();
+        let daysInMonth = new Date(year, month, 0).getUTCDate();
 
         if(day > daysInMonth){
             return false;
@@ -157,9 +169,9 @@ function isValidRaffleDate(userResponse){
 function isToday(date){
     const day = new Date();
 
-    if(day.getFullYear() !== parseInt(date[2])) return false;
-    if(day.getMonth()+1 !== parseInt(date[1])) return false;
-    if(day.getDate() !== parseInt(date[0])) return false;
+    if(day.getUTCFullYear() !== parseInt(date[2])) return false;
+    if(day.getUTCMonth()+1 !== parseInt(date[1])) return false;
+    if(day.getUTCDate() !== parseInt(date[0])) return false;
     return true;
 }
 
@@ -184,8 +196,6 @@ function askTime(dmChannel, raffle, client){
 //time must come in the format hour:min in military time (24 hour clock)
 function isValidRaffleTime(userResponse, raffle){
     let hourMinute = userResponse.split(':');
-    const today = new Date();
-
     if(hourMinute.length !== 2){
         return false;        
     }
@@ -198,11 +208,13 @@ function isValidRaffleTime(userResponse, raffle){
 
         if(hour > 23  || minute > 59 || hour < 0 || minute < 0) return false;
 
-        const raffleDate = new Date(raffle.year, raffle.month-1, raffle.day, parseInt(hour) - parseInt(raffle.timeZone), minute);
+        //Creates a UTC raffle end date, displayed in local time
+        const raffleEnd = createRaffleDate(raffle.year, raffle.month-1, raffle.day, hour, minute, raffle.timeZone);
 
-        if(raffleDate - today <= 0) return false;
+        //creates a UTC date, displayed in local time
+        const today = new Date();
 
-
+        if(raffleEnd - today <= 0) return false;
     }
     return true;
 }
@@ -228,6 +240,14 @@ function isValidRaffleTimeZone(userResponse){
     if(userResponse[0] === '+' && offset < 15 && offset >= 0) return true;
     else if(userResponse[0] === '-' && offset < 13 && offset >= 0) return true;
     else return false;
+}
+
+function createRaffleDate(year, month, date, hour, minute, timeZone){
+    const raffleEnd = new Date(year, month, date);
+    raffleEnd.setUTCHours(parseInt(hour) - parseInt(timeZone));
+    raffleEnd.setUTCMinutes(minute);
+
+    return raffleEnd;
 }
 
 module.exports.activateRaffles = activateRaffles;

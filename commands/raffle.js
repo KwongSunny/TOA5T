@@ -96,8 +96,7 @@ module.exports = {
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + newRaffle.time + ' UTC' + newRaffle.timeZone)
-                //.addField('Time', newRaffle.time + ' UTC' + newRaffle.timeZone)
+                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + utilities.militaryToStandardTime(newRaffle.time.split(':')[0], newRaffle.time.split(':')[1]) + ' UTC' + newRaffle.timeZone)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
             let sentRaffleMessage = await message.channel.send(raffleMsg);
@@ -124,6 +123,28 @@ module.exports = {
         //lists all raffles
         else if(args.includes('list')){
             console.log('raffles:\n', raffles);
+
+            let description = '```';
+
+            let resultRaffles = [];
+            for(raffle = 0; raffle < raffles.length; raffle++){
+                if(raffles[raffle].server_id === message.guild.id && raffles[raffle].raffle_status !== 'complete'){
+                    resultRaffles.push(raffles[raffle]);
+
+                    let timeLeft = new Date(raffles[raffle].year, raffles[raffle].month-1, raffles[raffle].day, raffles[raffle].time.split(':')[0], raffles[raffle].time.split(':')[1]) - new Date();
+
+                    description += '[' + (raffle + 1) + ']' + raffles[raffle].name + ' ends in ' + utilities.msTimeToString(timeLeft);
+                }
+            }
+
+            description += '```';
+
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Raffles')
+                .setDescription(description);
+
+            return await message.channel.send(embed);
         }
         //returns information on a specific raffle
         else if(args.includes('info')){
