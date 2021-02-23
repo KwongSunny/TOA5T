@@ -46,8 +46,7 @@ client.once('ready', async () => {
 const job = new CronJob(
     '0 */6 * * *', 
     () => {
-        console.log("Daily Raffle Check");
-        console.log(raffles);
+        console.log("Quarter Daily Raffle Check");
 
         //remove past due raffles (this will remove raffles that ended in between bot downtime)
         raffles = raffle_utilities.removePastDueRaffles(raffles, client);

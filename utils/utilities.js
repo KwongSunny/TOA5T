@@ -174,6 +174,39 @@ function hourToMs(offset){
     return offset * 60 * 60 * 1000;
 }
 
+//turns hour and minute in 24 hour format to a 12 hour format including am/pm;
+//returns: example: 6:00AM
+function militaryToStandardTime(hour, minute){
+    let result = '';
+    let resultHour = hour;
+    let resultMin = minute.toString();
+    let meridien = 'AM';
+
+    if(resultHour > 12){
+        resultHour -= 12;
+         meridien = 'PM';
+    }
+    if(resultHour === 0) resultHour = 12;
+
+    result += resultHour;
+
+    if(resultMin.length === 1 )
+        resultMin = '0' + resultMin;
+    result += ':' + resultMin + meridien;
+
+    console.log(result);
+    return result;
+}
+
+function msTimeToString(ms){
+    let seconds = (ms / 1000)% 60;
+    let minutes = (ms / (60 * 1000)) % 60;
+    let hours = (ms / (60 * 60 * 1000)) % 24;
+    let days = ms / (24 * 60 * 60 * 1000);
+
+    return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+}
+
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
 module.exports.waitSeconds = waitSeconds;
@@ -191,3 +224,5 @@ module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.fetchMessageFromChannel = fetchMessageFromChannel;
 module.exports.fetchReactionUsers = fetchReactionUsers;
 module.exports.hourToMs = hourToMs
+module.exports.militaryToStandardTime = militaryToStandardTime;
+module.exports.msTimeToString = msTimeToString;
