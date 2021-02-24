@@ -139,7 +139,7 @@ function askDate(dmChannel, client){
 function isValidRaffleDate(userResponse){
     let dayMonthYear = userResponse.split('/');
     let date = new Date();
-    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getDate());
 
     //check there is a day, month and year
     if(dayMonthYear.length !== 3){
@@ -150,7 +150,7 @@ function isValidRaffleDate(userResponse){
         let month = dayMonthYear[1];
         let year = dayMonthYear[2];
         
-        let daysInMonth = new Date(year, month, 0).getUTCDate();
+        let daysInMonth = new Date(year, month, 0).getDate();
 
         if(day > daysInMonth){
             return false;
@@ -171,7 +171,7 @@ function isToday(date){
 
     if(day.getUTCFullYear() !== parseInt(date[2])) return false;
     if(day.getUTCMonth()+1 !== parseInt(date[1])) return false;
-    if(day.getUTCDate() !== parseInt(date[0])) return false;
+    if(day.getDate() !== parseInt(date[0])) return false;
     return true;
 }
 
