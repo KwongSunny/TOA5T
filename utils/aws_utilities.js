@@ -26,7 +26,8 @@ function fetchServer(server_id){
             } 
             else {
                 //console.log("Read succeeded:", JSON.stringify(data, null, 2));
-                resolve(data);
+                if(data === {}) resolve(undefined);
+                else resolve(data);
             }
         });
     }) 
@@ -97,7 +98,8 @@ function fetchRaffles(){
             } 
             else {
                 //console.log("Read succeeded:", JSON.stringify(data, null, 2));
-                resolve(data);
+                if(data === {}) resolve(undefined);
+                else resolve(data);
             }
         });
     }) 
