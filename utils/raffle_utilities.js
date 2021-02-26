@@ -135,22 +135,24 @@ function askDate(dmChannel, client){
     });
 }
 
+
+// 2.23.2021 - 9:46pm est - If the UTC date is the next day in local time, then this won't work
 //user response must be in the format dd/mm/yyyy
 function isValidRaffleDate(userResponse){
-    let dayMonthYear = userResponse.split('/');
+    let monthDayYear = userResponse.split('/');
     let date = new Date();
-    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getDate());
+    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 
     //check there is a day, month and year
     if(dayMonthYear.length !== 3){
         return false;
     }
     else{
-        let day = dayMonthYear[0];
-        let month = dayMonthYear[1];
+        let month = dayMonthYear[0];
+        let day = dayMonthYear[1];
         let year = dayMonthYear[2];
         
-        let daysInMonth = new Date(year, month, 0).getDate();
+        let daysInMonth = new Date(year, month, 0).getUTCDate();
 
         if(day > daysInMonth){
             return false;
@@ -171,7 +173,7 @@ function isToday(date){
 
     if(day.getUTCFullYear() !== parseInt(date[2])) return false;
     if(day.getUTCMonth()+1 !== parseInt(date[1])) return false;
-    if(day.getDate() !== parseInt(date[0])) return false;
+    if(day.getUTCDate() !== parseInt(date[0])) return false;
     return true;
 }
 
