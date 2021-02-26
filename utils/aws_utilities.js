@@ -26,6 +26,7 @@ function fetchServer(server_id){
             } 
             else {
                 //console.log("Read succeeded:", JSON.stringify(data, null, 2));
+                console.log(data);
                 if(data === {}) resolve(undefined);
                 else resolve(data);
             }

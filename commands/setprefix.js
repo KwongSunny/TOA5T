@@ -37,7 +37,6 @@ module.exports = {
                 //check for a previous pinned prefix message in db
                     let prevPrefixMessageId = '';
                     let server = await aws_utilities.fetchServer(message.guild.id);
-                    console.log(server);
                     //if the server is found update it
                     if(server){
                         prevPrefixMessageId = server.Item.prefix_message_id;
