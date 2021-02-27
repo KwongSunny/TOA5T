@@ -31,7 +31,7 @@ client.once('ready', async () => {
     raffles = await aws_utilities.fetchRaffles();
     if(raffles){
         raffles = raffles.Items;
-        
+
         //remove past due raffles (this will remove raffles that ended in between bot downtime)
         raffles = raffle_utilities.removePastDueRaffles(raffles, client);
 
@@ -164,7 +164,7 @@ client.on('voiceStateUpdate', (voiceState) => {
 
 });
 
-let deploy = 'LOCAL';
+let deploy = 'HEROKU';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
