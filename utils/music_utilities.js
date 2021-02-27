@@ -25,8 +25,18 @@ async function playQueue(message, guildId, songQueue, Discord){
     serverQueue.stopped = false;
     serverQueue.paused = false;
     
-    //check if there are songs in the queue, if none then delete the serverQueue
-    if(serverQueue.songs.length === 0) return;
+    //check if there are songs in the queue, if none leave after 1 minute
+    if(serverQueue.songs.length === 0) {
+        let disconnectTimer = setTimeout(() => {songQueue.get(message.guild.id).voiceChannel.leave()}, 60000);
+        serverQueue.disconnectTimer = disconnectTimer;
+        songQueue.set(message.guild.id, serverQueue);
+        return;
+    }
+    else if(serverQueue.disconnectTimer){
+        clearTimeout(songQueue.get(message.guild.id).disconnectTimer);
+        serverQueue.disconnectTimer = null;
+        songQueue.set(message.guild.id, serverQueue);
+    }
 
     //create a dispatcher to play the stream, on song 'close' it will play the next or leave
     const dispatcher = serverQueue.connection.play(await ytdl(serverQueue.songs[0].url), {type: 'opus'})
