@@ -98,7 +98,7 @@ function fetchRaffles(){
             } 
             else {
                 //console.log("Read succeeded:", JSON.stringify(data, null, 2));
-                if(data === {}) resolve(undefined);
+                if(!data.Item) resolve(null);
                 else resolve(data);
             }
         });

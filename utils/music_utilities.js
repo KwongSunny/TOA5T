@@ -94,7 +94,6 @@ async function checkMusicPermissions(message, permissions){
     return new Promise(async (resolve) => {
         let hasMusicPermissions = false;
         const server = await aws_utilities.fetchServer(message.guild.id);
-        console.log(server);
         if(server && server.Item.music_roles){
             const serverMusicRoles = server.Item.music_roles;
             if(serverMusicRoles && serverMusicRoles !== []){
@@ -121,6 +120,11 @@ async function checkMusicPermissions(message, permissions){
     })
 }
 
+function isLink(link){
+    return link.includes('https://') && link.includes('.com');
+}
+
 module.exports.generateServerQueue = generateServerQueue;
 module.exports.playQueue = playQueue;
 module.exports.checkMusicPermissions = checkMusicPermissions;
+module.exports.isLink = isLink;

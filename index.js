@@ -29,17 +29,19 @@ client.once('ready', async () => {
     console.log('TOA5T is now online!');
     
     raffles = await aws_utilities.fetchRaffles();
-    raffles = raffles.Items;
-    console.log(raffles);
+    if(raffles){
+        raffles = raffles.Items;
 
-    //remove past due raffles (this will remove raffles that ended in between bot downtime)
-    raffles = raffle_utilities.removePastDueRaffles(raffles, client);
+        //remove past due raffles (this will remove raffles that ended in between bot downtime)
+        raffles = raffle_utilities.removePastDueRaffles(raffles, client);
 
-    //activate raffles if they're ending within 6 hours
-    raffles = raffle_utilities.activateRaffles(raffles, client);
+        //activate raffles if they're ending within 6 hours
+        raffles = raffle_utilities.activateRaffles(raffles, client);
 
-    //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
-    raffles = raffle_utilities.removeCompletedRaffles(raffles);
+        //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
+        raffles = raffle_utilities.removeCompletedRaffles(raffles);
+    }
+
 })
 
 //Check Raffles every 6th hour of every day
