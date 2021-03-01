@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core-discord');
+const yts = require('youtube-search');
 const aws_utilities = require('./aws_utilities.js');
 const utilities = require('./utilities.js');
 
@@ -33,7 +34,8 @@ async function playQueue(message, guildId, songQueue, Discord){
         return;
     }
     else if(serverQueue.disconnectTimer){
-        clearTimeout(songQueue.get(message.guild.id).disconnectTimer);
+        console.log('check disconnect timer', serverQueue.disconnectTimer);
+        clearTimeout(serverQueue.disconnectTimer);
         serverQueue.disconnectTimer = null;
         songQueue.set(message.guild.id, serverQueue);
     }
@@ -134,7 +136,23 @@ function isLink(link){
     return link.includes('https://') && link.includes('.com');
 }
 
+async function getYTSearch(args){
+    return new Promise(async (resolve, reject) => {
+        
+        let opts = {
+            maxResults: 1,
+            key: process.env.YT_TOKEN
+        };
+
+        await yts(args, opts, (err, results) => {
+            if(err) reject(err);
+            resolve(results);
+        });
+    });
+}
+
 module.exports.generateServerQueue = generateServerQueue;
 module.exports.playQueue = playQueue;
 module.exports.checkMusicPermissions = checkMusicPermissions;
 module.exports.isLink = isLink;
+module.exports.getYTSearch = getYTSearch;

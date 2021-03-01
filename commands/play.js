@@ -1,5 +1,5 @@
 const ytdl = require('ytdl-core');
-const yts = require('yt-search');
+const yts = require('youtube-search');
 const music_utilities = require('../utils/music_utilities.js');
 const resume = require('./resume.js');
 
@@ -49,8 +49,8 @@ module.exports = {
             if(!botPermissions.has('SPEAK')) return message.channel.send('I have insufficient permissions to speak in your voice channel');
 
             if(!music_utilities.isLink(args)){
-                let search = await yts(args);
-                args = search.videos[0].url;
+                let search = await music_utilities.getYTSearch(args);
+                args = search[0].link;
             }
 
             //creates a songItem to be added to the queue

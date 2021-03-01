@@ -9,11 +9,6 @@ function isNumeric(n){
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-//time delay for s seconds
-function waitSeconds(s){
-    setTimeout(() => {}, s * 1000);
-}
-
 //returns a string suffix of the number n
 function numSuffix(n){
     const remainder = n % 10;
@@ -198,18 +193,50 @@ function militaryToStandardTime(hour, minute){
     return result;
 }
 
+//returns ms to a format of '0d 0h 0m 0s'
 function msTimeToString(ms){
-    let seconds = (ms / 1000)% 60;
+    let seconds = (ms / 1000) % 60;
     let minutes = (ms / (60 * 1000)) % 60;
     let hours = (ms / (60 * 60 * 1000)) % 24;
-    let days = ms / (24 * 60 * 60 * 1000);
+    let days = Math.floor(ms / (24 * 60 * 60 * 1000));
 
     return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
 }
 
+//returns ms to a format of 'hh:mm:ss' / 'mm:ss'
+function msToHoursMinutesSeconds(ms){
+
+    let seconds = Math.floor(ms / 1000);
+
+    let minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+
+    let hours = Math.floor(minutes / 60);
+    minutes %= 60;
+
+    let result = '';
+
+    //include hours
+    if(hours > 0){
+        result += hours + ':';
+    }
+
+    if(minutes < 10)
+        result += '0';
+    
+    result += minutes + ':';
+
+    if(seconds < 10)
+        result += '0';
+
+    result += seconds
+
+    return result;
+
+}
+
 module.exports.getRandomInt = getRandomInt;
 module.exports.isNumeric = isNumeric;
-module.exports.waitSeconds = waitSeconds;
 module.exports.numSuffix = numSuffix;
 module.exports.convertToMinutes = convertToMinutes;
 module.exports.removeFromString = removeFromString;
@@ -223,6 +250,7 @@ module.exports.getDaysInMonth = getDaysInMonth;
 module.exports.fetchMessageFromGuild = fetchMessageFromGuild;
 module.exports.fetchMessageFromChannel = fetchMessageFromChannel;
 module.exports.fetchReactionUsers = fetchReactionUsers;
-module.exports.hourToMs = hourToMs
+module.exports.hourToMs = hourToMs;
+module.exports.msToHoursMinutesSeconds = msToHoursMinutesSeconds;
 module.exports.militaryToStandardTime = militaryToStandardTime;
 module.exports.msTimeToString = msTimeToString;

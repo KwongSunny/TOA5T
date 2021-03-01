@@ -145,11 +145,13 @@ client.on('voiceStateUpdate', (voiceState) => {
     //disconnect after 1 minute if no one is in the channel
     if(serverQueue){
         if(serverQueue && serverQueue.voiceChannel.members.size === 1){
-            let disconnectTimer = setTimeout(() => {songQueue.get(voiceState.guild.id).voiceChannel.leave()}, 60000);
+            let disconnectTimer = setTimeout(() => {
+                serverQueue.voiceChannel.leave()
+            }, 60000);
             serverQueue.disconnectTimer = disconnectTimer;
         }
         else if(serverQueue && serverQueue.voiceChannel.members.size > 1){
-            clearTimeout(songQueue.get(voiceState.guild.id).disconnectTimer);
+            clearTimeout(serverQueue.disconnectTimer);
         }
         songQueue.set(voiceState.guild.id, serverQueue);
     }
