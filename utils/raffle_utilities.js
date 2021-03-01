@@ -3,32 +3,34 @@ const aws_utilities = require('./aws_utilities.js');
 
 //removes past due raffles in the times the bot was offline
 function removePastDueRaffles(raffles, client){
-    let resultRaffles = raffles;
+    if(raffles){
+        let resultRaffles = raffles;
 
-    raffles.forEach((raffle) => {
-        const hour = raffle.time.split(':')[0];
-        const minute = raffle.time.split(':')[1];
-
-        //create a UTC raffle date, displayed in local time
-        const raffleEnd = createRaffleDate(raffle.year, raffle.month-1, raffle.day, hour, minute, raffle.timeZone);
-
-        let present = new Date();
-
-        // console.log('Checking Past Due Raffles');
-        // console.log(raffle.name + '(' + raffle.message_id + '): ', raffleEnd - present, 'ms away.');
-
-        if(raffleEnd - present < 0){
-            console.log('This Raffle is past due. Remove it from the list of raffles. [' + raffle.name + ', ' + raffle.message_id + ']');
-
-            if(raffle.raffle_status !== 'complete'){
-                console.log("Ending raffle: " + raffle.name);
-                declareRaffleWinner(raffle, client);
-                raffle.raffle_status = 'complete';
+        raffles.forEach((raffle) => {
+            const hour = raffle.time.split(':')[0];
+            const minute = raffle.time.split(':')[1];
+    
+            //create a UTC raffle date, displayed in local time
+            const raffleEnd = createRaffleDate(raffle.year, raffle.month-1, raffle.day, hour, minute, raffle.timeZone);
+    
+            let present = new Date();
+    
+            // console.log('Checking Past Due Raffles');
+            // console.log(raffle.name + '(' + raffle.message_id + '): ', raffleEnd - present, 'ms away.');
+    
+            if(raffleEnd - present < 0){
+                console.log('This Raffle is past due. Remove it from the list of raffles. [' + raffle.name + ', ' + raffle.message_id + ']');
+    
+                if(raffle.raffle_status !== 'complete'){
+                    console.log("Ending raffle: " + raffle.name);
+                    declareRaffleWinner(raffle, client);
+                    raffle.raffle_status = 'complete';
+                }
             }
-        }
-    });
-
-    return resultRaffles;
+        });
+    
+        return resultRaffles;
+    }
 }
 
 //adds raffles to the list of activeRaffles if they end within a day
