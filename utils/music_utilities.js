@@ -28,11 +28,12 @@ async function playQueue(message, guildId, songQueue, Discord){
     
     //check if there are songs in the queue, if none leave after 1 minute
     if(serverQueue.songs.length === 0) {
-        let disconnectTimer = setTimeout(() => {songQueue.get(message.guild.id).voiceChannel.leave()}, 60000);
+        let disconnectTimer = setTimeout(() => {serverQueue.voiceChannel.leave()}, 60000);
         serverQueue.disconnectTimer = disconnectTimer;
         songQueue.set(message.guild.id, serverQueue);
         return;
     }
+    //if there is a disconnectTimer currently running, stop it
     else if(serverQueue.disconnectTimer){
         console.log('check disconnect timer', serverQueue.disconnectTimer);
         clearTimeout(serverQueue.disconnectTimer);
