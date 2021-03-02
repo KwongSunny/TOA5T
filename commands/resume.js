@@ -26,7 +26,7 @@ module.exports = {
         //resume the playlist
         else if(args === ''){
             const serverQueue = songQueue.get(message.guild.id);
-            if(serverQueue){
+            if(serverQueue && serverQueue.songs.length > 0){
                 let serverDispatcher = serverQueue.connection.dispatcher;
                 if(serverDispatcher){
                     serverQueue.paused = false;
