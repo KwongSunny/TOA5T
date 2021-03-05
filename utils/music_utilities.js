@@ -38,6 +38,7 @@ async function playQueue(message, guildId, songQueue, Discord){
         console.log('check disconnect timer', serverQueue.disconnectTimer);
         clearTimeout(serverQueue.disconnectTimer);
         serverQueue.disconnectTimer = null;
+        console.log('checking dc timer', serverQueue.disconnectTimer);
         songQueue.set(message.guild.id, serverQueue);
     }
 

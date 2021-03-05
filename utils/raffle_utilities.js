@@ -120,16 +120,16 @@ function removeCompletedRaffles(raffles){
     return resultRaffles;
 }
 
-//the user must give an input of dd/mm/yyyy ex: 02/18/2021
-function askDate(dmChannel, client){
+//the user must give an input of mm/dd/yyyy ex: 02/18/2021
+function askDate(dmChannel, raffle, client){
     return new Promise(async (resolve) => {
         let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
 
         response = response.last().content;
 
-        if(!isValidRaffleDate(response)){ 
+        if(!isValidRaffleDate(response, raffle)){ 
             dmChannel.send('Sorry that is an invalid date, try again.')
-            resolve(askDate(dmChannel, client));
+            resolve(askDate(dmChannel, raffle, client));
         }
         else {
             resolve(response.split('/'));
@@ -139,35 +139,38 @@ function askDate(dmChannel, client){
 
 
 // 2.23.2021 - 9:46pm est - If the UTC date is the next day in local time, then this won't work
-//user response must be in the format dd/mm/yyyy
-function isValidRaffleDate(userResponse){
+//user response must be in the format mm/dd/yyyy
+function isValidRaffleDate(userResponse, raffle){
     let monthDayYear = userResponse.split('/');
-    let date = new Date();
-    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-
-    //check there is a day, month and year
-    if(dayMonthYear.length !== 3){
-        return false;
-    }
+    if(monthDayYear.length !== 3) return false;
     else{
-        let month = dayMonthYear[0];
-        let day = dayMonthYear[1];
-        let year = dayMonthYear[2];
-        
-        let daysInMonth = new Date(year, month, 0).getUTCDate();
+        let month = monthDayYear[0];
+        let day = monthDayYear[1];
+        let year = monthDayYear[2];
 
+        let daysInMonth = new Date(year, month-1, 0).getUTCDate();
         if(day > daysInMonth){
             return false;
         }
 
+        let date = new Date();
+        
+        //get utc time offset by timezone
+        date = new Date(date.getTime() + (1000 * 60 * 60 * raffle.timeZone));
+
+        //remove hour and minute
+        date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+
         let userDate = new Date(year, month-1, day);
-        //check if userDate is within 30 days
-        if(userDate - date > 30 * 24 * 60 * 60 * 1000 || userDate - date < 0){
-            return false
+
+        if(userDate - date < 0){
+            return false;
         }
+
+        return true;
     }
-    return true;
-};
+}
+
 
 //date comes in form: [day, month, year]
 function isToday(date){
