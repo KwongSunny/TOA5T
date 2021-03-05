@@ -29,6 +29,7 @@ client.once('ready', async () => {
     console.log('TOA5T is now online!');
     
     raffles = await aws_utilities.fetchRaffles();
+
     if(raffles){
         raffles = raffles.Items;
 
