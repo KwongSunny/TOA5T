@@ -11,6 +11,7 @@ const tableName = 'pixelbot_servers';
 const raffleTable = 'toast_raffles';
 
 //returns a promise of the item from dynamodb using the server_id key
+//fetches a single item
 function fetchServer(server_id){
     let param = {
         TableName: tableName,
@@ -86,6 +87,7 @@ function updateItem(server_id, keys, values){
     });
 }
 
+//fetches Items of raffles
 function fetchRaffles(){
     let param = {
         TableName: raffleTable
@@ -98,7 +100,7 @@ function fetchRaffles(){
             } 
             else {
                 //console.log("Read succeeded:", JSON.stringify(data, null, 2));
-                if(!data.Item) resolve(null);
+                if(!data.Items) resolve(null);
                 else resolve(data);
             }
         });
