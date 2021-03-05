@@ -14,7 +14,7 @@ const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
 const songQueue = new Map();
-let raffles = [];
+let raffles;
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -40,6 +40,9 @@ client.once('ready', async () => {
 
         //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
         raffles = raffle_utilities.removeCompletedRaffles(raffles);
+    }
+    else{
+        raffles = [];
     }
 
 })

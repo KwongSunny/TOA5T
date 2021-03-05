@@ -73,12 +73,12 @@ module.exports = {
                 newRaffle.timeZone = askedTimeZone;
 
                 //ask and record DAY,MONTH,YEAR for raffle
-                directMessageChannel.send('What date will the raffle end? Please use the format dd/mm/yyyy, the date cannot be over 30 days.')
-                let askedDate = await raffle_utilities.askDate(directMessageChannel, client);
+                directMessageChannel.send('What date will the raffle end? Please use the format mm/dd/yyyy, the date cannot be over 30 days.')
+                let askedDate = await raffle_utilities.askDate(directMessageChannel, newRaffle, client);
 
                 //askedDate is in form [day, month, year]
-                newRaffle.day = askedDate[0];
-                newRaffle.month = askedDate[1];
+                newRaffle.month = askedDate[0];
+                newRaffle.day = askedDate[1];
                 newRaffle.year = askedDate[2];
 
                 //ask and record TIME for raffle
@@ -96,7 +96,7 @@ module.exports = {
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Date', newRaffle.day + '/' + newRaffle.month + '/' + newRaffle.year + ' ' + utilities.militaryToStandardTime(newRaffle.time.split(':')[0], newRaffle.time.split(':')[1]) + ' UTC' + newRaffle.timeZone)
+                .addField('Date', newRaffle.month + '/' + newRaffle.day + '/' + newRaffle.year + ' ' + utilities.militaryToStandardTime(newRaffle.time.split(':')[0], newRaffle.time.split(':')[1]) + ' UTC' + newRaffle.timeZone)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
             let sentRaffleMessage = await message.channel.send(raffleMsg);
