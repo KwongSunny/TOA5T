@@ -107,14 +107,14 @@ async function declareRaffleWinner(raffle, client){
 
 //remove completed raffles
 function removeCompletedRaffles(raffles){
-    const resultRaffles = raffles;
-    
+    const resultRaffles = [];
+
     //remove completed raffles from the list, and delete from dynamodb
-    resultRaffles.forEach((raffle) => {
+    raffles.forEach((raffle) => {
         if(raffle.raffle_status === 'complete'){
-            resultRaffles.splice(resultRaffles.indexOf(raffle), 1);
             aws_utilities.deleteRaffle(raffle.message_id);
         }
+        else resultRaffles.push(raffle);
     });
 
     return resultRaffles;
