@@ -4,8 +4,6 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('ban').execute(message, prefix, args, Discord);
     else if(command === 'kick')
         client.commands.get('kick').execute(message, prefix, args, Discord);
-    else if(command === 'purge')
-        client.commands.get('purge').execute(message, prefix, args, Discord);
     else if(command === 'setmaxwarnings')
         client.commands.get('setmaxwarnings').execute(message, prefix, args, Discord);
     else if(command === 'unban')
@@ -18,6 +16,8 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('autorole').execute(message, prefix, args, Discord);
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
+    else if(command === 'setpermissions')
+        client.commands.get('setpermissions').execute(message, prefix, args);
 
     //Music and Audio
     else if(command === 'back')

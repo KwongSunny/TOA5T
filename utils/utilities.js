@@ -87,18 +87,26 @@ function isRoleMention(mention){
     return result[0] === '<' && result[1] === '@' && result[2] === '&';
 }
 
-//function that takes in a role mention and returns the id
+//function that takes in a string and returns the first instance of a role id
 //<@$000000000001> returns id
 function getRoleId(roleMention){
     let result = roleMention.trim();
-    return result.substring(3, result.length-1);
+
+    let firstIndex = roleMention.indexOf('&') + 1;
+    let lastIndex = roleMention.indexOf('>');
+
+    return result.substring(firstIndex, lastIndex);
 }
 
 //function that takes in a user mention and returns the id
 //<@!000000000001> returns id
 function getUserId(userMention){
     let result = userMention.trim();
-    return result.substring(3, result.length-1);
+
+    let firstIndex = roleMention.indexOf('!') + 1;
+    let lastIndex = roleMention.indexOf('>');
+
+    return result.substring(firstIndex, lastIndex);
 }
 
 function getDaysInMonth(month, year){

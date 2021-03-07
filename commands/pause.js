@@ -1,5 +1,4 @@
-const aws_utilities = require('../utils/aws_utilities.js');
-const music_utilities = require ('../utils/music_utilities.js');
+const perm_utilities = require('../utils/perm_utilities.js');
 
 module.exports = {
     name: 'pause',
@@ -7,8 +6,8 @@ module.exports = {
     async execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
 
-        const permissions = ['play_music'];
-        let hasMusicPermissions = await music_utilities.checkMusicPermissions(message, permissions);
+        const permission = 'play_music';
+        const hasMusicPermissions = await perm_utilities.checkPermission(message, permission);
 
         //check for permissions
         if(!message.member.hasPermission('ADMINISTRATOR') && !hasMusicPermissions){
