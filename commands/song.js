@@ -1,4 +1,3 @@
-const { length } = require("ffmpeg-static");
 const utilities = require('../utils/utilities.js');
 
 module.exports = {

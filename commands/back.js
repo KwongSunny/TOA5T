@@ -1,13 +1,14 @@
 const music_utilities = require('../utils/music_utilities.js');
+const perm_utilities = require('../utils/perm_utilities.js');
 
 module.exports = {
     name: 'back',
     description: 'Plays the previous song',
     async execute(message, prefix, args, songQueue, Discord){
         args = args.trim();
-
-        const permissions = ['play_music'];
-        const hasMusicPermissions = await music_utilities.checkMusicPermissions(message, permissions);
+        
+        const permission = 'play_music';
+        const hasMusicPermissions = await perm_utilities.checkPermission(message, permission);
 
         //check permissions
         if(!message.member.hasPermission('ADMINISTRATOR') && !hasMusicPermissions){

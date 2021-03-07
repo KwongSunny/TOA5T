@@ -1,6 +1,7 @@
 const utilities = require('../utils/utilities.js');
 const aws_utilities = require('../utils/aws_utilities.js');
 const raffle_utilities = require('../utils/raffle_utilities.js');
+const perm_utilities = require('../utils/perm_utilities.js');
 
 module.exports = {
     name: 'raffle',
@@ -8,7 +9,10 @@ module.exports = {
     async execute(message, prefix, args, raffles, Discord, client) {
         args = args.trim();
 
-        if(!message.member.hasPermission('ADMINISTRATOR')){
+        let permission = 'manage_raffle';
+        let hasRafflePermissions = await perm_utilities.hasPermission(message, permission);
+
+        if(!message.member.hasPermission('ADMINISTRATOR') && !hasRafflePermissions){
             return message.channel.send('You have insufficient permissions to use this command');
         }
         else if(args === '' || args === 'help'){

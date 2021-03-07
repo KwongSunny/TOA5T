@@ -138,9 +138,7 @@ client.on('guildMemberAdd', async(member) => {
     if(server.Item.default_role && server.Item.default_role !== ''){
         member.roles.add(member.guild.roles.cache.get(server.Item.default_role));
     }
-    else{
-        console.log('This role could not be given. Server: ' + server.Item.server_id);
-    }
+
 });
 
 client.on('voiceStateUpdate', (voiceState) => {

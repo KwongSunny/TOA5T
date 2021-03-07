@@ -2,71 +2,100 @@ Bot-Name: PixelBot (temporary name)
 
 Done utilities:
     
-    Autorole - assigns a default role to a server, new members will get this role upon joining [DONE]
+    Autorole - assigns a default role to a server, new members will get this role upon joining [DONE] 
+    permissions: MANAGE_ROLES, ADMINISTRATOR
 
-    Ban - bans a user permanently by mention [DONE]
+    Ban - bans a user permanently by mention [DONE] 
+    permissions: BAN_MEMBERS, ADMINISTRATOR
     
-    Kick - kicks a user by mention or id [DONE - NO CHANGES NEEDED]
+    Kick - kicks a user by mention or id [DONE - NO CHANGES NEEDED] 
+    permissions: KICK_MEMBERS, ADMINISTRATOR
 
-    Unban - unbans a user by id [DONE]
+    Unban - unbans a user by id [DONE] 
+    permissions: BAN_MEMBERS, ADMINISTRATOR
 
-    Random - random number generator, can also utilitize lists
+    Random - random number generator, can also utilitize lists [DONE] 
+    permissions: n/a
 
-    Reactionrole - creates a reaction role post which users can react to to get roles [DONE]
+    Reactionrole - creates a reaction role post which users can react to to get roles [DONE] 
+    permissions: MANAGE_ROLES, ADMINISTRATOR
 
-    Resetprefix - Resets the server's bot's prefix to it's default [DONE]
+    Resetprefix - Resets the server's bot's prefix to it's default [DONE] 
+    permissions: ADMINISTRATOR
 
-    Set prefix - allows a moderator to set the bot prefix for server in case of bot collision [DONE]
+    Set prefix - allows a moderator to set the bot prefix for server in case of bot collision [DONE] 
+    permissions: ADMINISTRATOR
 
-    Setmaxwarnings - changes the default maximum warnings of the server [DONE]
+    Setmaxwarnings - changes the default maximum warnings of the server [DONE] 
+    permissions: ADMINISTRATOR 
 
     Warn - warns a user and records in db, if the user has over the max warnings, ban the user [DONE]
+    permissions: BAN_MEMBERS, ADMINISTRATOR
 
     Music:
         
-        Back [DONE] permissions: play_music
+        Back [DONE] 
+        permissions: play_music, ADMINISTRATOR
 
-        Clear [DONE] Permissions: manage_music
+        Clear [DONE] 
+        Permissions: manage_music, ADMINISTRATOR
 
-        Join [DONE] Permissions: manage_music
+        Join [DONE] 
+        Permissions: manage_music, ADMINISTRATOR
 
-        Leave [DONE] Permissions: manage_music
+        Leave [DONE] 
+        Permissions: manage_music, ADMINISTRATOR
 
-        Loop [DONE] Permissions: manage_music
+        Loop [DONE] 
+        Permissions: play_music, ADMINISTRATOR
 
-        Pause [DONE] Permissions: play_music
+        Pause [DONE] 
+        Permissions: play_music, ADMINISTRATOR
 
-        Play [DONE] permissions: play_music
+        Play [DONE] 
+        permissions: play_music, ADMINISTRATOR
 
-        Purge [DONE] - removes messages within the last n amount of messages (default: 100) from a certain user
+        Resume [DONE] 
+        Permissions: play_music, ADMINISTRATOR
 
-        Queue [Needs to be updated] Permissions: n/a
+        Setmusicrole 
+        permissions: ADMINISTRATOR
 
-        Resume [DONE] Permissions: play_music
+        Skip [DONE] 
+        permissions play_music, ADMINISTRATOR
 
-        Setmusicrole permissions: administrator
+        Song [DONE] 
+        permissions: n/a
 
-        Skip [DONE] permissions play_music
+        Stop [DONE] 
+        permissions: play_music, ADMINISTRATOR
 
-        Stop [DONE] permissions: play_music
-
-        Volume [DONE] permissions: play_music
+        Volume [DONE] 
+        permissions: manage_music, ADMINISTRATOR
 
 In Development utilities:
 
     Help - always needs updates for every command
-
-    Music
-
-        Song permissions: n/a
+    permissions: n/a
 
     info [ON HOLD]
+    permissions: n/a
 
-    Raffle
-    
+    Raffle [mid testing - should be working properly, need to work on extra options; need to set up permissions] 
+    permissions: manage_raffle, ADMINISTRATOR
+
+    Music:
+
+        Queue [Needs to be able to see more pages] 
+        Permissions: n/a
+
 Planned utilities:
 
-    Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event
+    Setpermissions - gives a role specific permissions to access certain commands, logged in dynamodb
+
+    Listpermissions - shows all permissions and roles
+
+    Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event; permissions: manage_event
 
     mute
 
@@ -93,4 +122,7 @@ Planned utilities:
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
     Checkstock - checks the price of a stock
-    
+
+Removed Utilities
+
+    Purge [DONE] removed from use to avoid abuse
