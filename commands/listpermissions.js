@@ -27,7 +27,10 @@ module.exports = {
             let rolePermissions = server.Item.role_permissions;
             if(rolePermissions){
                 rolePermissions.forEach((role) => {
-                    roleMap.set(utilities.getRoleId(role), role.split(':')[1]);
+                    if(role.includes('@everyone'))
+                        roleMap.set(role.split(':')[0], role.split(':')[1]);
+                    else
+                        roleMap.set(utilities.getRoleId(role), role.split(':')[1]);
                 })
             }
 
@@ -43,7 +46,11 @@ module.exports = {
                     description += roleName + ': ADMINISTRATOR, '; 
 
                 if(roleMap.get(role.id)){
-                    description += roleMap.get(role.id).split(',').length + ' TOA5T Permissions'
+                    description += roleMap.get(role.id).split(',').length + ' TOA5T Permissions';
+                }
+                //take @everyone into account
+                else if(roleMap.get('@everyone') && role.name === '@everyone'){
+                    description += roleMap.get('@everyone').split(',').length + ' TOA5T Permissions';
                 }
 
                 description += '\n';
@@ -78,7 +85,10 @@ module.exports = {
             let rolePermissions = server.Item.role_permissions;
             if(rolePermissions){
                 rolePermissions.forEach((role) => {
-                    roleMap.set(utilities.getRoleId(role), role.split(':')[1]);
+                    if(role.includes('@everyone'))
+                        roleMap.set(role.split(':')[0], role.split(':')[1]);
+                    else
+                        roleMap.set(utilities.getRoleId(role), role.split(':')[1]);
                 })
             }
 
@@ -95,6 +105,13 @@ module.exports = {
             //add all TOA5T permissions to the description
             if(roleMap.get(role.id)){
                 let toastPerms = roleMap.get(role.id).split(',');
+                toastPerms.forEach((perm) => {
+                    description += '\n' + perm.trim()
+                })
+            }
+            //take @everyone into account
+            else if(roleMap.get('@everyone') && role.name === '@everyone'){
+                let toastPerms = roleMap.get('@everyone').split(',');
                 toastPerms.forEach((perm) => {
                     description += '\n' + perm.trim()
                 })
