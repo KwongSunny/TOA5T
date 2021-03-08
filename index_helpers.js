@@ -14,9 +14,11 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
     //Role Management
     else if(command === 'autorole')
         client.commands.get('autorole').execute(message, prefix, args, Discord);
+    else if(command === 'listpermissions' || command === 'listperms' || command === 'listperm')
+        client.commands.get('listpermissions').execute(message, prefix, args, Discord);
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
-    else if(command === 'setpermissions')
+    else if(command === 'setpermissions' || command === 'setperms' || command === 'setperm')
         client.commands.get('setpermissions').execute(message, prefix, args, Discord);
 
     //Music and Audio

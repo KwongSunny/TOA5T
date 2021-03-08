@@ -82,9 +82,10 @@ function isUserMention(mention){
 }
 
 //function that takes in a role mention and returns T/F if it is a valid mention
+//WILL ALSO ACCEPT @EVERYONE
 function isRoleMention(mention){
     let result = mention.trim();
-    return result[0] === '<' && result[1] === '@' && result[2] === '&';
+    return (result[0] === '<' && result[1] === '@' && result[2] === '&') || mention === '@everyone';
 }
 
 //function that takes in a string and returns the first instance of a role id
