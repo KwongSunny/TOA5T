@@ -5,13 +5,20 @@ module.exports = {
     name:'setpermissions',
     description:'gives a role permissions for the bot' + 
                 'permissions list: manage_music, play_music, manage_raffle',
-    async execute(message, prefix, args){
+    async execute(message, prefix, args, Discord){
         args = args.trim();
 
         if(!message.member.hasPermission('ADMINISTRATOR')){
             return message.channel.send('You have insufficient permissions to use this command');
         }
         else if(args === '' || args === 'help'){
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Set Permissions')
+                .addField('Description', 'Assigns roles a set of permissions for TOA5T commands')
+                .addField('Usage', '`' + prefix + this.name + ' @role:permission, permission2...`')
+                .addField('Example', '`' + prefix + this.name + ' @DJ:manage_music, play_music`');
+            message.channel.send(embed);
 
         }
         else if(args.includes(':')){
