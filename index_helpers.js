@@ -14,10 +14,12 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
     //Role Management
     else if(command === 'autorole')
         client.commands.get('autorole').execute(message, prefix, args, Discord);
+    else if(command === 'listpermissions' || command === 'listperms' || command === 'listperm')
+        client.commands.get('listpermissions').execute(message, prefix, args, Discord);
     else if(command === 'reactionrole')
         client.commands.get('reactionrole').execute(message, prefix, args, Discord, client);
-    else if(command === 'setpermissions')
-        client.commands.get('setpermissions').execute(message, prefix, args);
+    else if(command === 'setpermissions' || command === 'setperms' || command === 'setperm')
+        client.commands.get('setpermissions').execute(message, prefix, args, Discord);
 
     //Music and Audio
     else if(command === 'back')
@@ -38,8 +40,6 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
         client.commands.get('queue').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'resume')
         client.commands.get('resume').execute(message, prefix, args, songQueue, Discord);
-    else if(command === 'setmusicrole')
-        client.commands.get('setmusicrole').execute(message, prefix, args, Discord);
     else if(command === 'skip' || command === 'next')
         client.commands.get('skip').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'song')

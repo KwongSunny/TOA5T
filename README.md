@@ -58,9 +58,6 @@ Done utilities:
         Resume [DONE] 
         Permissions: play_music, ADMINISTRATOR
 
-        Setmusicrole 
-        permissions: ADMINISTRATOR
-
         Skip [DONE] 
         permissions play_music, ADMINISTRATOR
 
@@ -84,16 +81,18 @@ In Development utilities:
     Raffle [mid testing - should be working properly, need to work on extra options; need to set up permissions] 
     permissions: manage_raffle, ADMINISTRATOR
 
+    Setpermissions [DEV] need to check for valid permissions
+    permissions: ADMINISTRATOR
+
+    Listpermissions [DEV] 
+    permissions: ADMINISTRATOR
+
     Music:
 
         Queue [Needs to be able to see more pages] 
         Permissions: n/a
 
 Planned utilities:
-
-    Setpermissions - gives a role specific permissions to access certain commands, logged in dynamodb
-
-    Listpermissions - shows all permissions and roles
 
     Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event; permissions: manage_event
 
@@ -125,4 +124,7 @@ Planned utilities:
 
 Removed Utilities
 
-    Purge [DONE] removed from use to avoid abuse
+    Purge [DEPRECATED - removed to prevent abuse of Discord API]
+
+    Setmusicrole [DEPRECATED - USE setpermissions]
+    permissions: ADMINISTRATOR
