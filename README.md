@@ -2,7 +2,7 @@ Bot-Name: PixelBot (temporary name)
 
 Done utilities:
     
-    Autorole - assigns a default role to a server, new members will get this role upon joining [DONE] 
+    Autorole - assigns a default role to a server, new members will get this role upon joining [DONE]       NEED TO CHECK FOR @EVERYONE
     permissions: MANAGE_ROLES, ADMINISTRATOR
 
     Ban - bans a user permanently by mention [DONE] 
@@ -17,7 +17,7 @@ Done utilities:
     Random - random number generator, can also utilitize lists [DONE] 
     permissions: n/a
 
-    Reactionrole - creates a reaction role post which users can react to to get roles [DONE] 
+    Reactionrole - creates a reaction role post which users can react to to get roles [DONE]                NEED TO CHECK FOR @EVERYONE
     permissions: MANAGE_ROLES, ADMINISTRATOR
 
     Resetprefix - Resets the server's bot's prefix to it's default [DONE] 
@@ -71,6 +71,8 @@ Done utilities:
         permissions: manage_music, ADMINISTRATOR
 
 In Development utilities:
+
+    Need to add @everyone to done commands
 
     Help - always needs updates for every command
     permissions: n/a

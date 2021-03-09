@@ -153,6 +153,8 @@ async function fetchMessageFromChannel(channel, messageId){
 //returns a promise, recursively fetches reactions and puts the results in resultSet
 function fetchReactionUsers(message, lastFetchedUser, resultSet){
     return new Promise(async (resolve) => {
+        const result = resultSet;
+
         const fetchLimit = 100;
         message.reactions.cache.each(async (reaction) => {
             const fetchedReaction = await reaction.fetch();
@@ -160,14 +162,15 @@ function fetchReactionUsers(message, lastFetchedUser, resultSet){
             
             const userArray = fetchedUsers.keyArray();
             userArray.forEach((user) => {
-                resultSet.add(user)
+                result.add(user)
             });
 
             if(fetchedUsers.size === fetchLimit){
-                resolve(await fetchReactionUsers(message, fetchedUsers.last(1)[0].id, resultSet));
+                result = await fetchReactionUsers(message, fetchedUsers.last(1)[0].id, result);
+                resolve(result);
             }
             else{
-                resolve();
+                resolve(result);
             }
         })
     })
@@ -198,7 +201,6 @@ function militaryToStandardTime(hour, minute){
         resultMin = '0' + resultMin;
     result += ':' + resultMin + meridien;
 
-    console.log(result);
     return result;
 }
 

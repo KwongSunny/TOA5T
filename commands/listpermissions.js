@@ -10,7 +10,21 @@ module.exports = {
             return message.channel.send('You have insufficient permissions to use this command');
         }
         else if(args === 'help'){
-
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('List Permissions')
+                .addField('Usage',
+                    'To list all roles and their number of permissions use:\n' +
+                    '`' + prefix + this.name + '`\n\n' +
+                    'To list all permissions of a specific role use:\n' +
+                    '`' + prefix + this.name + ' @role`'
+                )
+                .addField('Examples', 
+                    '`' + prefix + this.name + '`\n' +
+                    '`' + prefix + this.name + ' @guest`'
+                )
+                .addField('Aliases', '`listperm, listperms`')
+                return message.channel.send(embed);
         }
         else if(args === ''){
             let embed = new Discord.MessageEmbed()

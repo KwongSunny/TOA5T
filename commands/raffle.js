@@ -10,7 +10,7 @@ module.exports = {
         args = args.trim();
 
         let permission = 'manage_raffle';
-        let hasRafflePermissions = await perm_utilities.hasPermission(message, permission);
+        let hasRafflePermissions = await perm_utilities.checkPermission(message, permission);
 
         if(!message.member.hasPermission('ADMINISTRATOR') && !hasRafflePermissions){
             return message.channel.send('You have insufficient permissions to use this command');
@@ -117,31 +117,24 @@ module.exports = {
 
             //activate any unactivated raffles, including the new one
             raffle_utilities.activateRaffles(raffles, client);
-
-            console.log(raffles);
         }
-
-
-
-
         //lists all raffles
         else if(args.includes('list')){
-            console.log('raffles:\n', raffles);
-
             let description = '```';
+            let count = 0;
 
-            let resultRaffles = [];
-            for(raffle = 0; raffle < raffles.length; raffle++){
-                if(raffles[raffle].server_id === message.guild.id && raffles[raffle].raffle_status !== 'complete'){
-                    resultRaffles.push(raffles[raffle]);
-
-                    let timeLeft = new Date(raffles[raffle].year, raffles[raffle].month-1, raffles[raffle].day, raffles[raffle].time.split(':')[0], raffles[raffle].time.split(':')[1]) - new Date();
-
-                    description += '[' + (raffle + 1) + ']' + raffles[raffle].name + ' ends in ' + utilities.msTimeToString(timeLeft);
+            raffles.forEach((raffle) => {
+                if(raffle.server_id === message.guild.id && raffle.raffle_status !== 'complete'){
+                    count++;
+                    description += '[' + count + '] ' + raffle.name + ' (End Time: ' + raffle.month + '/' + raffle.day + '/' + raffle.year + ' ' + utilities.militaryToStandardTime(raffle.time.split(':')[0], raffle.time.split(':')[1]) + ' UTC' + raffle.timeZone + ')\n';
                 }
-            }
+            })
 
             description += '```';
+
+            if(count === 0){
+                description = '```There are no active raffles in this server```';
+            }
 
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
@@ -152,6 +145,27 @@ module.exports = {
         }
         //returns information on a specific raffle
         else if(args.includes('info')){
+            args = utilities.removeFromString(args, 'info').trim();
+
+            raffles.forEach(async (raffle) => {
+                if(raffle.server_id === message.guild.id && raffle.raffle_status !== 'complete' && raffle.name === args){
+                    let embed = new Discord.MessageEmbed()
+                        .setColor('#f7c920')
+                        .setTitle(raffle.name)
+                        .addField('Description', raffle.description)
+                        .addField('Date', raffle.month + '/' + raffle.day + '/' + raffle.year + ' ' + utilities.militaryToStandardTime(raffle.time.split(':')[0], raffle.time.split(':')[1]) + ' UTC' + raffle.timeZone);
+
+                    let raffleMsg = await utilities.fetchMessageFromGuild(message.guild, raffle.message_id);
+
+                    let userSet = new Set();
+                    userSet = await utilities.fetchReactionUsers(raffleMsg, null, userSet);
+
+                    embed.addField('Entries: ', userSet.size - 1);
+                    embed.addField('Hosted by', raffle.host);
+
+                    return message.channel.send(embed);
+                }
+            })
 
         }
         //deletes a raffle
