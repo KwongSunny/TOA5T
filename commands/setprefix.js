@@ -1,4 +1,5 @@
 const aws_utilities = require('../utils/aws_utilities.js');
+const utilities = require('../utils/utilities.js');
 
 module.exports = {
     name: 'setprefix',
@@ -53,7 +54,7 @@ module.exports = {
 
                 //look for and delete the previous pinned prefix message
                     if(prevPrefixMessageId !== ''){
-                        let fetchedMessage = await aws_utilities.fetchMessageFromGuild(message.guild, prevPrefixMessageId);
+                        let fetchedMessage = await utilities.fetchMessageFromGuild(message.guild, prevPrefixMessageId);
                         fetchedMessage.delete();
                     }
             }

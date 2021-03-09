@@ -87,7 +87,7 @@ async function declareRaffleWinner(raffle, client){
 
         //for each reaction, record the users
         const userSet = new Set();
-        await utilities.fetchReactionUsers(raffleMessage, null, userSet);
+        userSet = await utilities.fetchReactionUsers(raffleMessage, null, userSet);
 
         //remove the bot from the raffles
         userSet.delete(client.user.id);
