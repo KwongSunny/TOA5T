@@ -9,7 +9,7 @@ function checkPermission(message, permission){
             if(!rolePermissions) resolve(false);
     
             let memberRoles = message.member.roles.cache.keyArray();
-
+            
             rolePermissions.forEach((role) => {
                 if(role.includes(permission)){
                     if(memberRoles.includes(utilities.getRoleId(role))) resolve(true);
