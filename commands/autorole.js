@@ -23,7 +23,7 @@ module.exports = {
         else{
             
             let roleId = '';
-            if(utilities.isRoleMention(role))
+            if(utilities.isRoleMention(role) && role !== '@everyone')
                 roleId = utilities.getRoleId(role);
             else if(utilities.isNumeric(role))
                 roleId = role;

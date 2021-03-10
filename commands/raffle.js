@@ -170,11 +170,34 @@ module.exports = {
         }
         //deletes a raffle
         else if(args.includes('delete')){
+            args = utilities.removeFromString(args, 'delete').trim();
 
+            for(raffle = 0; raffle < raffles.length; raffle++){
+                if(message.guild.id === raffles[raffle].server_id && raffles[raffle].raffle_status !== 'complete' && args === raffles[raffle].name){
+                    if(raffles[raffle].timer){
+                        clearTimeout(raffles[raffle].timer);
+                    }
+                    aws_utilities.deleteRaffle(raffles[raffle].message_id);
+                    raffles.splice(raffle, 1);
+                    return message.channel.send('The raffle has been removed');
+                }
+            }
+            return message.channel.send('No such raffle found');
         }
         //force finishes a raffle
         else if(args.includes('force')){
+            args = utilities.removeFromString(args, 'force').trim();
 
+            for(raffle = 0; raffle < raffles.length; raffle++){
+                if(message.guild.id === raffles[raffle].server_id && raffles[raffle].raffle_status !== 'complete' && args === raffles[raffle].name){
+                    if(raffles[raffle].timer){
+                        clearTimeout(raffles[raffle].timer);
+                    }
+                    raffles[raffle] = raffle_utilities.startRaffleTimer(raffles[raffle], 1, client);
+                    return;
+                }
+            }
+            return message.channel.send('No such raffle found');
         }
         else{
             return message.channel.send('Unknown arguments detected for the command.')

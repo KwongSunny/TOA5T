@@ -86,7 +86,7 @@ async function declareRaffleWinner(raffle, client){
         const raffleMessage = await utilities.fetchMessageFromChannel(channel, raffle.message_id);
 
         //for each reaction, record the users
-        const userSet = new Set();
+        let userSet = new Set();
         userSet = await utilities.fetchReactionUsers(raffleMessage, null, userSet);
 
         //remove the bot from the raffles
@@ -258,6 +258,7 @@ function createRaffleDate(year, month, date, hour, minute, timeZone){
 }
 
 module.exports.activateRaffles = activateRaffles;
+module.exports.startRaffleTimer = startRaffleTimer;
 module.exports.removePastDueRaffles = removePastDueRaffles;
 module.exports.removeCompletedRaffles = removeCompletedRaffles;
 module.exports.askDate = askDate;

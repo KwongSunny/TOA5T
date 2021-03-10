@@ -54,7 +54,7 @@ module.exports = {
                 let roleId = '';
 
                 //checks whether the role is a mention or id else return an error
-                if(utilities.isRoleMention(roleMention)){
+                if(utilities.isRoleMention(roleMention) && roleMention !== '@everyone'){
                     roleId = utilities.getRoleId(roleMention);
                 }
                 else if(utilities.isNumeric(roleMention)){
