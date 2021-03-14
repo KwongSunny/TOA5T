@@ -9,14 +9,14 @@ function checkPermission(message, permission){
         if(server){
             let rolePermissions = server.Item.role_permissions;
             if(!rolePermissions) resolve(false);
-    
-            let memberRoles = message.member.roles.cache.keyArray();
-            console.log(rolePermissions);
-            rolePermissions.forEach((role) => {
-                if(role.includes(permission)){
-                    if(memberRoles.includes(utilities.getRoleId(role))) resolve(true);
-                }
-            });
+            else{
+                let memberRoles = message.member.roles.cache.keyArray();
+                rolePermissions.forEach((role) => {
+                    if(role.includes(permission)){
+                        if(memberRoles.includes(utilities.getRoleId(role))) resolve(true);
+                    }
+                });
+            }
         }
         resolve(false);
     })
