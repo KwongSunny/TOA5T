@@ -29,6 +29,11 @@ module.exports = {
                 roleId = role;
 
             if(roleId !== ''){
+                //check if the role has ADMINISTRATOR perm, return if so
+                let serverRole = await message.guild.roles.fetch(roleId); 
+                if(serverRole.permissions.has('ADMINISTRATOR'))
+                    return message.channel.send('This role has ADMIN permissions and cannot be set as the default role');
+
                 let server = await aws_utilities.fetchServer(message.guild.id);
                 //if the server is in the database, update the item
                 if(!server){
@@ -38,7 +43,7 @@ module.exports = {
                 message.channel.send("The server's default role is now " + role + ", new members will now automatically be assigned this role");
             }
             else{
-                if(args === '@everyone')
+                if(args.includes('@everyone'))
                     return message.channel.send('That is not a valid role');
                 else return message.channel.send(args + ' does not exist, please try another');
             }
