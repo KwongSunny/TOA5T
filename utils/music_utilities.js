@@ -38,8 +38,6 @@ async function playQueue(message, guildId, songQueue, interactiveEmbeds, Discord
                 interactiveEmbeds.delete(embed.messageId);
             }
         })
-        console.log(interactiveEmbeds);
-
         return;
     }
     //if there is a disconnectTimer currently running, stop it

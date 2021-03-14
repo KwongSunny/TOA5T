@@ -16,9 +16,11 @@ module.exports = {
                 ''
             );
             
-            embed.addField('Role Management', 
+            embed.addField('Role Management and Permissions', 
                 '`autorole`: sets a default role for the server, any new members will be granted this role\n' +
+                '`listpermissions`: lists the permissions of all roles in the server\n' +
                 '`reactionrole`: creates a post which people can react to to give out and take away roles\n' +
+                '`setpermissions`: sets the TOA5T permissions of a role\n' +
                 ''
             );
 
