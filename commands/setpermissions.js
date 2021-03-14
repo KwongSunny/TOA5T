@@ -42,12 +42,16 @@ module.exports = {
 
             let rolePermissions = server.Item.role_permissions;
 
+            let valid = true;
             //check that the given permissions are valid permissions
             permissions.split(',').forEach((perm) => {
                 perm.trim()
-                if(!perm_utilities.isValidPermission(perm.trim()))
+                if(!perm_utilities.isValidPermission(perm.trim())){
+                    valid = false;
                     return message.channel.send(perm.trim() + ' is not a valid TOA5T permission');
+                }
             })
+            if(!valid) return;
 
             //find the role in the server's role_permissions
             if(rolePermissions){
