@@ -21,7 +21,8 @@ module.exports = {
                 .setTitle('Skip Song')
                 .addField('Description', 'Skips the current song in the queue')
                 .addField('Usage', '`' + prefix + this.name + '`')
-                .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Play`, `Pause`, `Queue`, `Resume`, `Stop`, `Volume`');
+                .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Play`, `Pause`, `Queue`, `Resume`, `Stop`, `Volume`')
+                .addField('Aliases', '`next`');
             return message.channel.send(embed);  
         }
         //skips the current video

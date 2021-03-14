@@ -23,8 +23,8 @@ module.exports = {
                     '`' + prefix + this.name + '`\n' +
                     '`' + prefix + this.name + ' @guest`'
                 )
-                .addField('Aliases', '`listperm, listperms`')
-                return message.channel.send(embed);
+                .addField('Aliases', '`listperm, listperms`');
+            return message.channel.send(embed);
         }
         else if(args === ''){
             let embed = new Discord.MessageEmbed()

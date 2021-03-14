@@ -4,7 +4,7 @@ const perm_utilities = require('../utils/perm_utilities.js');
 module.exports = {
     name: 'back',
     description: 'Plays the previous song',
-    async execute(message, prefix, args, songQueue, Discord){
+    async execute(message, prefix, args, songQueue, interactiveEmbeds, Discord){
         args = args.trim();
         
         const permission = 'play_music';
@@ -42,7 +42,7 @@ module.exports = {
                 songQueue.set(message.guild.id, serverQueue);
 
                 //play the queue
-                music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                music_utilities.playQueue(message, message.guild.id, songQueue, interactiveEmbeds, Discord);
             }
             else return message.channel.send('There is no music currently being played, use `' + prefix + 'play` to start listening');
         }

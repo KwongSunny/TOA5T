@@ -4,7 +4,7 @@ const perm_utilities = require('../utils/perm_utilities.js');
 module.exports = {
     name: 'resume',
     description: 'resumes the playlist',
-    async execute(message, prefix, args, songQueue, Discord){
+    async execute(message, prefix, args, songQueue, interactiveEmbeds, Discord){
         args = args.trim();
 
         const permission = 'play_music';
@@ -43,7 +43,7 @@ module.exports = {
                 else{
                     serverQueue.paused = false;
                     songQueue.set(message.guild.id, serverQueue);
-                    music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                    music_utilities.playQueue(message, message.guild.id, songQueue, interactiveEmbeds, Discord);
                 }
                 return message.channel.send('The playlist has been resumed');
             }

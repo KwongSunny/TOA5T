@@ -24,7 +24,8 @@ module.exports = {
                     '`' + prefix + this.name + '`\n' + 
                     '`' + prefix + this.name + ' newVolume[0-200]`')
                 .addField('Example', '`' + prefix + this.name + ' 70`')
-                .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Pause`, `Play`, `Queue`, `Resume`, `Skip`, `Stop`');
+                .addField('Related Commands', '`Back`, `Clear`, `Join`, `Leave`, `Loop`, `Pause`, `Play`, `Queue`, `Resume`, `Skip`, `Stop`')
+                .addField('Aliases', 'vol');
             return message.channel.send(embed);
         }
         //sends a message on the current volume of the bot

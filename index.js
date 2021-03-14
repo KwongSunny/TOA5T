@@ -6,6 +6,7 @@ const utilities = require('./utils/utilities.js');
 const aws_utilities = require('./utils/aws_utilities');
 const rr_utilities = require('./utils/reactionrole_utilities');
 const raffle_utilities = require('./utils/raffle_utilities.js');
+const music_utilities = require('./utils/music_utilities.js');
 const index_helpers = require('./index_helpers.js');
 const messageFilter = require('./utils/messageFilter.js');
 
@@ -13,8 +14,10 @@ const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]}
 const defaultPrefix = '~';
 let prefix = '~';
 client.commands = new Discord.Collection();
-const songQueue = new Map();
-let raffles;
+
+const songQueue = new Map(); //key: server_id, value: songQueue []
+let raffles; //raffles that initialize on startup from dynamodb
+let interactiveEmbeds = new Map(); //key: message_id
 
 //read all commands from commands folder
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -86,26 +89,27 @@ client.on('message', async message => {
             let command = '';
 
         //a bot command is being used
-        if(message.content.startsWith(prefix)){
-            command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
+            if(message.content.startsWith(prefix)){
+                command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
 
-            index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, raffles, Discord, client);
-        }
+                console.log('Command called: "' + message.content + '"');
+                index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, interactiveEmbeds, raffles, Discord, client);
+            }
         //getprefix will always utilize the default prefix as well as the custom prefix
-        else if(message.content.startsWith(defaultPrefix)){
-        command = message.content.slice(defaultPrefix.length).split(/ +/).shift().toLowerCase();
+            else if(message.content.startsWith(defaultPrefix)){
+            command = message.content.slice(defaultPrefix.length).split(/ +/).shift().toLowerCase();
 
-        if(command === 'getprefix')
-            client.commands.get('getprefix').execute(message, defaultPrefix, args, Discord);
-        }
+            if(command === 'getprefix')
+                client.commands.get('getprefix').execute(message, defaultPrefix, args, Discord);
+            }
         //ignore messages from bots
-        else if(message.author.bot){
-            return;
-        }
+            else if(message.author.bot){
+                return;
+            }
         //every other message sent by users
-        else{
-            messageFilter.filterMessage(message);
-        }
+            else{
+                //messageFilter.filterMessage(message);
+            }
     }
 
 
@@ -119,6 +123,48 @@ client.on('messageReactionAdd', async(reaction, user) => {
     if(!reaction.message.guild) return;
 
     rr_utilities.addRoleFromReaction(reaction, user);
+
+    if(interactiveEmbeds.has(reaction.message.id)){
+        interactiveEmbed = interactiveEmbeds.get(reaction.message.id);
+        if(interactiveEmbed.type === 'queue'){
+            let serverQueue = songQueue.get(reaction.message.guild.id);
+
+            let embed = reaction.message;
+    
+            let newEmbed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Music Queue');
+            
+            let status;
+            if(serverQueue.stopped) status = 'Stopped';
+            else if(serverQueue.paused) status = 'Paused';
+            else status = 'Playing';
+
+            let pages = Math.ceil((serverQueue.songs.length-1)/4);
+            if(pages === 0) pages++;
+
+            if(reaction.emoji.name === '⏪' && interactiveEmbed.currentPage > 1){
+                newEmbed.setDescription(music_utilities.generateQueueDescription(1, status, serverQueue));
+                interactiveEmbed.currentPage = 1;
+                embed.edit(newEmbed);
+            }
+            if(reaction.emoji.name === '◀️' && interactiveEmbed.currentPage > 1){
+                newEmbed.setDescription(music_utilities.generateQueueDescription(--interactiveEmbed.currentPage, status, serverQueue));
+                embed.edit(newEmbed);
+            }
+            if(reaction.emoji.name === '▶️' && interactiveEmbed.currentPage < pages){
+                newEmbed.setDescription(music_utilities.generateQueueDescription(++interactiveEmbed.currentPage, status, serverQueue));
+                embed.edit(newEmbed);
+            }
+            if(reaction.emoji.name === '⏩' && interactiveEmbed.currentPage < pages){
+                newEmbed.setDescription(music_utilities.generateQueueDescription(pages, status, serverQueue));
+                interactiveEmbed.currentPage = pages;
+                embed.edit(newEmbed);
+            }
+            reaction.users.remove(user.id);
+        }
+    }
+
 });
 
 //read active reactions, and gives out roles
