@@ -55,12 +55,16 @@ module.exports = {
 
             //find the role in the server's role_permissions
             if(rolePermissions){
+                let found = false;
+
                 for(let role = 0; role < rolePermissions.length; role++){
                     if(rolePermissions[role].includes(roleMention)){
+                        found = true;
                         rolePermissions[role] = roleMention + ':' + permissions;
                     }
                 }
-                rolePermissions.push(roleMention + ':' + permissions);
+                if(!found)
+                    rolePermissions.push(roleMention + ':' + permissions);
             } 
             //if there is no role_permissions then create one with the new permissions
             else{
