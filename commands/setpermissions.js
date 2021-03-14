@@ -1,4 +1,5 @@
 const aws_utilities = require('../utils/aws_utilities.js');
+const perm_utilities = require('../utils/perm_utilities.js');
 const utilities = require('../utils/utilities.js');
 
 module.exports = {
@@ -17,7 +18,8 @@ module.exports = {
                 .setTitle('Set Permissions')
                 .addField('Description', 'Assigns roles a set of permissions for TOA5T commands')
                 .addField('Usage', '`' + prefix + this.name + ' @role:permission, permission2...`')
-                .addField('Example', '`' + prefix + this.name + ' @DJ:manage_music, play_music`');
+                .addField('Example', '`' + prefix + this.name + ' @DJ:manage_music, play_music`')
+                .addField('Aliases', '`setperm, setperms`');
             message.channel.send(embed);
 
         }
@@ -40,6 +42,14 @@ module.exports = {
 
             let rolePermissions = server.Item.role_permissions;
 
+            //check that the given permissions are valid permissions
+            permissions.split(',').forEach((perm) => {
+                perm.trim()
+                if(!perm_utilities.isValidPermission(perm.trim()))
+                    return message.channel.send(perm.trim() + ' is not a valid TOA5T permission');
+            })
+
+            //find the role in the server's role_permissions
             if(rolePermissions){
                 for(let role = 0; role < rolePermissions.length; role++){
                     if(rolePermissions[role].includes(roleMention)){
@@ -48,6 +58,7 @@ module.exports = {
                 }
                 rolePermissions.push(roleMention + ':' + permissions);
             } 
+            //if there is no role_permissions then create one with the new permissions
             else{
                 rolePermissions = [roleMention + ':' + permissions];
             }

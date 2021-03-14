@@ -1,4 +1,4 @@
-function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, raffles, Discord, client){
+function executeCommand(command, prefix, defaultPrefix, message, args, songQueue, interactiveEmbeds, raffles, Discord, client){
     //Server Management
     if(command === 'ban')
         client.commands.get('ban').execute(message, prefix, args, Discord);
@@ -23,7 +23,7 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
 
     //Music and Audio
     else if(command === 'back')
-        client.commands.get('back').execute(message, prefix, args, songQueue, Discord);
+        client.commands.get('back').execute(message, prefix, args, songQueue, interactiveEmbeds, Discord);
     else if(command === 'clear')
         client.commands.get('clear').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'join')
@@ -35,11 +35,11 @@ function executeCommand(command, prefix, defaultPrefix, message, args, songQueue
     else if(command === 'pause')
         client.commands.get('pause').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'play')
-        client.commands.get('play').execute(message, prefix, args, songQueue, Discord);
+        client.commands.get('play').execute(message, prefix, args, songQueue, interactiveEmbeds, Discord);
     else if(command === 'queue' || command === 'q')
-        client.commands.get('queue').execute(message, prefix, args, songQueue, Discord);
+        client.commands.get('queue').execute(message, prefix, args, songQueue, interactiveEmbeds, Discord);
     else if(command === 'resume')
-        client.commands.get('resume').execute(message, prefix, args, songQueue, Discord);
+        client.commands.get('resume').execute(message, prefix, args, songQueue, interactiveEmbeds, Discord);
     else if(command === 'skip' || command === 'next')
         client.commands.get('skip').execute(message, prefix, args, songQueue, Discord);
     else if(command === 'song')

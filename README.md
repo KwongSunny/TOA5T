@@ -23,7 +23,7 @@ Done utilities:
     Resetprefix - Resets the server's bot's prefix to it's default [DONE] 
     permissions: ADMINISTRATOR
 
-    Set prefix - allows a moderator to set the bot prefix for server in case of bot collision [DONE] 
+    Setprefix - allows a moderator to set the bot prefix for server in case of bot collision [DONE] 
     permissions: ADMINISTRATOR
 
     Setmaxwarnings - changes the default maximum warnings of the server [DONE] 
@@ -72,21 +72,19 @@ Done utilities:
 
 In Development utilities:
 
-    Need to add @everyone to done commands
-
     Help - always needs updates for every command
     permissions: n/a
 
     info [ON HOLD]
     permissions: n/a
 
-    Raffle [mid testing - should be working properly, need to work on extra options; need to set up permissions] 
+    Raffle [mid testing - raffle list needs pages, raffle new needs to not be able to create same name raffles] 
     permissions: manage_raffle, ADMINISTRATOR
 
     Setpermissions [DEV] need to check for valid permissions
     permissions: ADMINISTRATOR
 
-    Listpermissions [DEV] 
+    Listpermissions [DONE FTMP] 
     permissions: ADMINISTRATOR
 
     Music:
@@ -116,17 +114,14 @@ Planned utilities:
     
     Temp ban - temporarily bans a user
     
-    Music - plays music/videos from youtube
-
-        setmusicperms permissions: administrator
-    
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
     Checkstock - checks the price of a stock
 
 Removed Utilities
 
-    Purge [DEPRECATED - removed to prevent abuse of Discord API]
+    Purge [DEPRECATED - removed]
+    permissions: ADMINISTRATOR
 
     Setmusicrole [DEPRECATED - USE setpermissions]
     permissions: ADMINISTRATOR

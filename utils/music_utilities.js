@@ -18,7 +18,7 @@ function generateServerQueue(voiceChannel){
     };
 }
 
-async function playQueue(message, guildId, songQueue, Discord){
+async function playQueue(message, guildId, songQueue, interactiveEmbeds, Discord){
     //look for the server's Queue
     const serverQueue = songQueue.get(guildId);
     if(!serverQueue) return console.log('no server queue');
@@ -31,6 +31,15 @@ async function playQueue(message, guildId, songQueue, Discord){
         let disconnectTimer = setTimeout(() => {serverQueue.voiceChannel.leave()}, 60000);
         serverQueue.disconnectTimer = disconnectTimer;
         songQueue.set(message.guild.id, serverQueue);
+
+        interactiveEmbeds.forEach(embed => {
+            if(embed.type === 'queue' && embed.guildId === guildId){
+                console.log(embed);
+                interactiveEmbeds.delete(embed.messageId);
+            }
+        })
+        console.log(interactiveEmbeds);
+
         return;
     }
     //if there is a disconnectTimer currently running, stop it
@@ -81,7 +90,7 @@ async function playQueue(message, guildId, songQueue, Discord){
 
             //play the queue
             if(!serverQueue.stopped)
-                playQueue(message, guildId, songQueue, Discord);
+                playQueue(message, guildId, songQueue, interactiveEmbeds, Discord);
         })
         .on('error', error => {
             if(error.code === 'EPIPE'){
@@ -153,8 +162,29 @@ async function getYTSearch(args){
     });
 }
 
+//creates the description of the server's queue
+function generateQueueDescription(page, status, serverQueue){
+    let description = '| **Status:** `' + status + '` | **Volume:** `' + serverQueue.volume + '` | **Loop:** `' + serverQueue.loop + '` |\n\n**Now Playing**\n```' + serverQueue.songs[0].title + '```\n**Up next**\n```';
+
+    const maxDisplayLength = 4;
+    for(song = 1; song < maxDisplayLength + 1; song++){
+        if(serverQueue.songs[song + ((page - 1) * maxDisplayLength)]){
+            description += '[' + (song + ((page - 1) * maxDisplayLength)) + ']' + serverQueue.songs[song + ((page - 1) * maxDisplayLength)].title + '\n';
+        }
+        else{
+            description += '[' + (song + ((page - 1) * maxDisplayLength)) + ']\n'; 
+        }
+    }
+    let pages = Math.ceil((serverQueue.songs.length-1)/4);
+    if(pages === 0) pages++;
+
+    description += '```page ' + page + '/' + pages;
+    return description;
+}
+
 module.exports.generateServerQueue = generateServerQueue;
 module.exports.playQueue = playQueue;
 module.exports.checkMusicPermissions = checkMusicPermissions;
 module.exports.isLink = isLink;
 module.exports.getYTSearch = getYTSearch;
+module.exports.generateQueueDescription = generateQueueDescription;

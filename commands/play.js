@@ -7,7 +7,7 @@ const resume = require('./resume.js');
 module.exports = {
     name: 'play',
     description: 'plays music from a youtube link',
-    async execute(message, prefix, args, songQueue, Discord) {
+    async execute(message, prefix, args, songQueue, interactiveEmbeds, Discord) {
         args = args.trim();
 
         const permission = 'play_music';
@@ -33,7 +33,7 @@ module.exports = {
             if(serverQueue){
                 if(!serverQueue.paused && !serverQueue.stopped) message.channel.send('The playlist is already playing');
                 else if(serverQueue.paused && !serverQueue.stopped) resume.execute(message, prefix, args, songQueue, Discord);
-                else if(serverQueue.stopped) music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                else if(serverQueue.stopped) music_utilities.playQueue(message, message.guild.id, songQueue, interactiveEmbeds, Discord);
                 return;
             }
             else return message.channel.send("There doesn't appear to be any songs in your queue, use `" + prefix + "play youtubeLink` to add some songs");
@@ -84,7 +84,7 @@ module.exports = {
 
             //play the queue if it's the first song added
             if(serverQueue.songs.length === 1)
-                music_utilities.playQueue(message, message.guild.id, songQueue, Discord);
+                music_utilities.playQueue(message, message.guild.id, songQueue, interactiveEmbeds, Discord);
         }
     }
 }

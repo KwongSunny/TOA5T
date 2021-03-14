@@ -123,7 +123,7 @@ function removeCompletedRaffles(raffles){
 //the user must give an input of mm/dd/yyyy ex: 02/18/2021
 function askDate(dmChannel, raffle, client){
     return new Promise(async (resolve) => {
-        let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
+        let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 180000, errors:['time']});
 
         response = response.last().content;
 
@@ -186,7 +186,7 @@ function isToday(date){
 function askTime(dmChannel, raffle, client){
 
     return new Promise(async (resolve) => {
-        let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
+        let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 180000, errors:['time']});
 
         response = response.last().content;
 
@@ -228,7 +228,7 @@ function isValidRaffleTime(userResponse, raffle){
 
 function askTimeZone(dmChannel, client){
     return new Promise(async (resolve) => {
-        let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
+        let response = await dmChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 180000, errors:['time']});
 
         response = response.last().content;
 
