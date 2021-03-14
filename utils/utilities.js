@@ -104,8 +104,8 @@ function getRoleId(roleMention){
 function getUserId(userMention){
     let result = userMention.trim();
 
-    let firstIndex = roleMention.indexOf('!') + 1;
-    let lastIndex = roleMention.indexOf('>');
+    let firstIndex = userMention.indexOf('!') + 1;
+    let lastIndex = userMention.indexOf('>');
 
     return result.substring(firstIndex, lastIndex);
 }
