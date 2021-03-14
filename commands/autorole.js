@@ -38,7 +38,7 @@ module.exports = {
                 message.channel.send("The server's default role is now " + role + ", new members will now automatically be assigned this role");
             }
             else{
-                message.channel.send(roleName, ' does not exist, please try another');
+                message.channel.send(args, ' does not exist, please try another');
             }
         }
     }
