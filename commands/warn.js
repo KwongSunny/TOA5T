@@ -70,9 +70,8 @@ module.exports = {
                 //if the user has the ban_members perm, they cannot be warned/banned
                 if(user.hasPermission('BAN_MEMBERS')) return message.channel.send('You cannot warn this member');
 
-                //let userItem = message.guild.members.cache.get(userId);
-                let maxWarnings;
-                let currentWarnings = 0;
+                let maxWarnings = defaultMaxWarnings;
+                let currentWarnings = 1;
                 let banned = false;
 
                 const server = await aws_utilities.fetchServer(message.guild.id);
@@ -81,14 +80,9 @@ module.exports = {
                     let warnedUsers = server.Item.warned_users;
                     maxWarnings = server.Item.max_warnings;
 
-                    //if the server does not have a max warnings, set it to the default
-                    if(!maxWarnings || maxWarnings === ''){
-                        maxWarnings = defaultMaxWarnings;
-                    }
-
                     //if the warned_users does not exist, then create a new warned_users
                     if(!warnedUsers || warnedUsers === undefined){
-                        warnedUsers = [userId + ':1:1'];
+                        warnedUsers = [userId + ':' + currentWarnings + ':1'];
                     }
                     else{
                         //look for the user in the warnedUsers list
@@ -119,8 +113,7 @@ module.exports = {
                         }
                         //if the users not found, add the user, a long with one warning count
                         if(!found){
-                            warnedUsers.push(userId + ':1:1');
-                            currentWarnings = 1;
+                            warnedUsers.push(userId + ':' + currentWarnings + ':1');
                         }
                     }
 
