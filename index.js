@@ -116,8 +116,6 @@ client.on('message', async message => {
                 //messageFilter.filterMessage(message);
             }
     }
-
-
 });
 
 //read active reactions, and gives out roles
@@ -129,8 +127,10 @@ client.on('messageReactionAdd', async(reaction, user) => {
 
     rr_utilities.addRoleFromReaction(reaction, user);
 
+    //edit interactive embeds
     if(interactiveEmbeds.has(reaction.message.id)){
         interactiveEmbed = interactiveEmbeds.get(reaction.message.id);
+        //edit song queue embeds
         if(interactiveEmbed.type === 'queue'){
             let serverQueue = songQueue.get(reaction.message.guild.id);
 
@@ -216,6 +216,10 @@ client.on('voiceStateUpdate', (voiceState) => {
             songQueue.delete(voiceState.guild.id);
         }
     }
+});
+
+client.on('guildDelete', (guild) => {
+    aws_utilities.deleteServer(guild.id);
 });
 
 let deploy = 'HEROKU';
