@@ -219,7 +219,7 @@ client.on('voiceStateUpdate', (voiceState) => {
 });
 
 client.on('guildCreate', (guild) => {
-    aws_utilities.writeItem(guild.id);
+    aws_utilities.writeItem(guild);
 })
 
 client.on('guildDelete', (guild) => {
