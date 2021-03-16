@@ -4,7 +4,13 @@ const perm_utilities = require('../utils/perm_utilities.js');
 module.exports = {
     name: 'clear',
     description: 'Empties the queue',
-    async execute(message, prefix, args, songQueue, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const songQueue = param.songQueue;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         const permission = 'manage_music';

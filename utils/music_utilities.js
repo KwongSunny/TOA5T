@@ -34,7 +34,6 @@ async function playQueue(message, guildId, songQueue, interactiveEmbeds, Discord
 
         interactiveEmbeds.forEach(embed => {
             if(embed.type === 'queue' && embed.guildId === guildId){
-                console.log(embed);
                 interactiveEmbeds.delete(embed.messageId);
             }
         })

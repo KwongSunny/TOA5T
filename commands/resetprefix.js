@@ -4,7 +4,13 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'resetprefix',
     description: 'resets the custom prefix for the server to the default prefix',
-    async execute(message, prefix, defaultPrefix, args, Discord) {
+    async execute(param) {
+        const message = param.message;
+        const prefix = param.prefix;
+        const defaultPrefix = param.defaultPrefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         //check for permissions

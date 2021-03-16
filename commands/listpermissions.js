@@ -4,7 +4,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'listpermissions',
     description: 'list all the permissions for the server',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
 
         if(!message.member.hasPermission('ADMINISTRATOR')){
             return message.channel.send('You have insufficient permissions to use this command');

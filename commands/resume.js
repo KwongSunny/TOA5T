@@ -4,7 +4,14 @@ const perm_utilities = require('../utils/perm_utilities.js');
 module.exports = {
     name: 'resume',
     description: 'resumes the playlist',
-    async execute(message, prefix, args, songQueue, interactiveEmbeds, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const songQueue = param.songQueue;
+        const interactiveEmbeds = param.interactiveEmbeds;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         const permission = 'play_music';

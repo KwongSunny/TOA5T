@@ -1,7 +1,11 @@
 module.exports = {
     name: 'help',
     description: 'provides a list of commands',
-    execute(message, args, Discord){
+    execute(param){
+        const message = param.message;
+        let args = param.args;
+        const Discord = param.Discord;
+
         let embed = new Discord.MessageEmbed()
             .setColor('#f7c920')
             .setTitle('Commands List')
@@ -43,7 +47,6 @@ module.exports = {
             embed.addField('Miscellaneous',
                 "`getprefix`: retrieves the server's bot's prefix\n" +
                 '`help`: returns this page\n' +
-                '`info`: returns information about the bot\n' +
                 '`random`: random number generator, can also use item lists\n' +
                 "`resetprefix`: resets the bot's prefix to its default\n" +
                 "`setprefix`: changes the bot's default prefix\n" +

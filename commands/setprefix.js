@@ -4,7 +4,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'setprefix',
     description: 'changes the default prefix to a custom one, pins the message and deletes the previous pinned prefix message',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+        
         args = args.trim();
         //checks for user permissions
         if(!message.member.hasPermission('ADMINISTRATOR')){

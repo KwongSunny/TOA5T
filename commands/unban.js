@@ -3,7 +3,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'unban',
     description: 'unbans a user, only takes a user Id',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+        
         args = args.trim();
         //checks for user permissions
         if(!message.member.hasPermission('BAN_MEMBERS')){

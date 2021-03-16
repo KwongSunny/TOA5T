@@ -6,7 +6,14 @@ const perm_utilities = require('../utils/perm_utilities.js');
 module.exports = {
     name: 'raffle',
     description: 'Creates a raffle',
-    async execute(message, prefix, args, raffles, Discord, client) {
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const raffles = param.raffles;
+        const Discord = param.Discord;
+        const client = param.client;
+
         args = args.trim();
 
         let permission = 'manage_raffle';

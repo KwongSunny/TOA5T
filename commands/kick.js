@@ -3,7 +3,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'kick',
     description: 'kicks a user, takes a mention',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
         args = args.trim();
         //check for user permissions
         if(!message.member.hasPermission('KICK_MEMBERS')){

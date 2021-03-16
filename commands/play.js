@@ -7,7 +7,14 @@ const resume = require('./resume.js');
 module.exports = {
     name: 'play',
     description: 'plays music from a youtube link',
-    async execute(message, prefix, args, songQueue, interactiveEmbeds, Discord) {
+    async execute(param) {
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const songQueue = param.songQueue;
+        const interactiveEmbeds = param.interactiveEmbeds;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         const permission = 'play_music';

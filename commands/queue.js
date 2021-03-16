@@ -3,7 +3,14 @@ const music_utilities = require('../utils/music_utilities.js');
 module.exports = {
     name: 'queue',
     description: 'retrieves the queue of youtube links to be played by the bot',
-    async execute(message, prefix, args, songQueue, interactiveEmbeds, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const songQueue = param.songQueue;
+        const interactiveEmbeds = param.interactiveEmbeds;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         //provides help on how to use the command
