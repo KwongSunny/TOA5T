@@ -55,6 +55,9 @@ Done utilities:
         Play [DONE] 
         permissions: play_music, ADMINISTRATOR
 
+        Queue [DONE]
+        permissions: n/a
+
         Resume [DONE] 
         Permissions: play_music, ADMINISTRATOR
 
@@ -86,11 +89,6 @@ In Development utilities:
 
     Listpermissions [DONE FTMP] 
     permissions: ADMINISTRATOR
-
-    Music:
-
-        Queue [Needs to be able to see more pages] 
-        Permissions: n/a
 
 Planned utilities:
 
