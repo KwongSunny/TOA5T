@@ -8,6 +8,7 @@ module.exports = {
                 'permissions list: manage_music, play_music, manage_raffle',
     async execute(message, prefix, args, Discord){
         args = args.trim();
+        args = args.toLowerCase();
 
         if(!message.member.hasPermission('ADMINISTRATOR')){
             return message.channel.send('You have insufficient permissions to use this command');
