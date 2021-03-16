@@ -87,6 +87,23 @@ function updateItem(server_id, keys, values){
     });
 }
 
+function deleteServer(server_id){
+    let param = {
+        TableName: tableName,
+        Key: {
+            "server_id": server_id
+        }
+    }
+    docClient.delete(param, function(err, data) {
+        if (err) {
+            console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+        } 
+        else {
+            //console.log("Update succeeded:", JSON.stringify(data, null, 2));
+        }
+    });
+}
+
 //fetches Items of raffles
 function fetchRaffles(){
     let param = {
@@ -188,6 +205,7 @@ function deleteRaffle(raffleMessageId){
 module.exports.fetchServer = fetchServer;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
+module.exports.deleteServer = deleteServer;
 
 module.exports.fetchRaffles = fetchRaffles;
 module.exports.writeRaffle = writeRaffle;
