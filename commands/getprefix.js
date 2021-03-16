@@ -3,7 +3,12 @@ const aws_utilities = require('../utils/aws_utilities.js');
 module.exports = {
     name: 'getprefix',
     description: 'returns the custom prefix in case a user forgets, this will always utilize the default prefix',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.prefix;
+        const Discord = param.Discord;
+
         args = args.trim();
         if(args === 'help'){
             let embed = new Discord.MessageEmbed()

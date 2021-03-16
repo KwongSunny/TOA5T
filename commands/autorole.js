@@ -4,7 +4,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'autorole',
     description: 'Assigns a default role to a server, every person that joins will automatically be assigned this role, takes a mention of the role or id',
-    async execute(message, prefix, args, Discord) {
+    async execute(param) {
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
         let role = args.trim();
 
         if(!message.member.hasPermission('MANAGE_ROLES')){

@@ -4,7 +4,13 @@ const perm_utilities = require('../utils/perm_utilities.js');
 module.exports = {
     name: 'leave',
     description: 'Makes the bot leave their voice channel',
-    async execute(message, prefix, args, Discord, client){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+        const client = param.client;
+
         args = args.trim();
 
         const permission = 'manage_music';

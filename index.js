@@ -8,6 +8,7 @@ const rr_utilities = require('./utils/reactionrole_utilities');
 const raffle_utilities = require('./utils/raffle_utilities.js');
 const music_utilities = require('./utils/music_utilities.js');
 const index_helpers = require('./index_helpers.js');
+const call_command = require('./call_command.js');
 const messageFilter = require('./utils/messageFilter.js');
 
 const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"]});
@@ -92,8 +93,12 @@ client.on('message', async message => {
             if(message.content.startsWith(prefix)){
                 command = message.content.slice(prefix.length).split(/ +/).shift().toLowerCase();
 
-                console.log('Command called: "' + message.content + '"');
-                index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, interactiveEmbeds, raffles, Discord, client);
+                console.log('Command called: "' + message.content + '" in server: ' + message.guild.name + ', ' + message.guild.id);
+
+                let param = {command, prefix, defaultPrefix, message, args, songQueue, interactiveEmbeds, raffles, Discord, client};
+                call_command.executeCommand(param);
+
+                //index_helpers.executeCommand(command, prefix, defaultPrefix, message, args, songQueue, interactiveEmbeds, raffles, Discord, client);
             }
         //getprefix will always utilize the default prefix as well as the custom prefix
             else if(message.content.startsWith(defaultPrefix)){
@@ -211,7 +216,6 @@ client.on('voiceStateUpdate', (voiceState) => {
             songQueue.delete(voiceState.guild.id);
         }
     }
-
 });
 
 let deploy = 'HEROKU';

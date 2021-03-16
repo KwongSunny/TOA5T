@@ -3,7 +3,13 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'song',
     description: 'Retrieves information about the current song',
-    execute(message, prefix, args, songQueue, Discord){
+    execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const songQueue = param.songQueue;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         //send a message on how to use this command
@@ -37,8 +43,6 @@ module.exports = {
                     let timeStamp = ' ';
 
                     timeStamp += utilities.msToHoursMinutesSeconds(serverQueue.connection.dispatcher.streamTime) + ' / ' + utilities.msToHoursMinutesSeconds(lengthSeconds * 1000);
- 
-
     
                 let embed = new Discord.MessageEmbed()
                     .setColor('#f7c920')

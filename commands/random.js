@@ -4,7 +4,12 @@ const {Message, DiscordAPIError} = require('discord.js');
 module.exports = {
     name: 'random',
     description: 'random number generator',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
         args = args.trim();
         //provides information on the command
         if(args === '' || args === 'help'){

@@ -6,7 +6,12 @@ module.exports = {
     name:'setpermissions',
     description:'gives a role permissions for the bot' + 
                 'permissions list: manage_music, play_music, manage_raffle',
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
         args = args.trim();
         args = args.toLowerCase();
 

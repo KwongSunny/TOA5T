@@ -4,7 +4,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'setmaxwarnings',
     description: "sets the server's maximum warnings that a user can get before getting banned",
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+
         args = args.trim();
 
         //check for user permissions

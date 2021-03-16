@@ -4,7 +4,12 @@ const utilities = require('../utils/utilities.js');
 module.exports = {
     name: 'warn',
     description: "warns a user, if the user has too many warnings they will get banned, default max warnings: 2, items in database: '<@!user_id>:current_warns:total_warns'",
-    async execute(message, prefix, args, Discord){
+    async execute(param){
+        const message = param.message;
+        const prefix = param.prefix;
+        let args = param.args;
+        const Discord = param.Discord;
+        
         args = args.trim();
 
         //check for user permissions
