@@ -7,14 +7,14 @@ AWS.config.update({
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient();
-const tableName = 'pixelbot_servers';
+const serverTable = 'pixelbot_servers';
 const raffleTable = 'toast_raffles';
 
 //returns a promise of the item from dynamodb using the server_id key
 //fetches a single item
 function fetchServer(server_id){
     let param = {
-        TableName: tableName,
+        TableName: serverTable,
         Key: {
             "server_id": server_id
         }
@@ -37,7 +37,7 @@ function fetchServer(server_id){
 //writes an items to the dynamodb database
 function writeItem(server){
     let param = {
-        TableName: tableName,
+        TableName: serverTable,
         Item: {
             "server_id": server.id,
             "server_name": server.name
@@ -68,7 +68,7 @@ function updateItem(server_id, keys, values){
     }
 
     let param = {
-        TableName: tableName,
+        TableName: serverTable,
         Key: {
             "server_id": server_id
         },
@@ -87,11 +87,11 @@ function updateItem(server_id, keys, values){
     });
 }
 
-function deleteServer(server_id){
+function deleteServer(server){
     let param = {
-        TableName: tableName,
+        TableName: serverTable,
         Key: {
-            "server_id": server_id
+            "server_id": server.id
         }
     }
     docClient.delete(param, function(err, data) {
@@ -104,7 +104,26 @@ function deleteServer(server_id){
     });
 }
 
-//fetches Items of raffles
+function fetchServers(){
+    let param = {
+        TableName: serverTable
+    }
+    return new Promise((resolve, reject)=>{
+        docClient.scan(param, function(err, data) {
+            if (err) {
+                console.error("Unable to scan table. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err);
+            } 
+            else {
+                //console.log("Read succeeded:", JSON.stringify(data, null, 2));
+                if(!data.Items) resolve(null);
+                else resolve(data);
+            }
+        });
+    }) 
+}
+
+//fetches Items of raffles, fetches no more than 1mb
 function fetchRaffles(){
     let param = {
         TableName: raffleTable
@@ -206,6 +225,7 @@ module.exports.fetchServer = fetchServer;
 module.exports.writeItem = writeItem;
 module.exports.updateItem = updateItem;
 module.exports.deleteServer = deleteServer;
+module.exports.fetchServers = fetchServers;
 
 module.exports.fetchRaffles = fetchRaffles;
 module.exports.writeRaffle = writeRaffle;

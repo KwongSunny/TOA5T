@@ -49,11 +49,10 @@ client.once('ready', async () => {
     else{
         raffles = [];
     }
-
 })
 
 //Check Raffles every 6th hour of every day
-const job = new CronJob(
+const raffleJob = new CronJob(
     '0 */6 * * *', 
     () => {
         console.log("Quarter Daily Raffle Check");
@@ -68,7 +67,17 @@ const job = new CronJob(
         raffles = raffle_utilities.removeCompletedRaffles(raffles);
     }
 )
-job.start();
+raffleJob.start();
+
+// const databaseCleanupJob = new CronJob('0 0 1 */1 *' ,
+//     () => {
+//         console.log('Cleaning up Dynamodb Database');
+
+//         //remove servers that no longer exist
+//         let databaseServers = aws_utilities.scanServers();
+//         console.log(databaseServers);
+//     }
+// )
 
 //persist while bot is alive
 client.on('message', async message => {
@@ -219,11 +228,13 @@ client.on('voiceStateUpdate', (voiceState) => {
 });
 
 client.on('guildCreate', (guild) => {
+    //initialize the server on dynamodb
     aws_utilities.writeItem(guild);
 })
 
 client.on('guildDelete', (guild) => {
-    aws_utilities.deleteServer(guild.id);
+    //delete the server on dynamodb
+    aws_utilities.deleteServer(guild);
 });
 
 let deploy = 'HEROKU';
