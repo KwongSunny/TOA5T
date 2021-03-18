@@ -128,19 +128,23 @@ module.exports = {
         //lists all raffles
         else if(args.includes('list')){
             let description = '```';
-            let count = 0;
 
+            serverRaffles = [];
             raffles.forEach((raffle) => {
                 if(raffle.server_id === message.guild.id && raffle.raffle_status !== 'complete'){
-                    count++;
-                    description += '[' + count + '] ' + raffle.name + ' (End Time: ' + raffle.month + '/' + raffle.day + '/' + raffle.year + ' ' + utilities.militaryToStandardTime(raffle.time.split(':')[0], raffle.time.split(':')[1]) + ' UTC' + raffle.timeZone + ')\n';
+                    serverRaffles.push(raffle);
                 }
             })
 
-            description += '```';
-
-            if(count === 0){
+            if(serverRaffles.length === 0){
                 description = '```There are no active raffles in this server```';
+            }
+            else{
+                for(raffle = 0; raffle < serverRaffles.length; raffle++){
+                    description += '[' + (raffle + 1) + '] ' + serverRaffles[raffle].name + ' ' +
+                        serverRaffles[raffle].month + '/' + serverRaffles[raffle].day + '/' + serverRaffles[raffle].year + ' ' + utilities.militaryToStandardTime(serverRaffles[raffle].time.split(':')[0], serverRaffles[raffle].time.split(':')[1]) + ' UTC' + serverRaffles[raffle].timeZone + '\n';
+                }
+                description += '```';
             }
 
             let embed = new Discord.MessageEmbed()
