@@ -78,7 +78,7 @@ In Development utilities:
     Help - always needs updates for every command
     permissions: n/a
 
-    Raffle [mid testing - raffle list needs pages, raffle new needs to not be able to create same name raffles] 
+    Raffle [mid testing - raffle list needs pages, raffle new needs to not be able to create same name raffles, does not account for daylights saving] 
     permissions: manage_raffle, ADMINISTRATOR
 
     Setpermissions [DEV] need to check for valid permissions

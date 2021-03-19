@@ -39,7 +39,7 @@ module.exports = {
             const serverQueue = songQueue.get(message.guild.id);
             if(serverQueue){
                 if(!serverQueue.paused && !serverQueue.stopped) message.channel.send('The playlist is already playing');
-                else if(serverQueue.paused && !serverQueue.stopped) resume.execute(message, prefix, args, songQueue, Discord);
+                else if(serverQueue.paused && !serverQueue.stopped) resume.execute(param);
                 else if(serverQueue.stopped) music_utilities.playQueue(message, message.guild.id, songQueue, interactiveEmbeds, Discord);
                 return;
             }
@@ -49,7 +49,7 @@ module.exports = {
         else {
             //check if the user is in a voice channel
             const voiceChannel = message.member.voice.channel;
-            if(!voiceChannel) return message.channel.send('You are not connected to any voice channels, please connect to one play music');
+            if(!voiceChannel) return message.channel.send('You are not connected to any voice channels, please connect to one to play music');
 
             //check if the bot has permissions to join and speak in the channel
             const botPermissions = voiceChannel.permissionsFor(message.client.user);

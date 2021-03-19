@@ -142,40 +142,19 @@ client.on('messageReactionAdd', async(reaction, user) => {
         //edit song queue embeds
         if(interactiveEmbed.type === 'queue'){
             let serverQueue = songQueue.get(reaction.message.guild.id);
+            music_utilities.updateQueueDescription(reaction, user, interactiveEmbed, serverQueue, Discord);
+        }
 
-            let embed = reaction.message;
-    
-            let newEmbed = new Discord.MessageEmbed()
-                .setColor('#f7c920')
-                .setTitle('Music Queue');
-            
-            let status;
-            if(serverQueue.stopped) status = 'Stopped';
-            else if(serverQueue.paused) status = 'Paused';
-            else status = 'Playing';
+        //edit raffle list embeds
+        if(interactiveEmbed.type === 'raffle'){
+            let serverRaffles = [];
+            raffles.forEach((raffle) => {
+                if(raffle.server_id === reaction.message.guild.id && raffle.raffle_status !== 'complete'){
+                    serverRaffles.push(raffle);
+                }
+            })
+            raffle_utilities.updateRaffleListDesc(reaction, user, interactiveEmbed, serverRaffles, Discord);
 
-            let pages = Math.ceil((serverQueue.songs.length-1)/4);
-            if(pages === 0) pages++;
-
-            if(reaction.emoji.name === '⏪' && interactiveEmbed.currentPage > 1){
-                newEmbed.setDescription(music_utilities.generateQueueDescription(1, status, serverQueue));
-                interactiveEmbed.currentPage = 1;
-                embed.edit(newEmbed);
-            }
-            if(reaction.emoji.name === '◀️' && interactiveEmbed.currentPage > 1){
-                newEmbed.setDescription(music_utilities.generateQueueDescription(--interactiveEmbed.currentPage, status, serverQueue));
-                embed.edit(newEmbed);
-            }
-            if(reaction.emoji.name === '▶️' && interactiveEmbed.currentPage < pages){
-                newEmbed.setDescription(music_utilities.generateQueueDescription(++interactiveEmbed.currentPage, status, serverQueue));
-                embed.edit(newEmbed);
-            }
-            if(reaction.emoji.name === '⏩' && interactiveEmbed.currentPage < pages){
-                newEmbed.setDescription(music_utilities.generateQueueDescription(pages, status, serverQueue));
-                interactiveEmbed.currentPage = pages;
-                embed.edit(newEmbed);
-            }
-            reaction.users.remove(user.id);
         }
     }
 
