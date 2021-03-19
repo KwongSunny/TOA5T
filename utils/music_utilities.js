@@ -179,9 +179,47 @@ function generateQueueDescription(page, status, serverQueue){
     return description;
 }
 
+function updateQueueDescription(reaction, user, interactiveEmbed, serverQueue, Discord){
+    let embed = reaction.message;
+    
+    let newEmbed = new Discord.MessageEmbed()
+        .setColor('#f7c920')
+        .setTitle('Music Queue');
+    
+    let status;
+    if(serverQueue.stopped) status = 'Stopped';
+    else if(serverQueue.paused) status = 'Paused';
+    else status = 'Playing';
+
+    let pages = Math.ceil((serverQueue.songs.length-1)/4);
+    if(pages === 0) pages++;
+
+    if(reaction.emoji.name === '⏪' && interactiveEmbed.currentPage > 1){
+        newEmbed.setDescription(generateQueueDescription(1, status, serverQueue));
+        interactiveEmbed.currentPage = 1;
+        embed.edit(newEmbed);
+    }
+    if(reaction.emoji.name === '◀️' && interactiveEmbed.currentPage > 1){
+        newEmbed.setDescription(generateQueueDescription(--interactiveEmbed.currentPage, status, serverQueue));
+        embed.edit(newEmbed);
+    }
+    if(reaction.emoji.name === '▶️' && interactiveEmbed.currentPage < pages){
+        newEmbed.setDescription(generateQueueDescription(++interactiveEmbed.currentPage, status, serverQueue));
+        embed.edit(newEmbed);
+    }
+    if(reaction.emoji.name === '⏩' && interactiveEmbed.currentPage < pages){
+        newEmbed.setDescription(generateQueueDescription(pages, status, serverQueue));
+        interactiveEmbed.currentPage = pages;
+        embed.edit(newEmbed);
+    }
+    reaction.users.remove(user.id);
+    return;
+}
+
 module.exports.generateServerQueue = generateServerQueue;
 module.exports.playQueue = playQueue;
 module.exports.checkMusicPermissions = checkMusicPermissions;
 module.exports.isLink = isLink;
 module.exports.getYTSearch = getYTSearch;
 module.exports.generateQueueDescription = generateQueueDescription;
+module.exports.updateQueueDescription = updateQueueDescription;

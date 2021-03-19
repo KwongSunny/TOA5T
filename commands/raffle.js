@@ -11,6 +11,7 @@ module.exports = {
         const prefix = param.prefix;
         let args = param.args;
         const raffles = param.raffles;
+        const interactiveEmbeds = param.interactiveEmbeds;
         const Discord = param.Discord;
         const client = param.client;
 
@@ -129,7 +130,11 @@ module.exports = {
         else if(args.includes('list')){
             let description = '```';
 
-            serverRaffles = [];
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Raffles');
+
+            let serverRaffles = [];
             raffles.forEach((raffle) => {
                 if(raffle.server_id === message.guild.id && raffle.raffle_status !== 'complete'){
                     serverRaffles.push(raffle);
@@ -137,22 +142,30 @@ module.exports = {
             })
 
             if(serverRaffles.length === 0){
-                description = '```There are no active raffles in this server```';
+                embed.setDescription('```There are no active raffles in this server```');
+                return message.channel.send(embed);
             }
             else{
-                for(raffle = 0; raffle < serverRaffles.length; raffle++){
-                    description += '[' + (raffle + 1) + '] ' + serverRaffles[raffle].name + ' ' +
-                        serverRaffles[raffle].month + '/' + serverRaffles[raffle].day + '/' + serverRaffles[raffle].year + ' ' + utilities.militaryToStandardTime(serverRaffles[raffle].time.split(':')[0], serverRaffles[raffle].time.split(':')[1]) + ' UTC' + serverRaffles[raffle].timeZone + '\n';
-                }
-                description += '```';
+                description = raffle_utilities.generateRaffleListDesc(1, serverRaffles);
+                embed.setDescription(description);
+
+                let sentEmbed = await message.channel.send(embed);
+    
+                sentEmbed.react('⏪');
+                sentEmbed.react('◀️');
+                sentEmbed.react('▶️');
+                sentEmbed.react('⏩');
+    
+                //if the server already has an active raffle list, delete it
+                interactiveEmbeds.forEach((embed) => {
+                    if(embed.type === 'raffle' && embed.guildId === message.guild.id){
+                        interactiveEmbeds.delete(embed.messageId);
+                    }
+                })
+    
+                interactiveEmbeds.set(sentEmbed.id, {type: 'raffle', messageId: sentEmbed.id, guildId: sentEmbed.guild.id, channel: sentEmbed.channel.id, currentPage: '1'});
+                return;
             }
-
-            let embed = new Discord.MessageEmbed()
-                .setColor('#f7c920')
-                .setTitle('Raffles')
-                .setDescription(description);
-
-            return await message.channel.send(embed);
         }
         //returns information on a specific raffle
         else if(args.includes('info')){

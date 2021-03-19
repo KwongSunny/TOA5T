@@ -257,6 +257,62 @@ function createRaffleDate(year, month, date, hour, minute, timeZone){
     return raffleEnd;
 }
 
+//creates the description of the server's raffle list
+function generateRaffleListDesc(page, serverRaffles){
+    let description = '```';
+    
+    const maxDisplayLength = 5;
+    for(raffle = 0; raffle < maxDisplayLength; raffle++){
+        if(serverRaffles[raffle + ((page - 1) * maxDisplayLength)]){
+            description += '[' + (raffle + 1 + ((page - 1) * maxDisplayLength)) + '] ' + serverRaffles[raffle+ ((page - 1) * maxDisplayLength)].name + ' ' + serverRaffles[raffle + ((page - 1) * maxDisplayLength)].month +
+                            '/' + serverRaffles[raffle+ ((page - 1) * maxDisplayLength)].day + '/' + serverRaffles[raffle+ ((page - 1) * maxDisplayLength)].year + ' ' + 
+                            utilities.militaryToStandardTime(serverRaffles[raffle+ ((page - 1) * maxDisplayLength)].time.split(':')[0], serverRaffles[raffle+ ((page - 1) * maxDisplayLength)].time.split(':')[1]) + 
+                            ' UTC' + serverRaffles[raffle + ((page - 1) * maxDisplayLength)].timeZone + '\n';
+        }
+        else{
+            description += '[' + (raffle + 1) + ']\n';
+        }
+    }
+
+    let pages = Math.ceil((serverRaffles.length-1)/4);
+    if(pages === 0) pages++;
+
+    description += '```page ' + page + '/' + pages;
+    return description;
+}
+
+function updateRaffleListDesc(reaction, user, interactiveEmbed, serverRaffles, Discord){
+    let embed = reaction.message;
+    
+    let newEmbed = new Discord.MessageEmbed(serverRaffles)
+        .setColor('#f7c920')
+        .setTitle('Raffles');
+
+    let pages = Math.ceil((serverRaffles.length-1)/4);
+    if(pages === 0) pages++;
+
+    if(reaction.emoji.name === '⏪' && interactiveEmbed.currentPage > 1){
+        newEmbed.setDescription(generateQueueDescription(1, serverRaffles));
+        interactiveEmbed.currentPage = 1;
+        embed.edit(newEmbed);
+    }
+    if(reaction.emoji.name === '◀️' && interactiveEmbed.currentPage > 1){
+        newEmbed.setDescription(generateQueueDescription(--interactiveEmbed.currentPage, serverRaffles));
+        embed.edit(newEmbed);
+    }
+    if(reaction.emoji.name === '▶️' && interactiveEmbed.currentPage < pages){
+        newEmbed.setDescription(generateQueueDescription(++interactiveEmbed.currentPage, serverRaffles));
+        embed.edit(newEmbed);
+    }
+    if(reaction.emoji.name === '⏩' && interactiveEmbed.currentPage < pages){
+        newEmbed.setDescription(generateQueueDescription(pages, serverRaffles));
+        interactiveEmbed.currentPage = pages;
+        embed.edit(newEmbed);
+    }
+    reaction.users.remove(user.id);
+    return;
+}
+
 module.exports.activateRaffles = activateRaffles;
 module.exports.startRaffleTimer = startRaffleTimer;
 module.exports.removePastDueRaffles = removePastDueRaffles;
@@ -268,3 +324,5 @@ module.exports.askTime = askTime;
 module.exports.isValidRaffleTime = isValidRaffleTime;
 module.exports.askTimeZone = askTimeZone;
 module.exports.isValidRaffleTimeZone = isValidRaffleTimeZone;
+module.exports.generateRaffleListDesc = generateRaffleListDesc;
+module.exports.updateRaffleListDesc = updateRaffleListDesc;

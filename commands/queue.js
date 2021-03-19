@@ -47,6 +47,13 @@ module.exports = {
                 sentEmbed.react('▶️');
                 sentEmbed.react('⏩');
 
+                //if the server already has an active queue, delete it
+                interactiveEmbeds.forEach((embed) => {
+                    if(embed.type === 'queue' && embed.guildId === message.guild.id){
+                        interactiveEmbeds.delete(embed.messageId);
+                    }
+                })
+
                 interactiveEmbeds.set(sentEmbed.id, {type: 'queue', messageId: sentEmbed.id, guildId: sentEmbed.guild.id, channel: sentEmbed.channel.id, currentPage: '1'});
                 return;
             }
