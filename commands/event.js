@@ -9,7 +9,22 @@ module.exports = {
         const Discord = param.Discord;
       
         if(args === '' || args === 'help'){
-
+            let embed = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle('Raffle')
+                .addField('Description', 'Creates an event in the server')
+                .addField('Usage', 
+                    'To create a new event use the following format:\n' +
+                    '`' + prefix + this.name + ' new`\n\n' +
+                    'To list all events use the following format:\n' +
+                    '`' + prefix + this.name + ' list`\n\n' +
+                    'To view information about a specific event use the following format:\n' +
+                    '`' + prefix + this.name + ' info name`\n\n' +
+                    'To delete a event use the following format:\n' +
+                    '`' + prefix + this.name + ' delete name`\n\n'
+                )
+                .addField('Examples', 'Example');
+            return message.channel.send(embed);
         }
         else if(args === 'new'){
             let newEvent = {
