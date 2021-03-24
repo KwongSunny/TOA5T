@@ -86,10 +86,23 @@ module.exports = {
                 newEvent.time = askedTime;
 
                 directMessageChannel.send("What's the max occupancy for the event? Limit: 16");
-                let maxOccupancy = await 
+                let maxOccupancy;
+                while(!maxOccupancy){
+                    let maxResponse = await directMessageChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
+                    if(utilities.isNumeric(maxResponse) && maxResponse <= 16)
+                        maxOccupancy = maxResponse;
+                    else directMessageChannel.send('That is not a valid number.');
+                }
+                newEvent.max = maxOccupancy;
 
             //finished asking questions, notify the user that the event has been created
             directMessageChannel.send('Your event has been created in the ' + message.channel.name + ' channel.');
+
+            let fieldDesc = '```';
+            for(i = 0; i < newEvent.max; ++i){
+                fieldDesc += '\n' + i + '.';
+            }
+            fieldDesc += '```';
 
             //create, send and react to a new event message
             let eventMsg = new Discord.MessageEmbed()
@@ -99,9 +112,9 @@ module.exports = {
                     {name: 'Description', value: newEvent.description},
                     {name: 'Date & Time', value: newEvent.month + '/' + newEvent.day + '/' + newEvent.year + ' ' + utilities.militaryToStandardTime(newEvent.time.split(':')[0], newEvent.time.split(':')[1]) + ' UTC' + newEvent.timeZone},
                     {name: 'Instruction', value: 'React below to sign up for the event'},
-                    {name: "Yes", value: '```\n1.\n2.\n3.```', inline: true},
-                    {name: 'Maybe', value: '```\n1.\n2.\n3.```', inline: true},
-                    {name: 'Extra', value: '```\n1.\n2.\n3.```', inline: true},
+                    {name: "Yes", value: fieldDesc, inline: true},
+                    {name: 'Maybe', value: fieldDesc, inline: true},
+                    {name: 'Extra', value: fieldDesc, inline: true},
                     {name: 'Hosted by', value: newEvent.host}
                 ])
             let sentEventMessage = await message.channel.send(eventMsg);
