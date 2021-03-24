@@ -313,6 +313,18 @@ function updateRaffleListDesc(reaction, user, interactiveEmbed, serverRaffles, D
     return;
 }
 
+function generateEventDesc(users){
+    let desc = 'Participants:```';
+
+    let max = 32;
+    if(users.length < 32) max = users.length
+    for(let user = 0; user < max; user++){
+        desc += '\n[' + (user + 1) + '] ' + users[user].tag; 
+    }
+    desc += '```';
+    return desc;
+}
+
 module.exports.activateRaffles = activateRaffles;
 module.exports.startRaffleTimer = startRaffleTimer;
 module.exports.removePastDueRaffles = removePastDueRaffles;
@@ -326,3 +338,4 @@ module.exports.askTimeZone = askTimeZone;
 module.exports.isValidRaffleTimeZone = isValidRaffleTimeZone;
 module.exports.generateRaffleListDesc = generateRaffleListDesc;
 module.exports.updateRaffleListDesc = updateRaffleListDesc;
+module.exports.generateEventDesc = generateEventDesc;

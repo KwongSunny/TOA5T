@@ -5,7 +5,7 @@ const CronJob = require('cron').CronJob;
 const utilities = require('./utils/utilities.js');
 const aws_utilities = require('./utils/aws_utilities');
 const rr_utilities = require('./utils/reactionrole_utilities');
-const raffle_utilities = require('./utils/raffle_utilities.js');
+const event_utilities = require('./utils/event_utilities.js');
 const music_utilities = require('./utils/music_utilities.js');
 const index_helpers = require('./index_helpers.js');
 const call_command = require('./call_command.js');
@@ -38,13 +38,13 @@ client.once('ready', async () => {
         raffles = raffles.Items;
 
         //remove past due raffles (this will remove raffles that ended in between bot downtime)
-        raffles = raffle_utilities.removePastDueRaffles(raffles, client);
+        raffles = event_utilities.removePastDueRaffles(raffles, client);
 
         //activate raffles if they're ending within 6 hours
-        raffles = raffle_utilities.activateRaffles(raffles, client);
+        raffles = event_utilities.activateRaffles(raffles, client);
 
         //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
-        raffles = raffle_utilities.removeCompletedRaffles(raffles);
+        raffles = event_utilities.removeCompletedRaffles(raffles);
     }
     else{
         raffles = [];
@@ -58,13 +58,13 @@ const raffleJob = new CronJob(
         console.log("Quarter Daily Raffle Check");
 
         //remove past due raffles (this will remove raffles that ended in between bot downtime)
-        raffles = raffle_utilities.removePastDueRaffles(raffles, client);
+        raffles = event_utilities.removePastDueRaffles(raffles, client);
 
         //activate raffles if they're ending within a day
-        raffles = raffle_utilities.activateRaffles(raffles, client);
+        raffles = event_utilities.activateRaffles(raffles, client);
 
         //remove completed raffles, upon timer concluding, raffle.status will be set to 'complete'; remove all 'complete' raffles from the list
-        raffles = raffle_utilities.removeCompletedRaffles(raffles);
+        raffles = event_utilities.removeCompletedRaffles(raffles);
     }
 )
 raffleJob.start();
@@ -153,7 +153,7 @@ client.on('messageReactionAdd', async(reaction, user) => {
                     serverRaffles.push(raffle);
                 }
             })
-            raffle_utilities.updateRaffleListDesc(reaction, user, interactiveEmbed, serverRaffles, Discord);
+            event_utilities.updateRaffleListDesc(reaction, user, interactiveEmbed, serverRaffles, Discord);
 
         }
     }

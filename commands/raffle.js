@@ -1,6 +1,6 @@
 const utilities = require('../utils/utilities.js');
 const aws_utilities = require('../utils/aws_utilities.js');
-const raffle_utilities = require('../utils/raffle_utilities.js');
+const event_utilities = require('../utils/event_utilities.js');
 const perm_utilities = require('../utils/perm_utilities.js');
 
 module.exports = {
@@ -39,8 +39,7 @@ module.exports = {
                     '`' + prefix + this.name + ' delete name`\n\n' +
                     'To force finish a raffle use the following format:\n' + 
                     '`' + prefix + this.name + ' force name`'
-                )
-                .addField('Examples', 'Example');
+                );
             return message.channel.send(embed);
         }
         //creates a new raffle
@@ -81,12 +80,12 @@ module.exports = {
                 directMessageChannel.send(
                     'What UTC offset is this raffle based in? Enter an offset between -12 and +14\n'+
                     'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
-                let askedTimeZone = await raffle_utilities.askTimeZone(directMessageChannel, client);
+                let askedTimeZone = await event_utilities.askTimeZone(directMessageChannel, client);
                 newRaffle.timeZone = askedTimeZone;
 
                 //ask and record DAY,MONTH,YEAR for raffle
                 directMessageChannel.send('What date will the raffle end? Please use the format mm/dd/yyyy, the date cannot be over 30 days.')
-                let askedDate = await raffle_utilities.askDate(directMessageChannel, newRaffle, client);
+                let askedDate = await event_utilities.askDate(directMessageChannel, newRaffle, client);
 
                 //askedDate is in form [day, month, year]
                 newRaffle.month = askedDate[0];
@@ -94,9 +93,9 @@ module.exports = {
                 newRaffle.year = askedDate[2];
 
                 //ask and record TIME for raffle
-                const today = raffle_utilities.isToday(askedDate);
+                const today = event_utilities.isToday(askedDate);
                 directMessageChannel.send('What time will the raffle end? Please use the format hour:minute in military time (24 hour clock).')
-                let askedTime = await raffle_utilities.askTime(directMessageChannel, newRaffle, client);
+                let askedTime = await event_utilities.askTime(directMessageChannel, newRaffle, client);
 
                 newRaffle.time = askedTime;
 
@@ -108,7 +107,7 @@ module.exports = {
                 .setColor('#f7c920')
                 .setTitle(newRaffle.name)
                 .addField('Description', newRaffle.description)
-                .addField('Date', newRaffle.month + '/' + newRaffle.day + '/' + newRaffle.year + ' ' + utilities.militaryToStandardTime(newRaffle.time.split(':')[0], newRaffle.time.split(':')[1]) + ' UTC' + newRaffle.timeZone)
+                .addField('Date & Time', newRaffle.month + '/' + newRaffle.day + '/' + newRaffle.year + ' ' + utilities.militaryToStandardTime(newRaffle.time.split(':')[0], newRaffle.time.split(':')[1]) + ' UTC' + newRaffle.timeZone)
                 .addField('Instruction', 'React below to be entered into the raffle')
                 .addField('Hosted by', newRaffle.host);
             let sentRaffleMessage = await message.channel.send(raffleMsg);
@@ -124,7 +123,7 @@ module.exports = {
             aws_utilities.writeRaffle(newRaffle);
 
             //activate any unactivated raffles, including the new one
-            raffle_utilities.activateRaffles(raffles, client);
+            event_utilities.activateRaffles(raffles, client);
         }
         //lists all raffles
         else if(args.includes('list')){
@@ -146,7 +145,7 @@ module.exports = {
                 return message.channel.send(embed);
             }
             else{
-                description = raffle_utilities.generateRaffleListDesc(1, serverRaffles);
+                description = event_utilities.generateRaffleListDesc(1, serverRaffles);
                 embed.setDescription(description);
 
                 let sentEmbed = await message.channel.send(embed);
@@ -217,7 +216,7 @@ module.exports = {
                     if(raffles[raffle].timer){
                         clearTimeout(raffles[raffle].timer);
                     }
-                    raffles[raffle] = raffle_utilities.startRaffleTimer(raffles[raffle], 1, client);
+                    raffles[raffle] = event_utilities.startRaffleTimer(raffles[raffle], 1, client);
                     return;
                 }
             }
