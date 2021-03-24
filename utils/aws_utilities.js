@@ -231,3 +231,8 @@ module.exports.fetchRaffles = fetchRaffles;
 module.exports.writeRaffle = writeRaffle;
 module.exports.updateRaffle = updateRaffle;
 module.exports.deleteRaffle = deleteRaffle;
+
+module.exports.fetchEvents = fetchEvents;
+module.exports.writeEvent = writeEvent;
+module.exports.updateEvent = updateEvent;
+module.exports.deleteEvent = deleteEvent;

@@ -1,18 +1,23 @@
+const aws_utilities = require('../utils/aws_utilities.js');
+const event_utilities = require('../utils/event_utilities.js');
+const utilities = require('../utils/utilities.js');
+
 module.exports = {
     name: 'event',
     description: 'create a scheduled event',
-    execute(param){
+    async execute(param){
         const message = param.message;
         const prefix = param.prefix;
         const args = param.args.trim();
         const interactiveEmbeds = param.interactiveEmbeds;
         const Discord = param.Discord;
-      
+        const client = param.client;
+
         if(args === '' || args === 'help'){
             let embed = new Discord.MessageEmbed()
                 .setColor('#f7c920')
-                .setTitle('Raffle')
-                .addField('Description', 'Creates an event in the server')
+                .setTitle('Event')
+                .addField('Description', 'Creates an event in the server, best used in a designated events channel')
                 .addField('Usage', 
                     'To create a new event use the following format:\n' +
                     '`' + prefix + this.name + ' new`\n\n' +
@@ -22,8 +27,7 @@ module.exports = {
                     '`' + prefix + this.name + ' info name`\n\n' +
                     'To delete a event use the following format:\n' +
                     '`' + prefix + this.name + ' delete name`\n\n'
-                )
-                .addField('Examples', 'Example');
+                );
             return message.channel.send(embed);
         }
         else if(args === 'new'){
@@ -35,8 +39,8 @@ module.exports = {
                 day: null,
                 time: null,
                 timeZone: null,
-                timer: null,
                 message_id: null,
+                max: 16,
                 event_status: 'initialized',
                 channel_id: message.channel.id,
                 server_id: message.guild.id,
@@ -47,7 +51,7 @@ module.exports = {
 
             //ask questions to the user to create the event
                 //ask and record NAME for the event
-                directMessageChannel.send('WHat would you like to name the raffle?');
+                directMessageChannel.send('What would you like to name the event?');
                 let askedName = await directMessageChannel.awaitMessages(m => m.author.id !== client.user.id, {max:1, time: 60000, errors:['time']});
 
                 newEvent.name = askedName.last().content;
@@ -62,12 +66,12 @@ module.exports = {
                 directMessageChannel.send(
                     'What UTC offset is this event based in? Enter an offset between -12 and +14\n'+
                     'Examples: \nCalifornia is in UTC-8, enter `-8`\nSydney is in UTC+11, enter `+11`')
-                let askedTimeZone = await raffle_utilities.askTimeZone(directMessageChannel, client);
+                let askedTimeZone = await event_utilities.askTimeZone(directMessageChannel, client);
                 newEvent.timeZone = askedTimeZone;
 
                 //ask and record DAY,MONTH,YEAR for the event
-                directMessageChannel.send('What date will the event end? Please use the format mm/dd/yyyy, the date cannot be over 30 days.')
-                let askedDate = await raffle_utilities.askDate(directMessageChannel, newRaffle, client);
+                directMessageChannel.send('What date will the event start? Please use the format mm/dd/yyyy, the date cannot be over 30 days.')
+                let askedDate = await event_utilities.askDate(directMessageChannel, newEvent, client);
 
                 //askedDate is in form [day, month, year]
                 newEvent.month = askedDate[0];
@@ -75,16 +79,40 @@ module.exports = {
                 newEvent.year = askedDate[2];
 
                 //ask and record TIME for the event
-                const today = raffle_utilities.isToday(askedDate);
-                directMessageChannel.send('What time will the raffle end? Please use the format hour:minute in military time (24 hour clock).')
-                let askedTime = await raffle_utilities.askTime(directMessageChannel, newRaffle, client);
+                const today = event_utilities.isToday(askedDate);
+                directMessageChannel.send('What time will the event start? Please use the format hour:minute in military time (24 hour clock).')
+                let askedTime = await event_utilities.askTime(directMessageChannel, newEvent, client);
 
                 newEvent.time = askedTime;
+
+                directMessageChannel.send("What's the max occupancy for the event? Limit: 16");
+                let maxOccupancy = await 
 
             //finished asking questions, notify the user that the event has been created
             directMessageChannel.send('Your event has been created in the ' + message.channel.name + ' channel.');
 
+            //create, send and react to a new event message
+            let eventMsg = new Discord.MessageEmbed()
+                .setColor('#f7c920')
+                .setTitle(newEvent.name)
+                .addFields([
+                    {name: 'Description', value: newEvent.description},
+                    {name: 'Date & Time', value: newEvent.month + '/' + newEvent.day + '/' + newEvent.year + ' ' + utilities.militaryToStandardTime(newEvent.time.split(':')[0], newEvent.time.split(':')[1]) + ' UTC' + newEvent.timeZone},
+                    {name: 'Instruction', value: 'React below to sign up for the event'},
+                    {name: "Yes", value: '```\n1.\n2.\n3.```', inline: true},
+                    {name: 'Maybe', value: '```\n1.\n2.\n3.```', inline: true},
+                    {name: 'Extra', value: '```\n1.\n2.\n3.```', inline: true},
+                    {name: 'Hosted by', value: newEvent.host}
+                ])
+            let sentEventMessage = await message.channel.send(eventMsg);
+            await sentEventMessage.react('🇾');       
+            await sentEventMessage.react('🇲');
+            await sentEventMessage.react('🇪'); 
 
+            newEvent.message_id = sentEventMessage.id;
+
+            interactiveEmbeds.push(newEvent.message_id, {type: 'event', messageId: newEvent.message_id, });
+            
         }
         else if(args === 'list'){
 
