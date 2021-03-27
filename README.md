@@ -1,4 +1,4 @@
-Bot-Name: PixelBot (temporary name)
+Bot-Name: TOA5T
 
 Done utilities:
     
@@ -75,6 +75,8 @@ Done utilities:
 
 In Development utilities:
 
+    Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event; permissions: manage_event
+
     Help - always needs updates for every command
     permissions: n/a
 
@@ -88,8 +90,6 @@ In Development utilities:
     permissions: ADMINISTRATOR
 
 Planned utilities:
-
-    Event scheduler - use await messages to ask questions and create a post to let ppl sign up for an event; permissions: manage_event
 
     mute
 
