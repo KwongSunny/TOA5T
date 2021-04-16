@@ -86,6 +86,8 @@ In Development utilities:
     Setpermissions [DEV] need to check for valid permissions
     permissions: ADMINISTRATOR
 
+    Stock [DEV]
+
     Listpermissions [DONE FTMP] 
     permissions: ADMINISTRATOR
 
@@ -111,7 +113,7 @@ Planned utilities:
     
     Twitch integration - sets a channel as a twitch announcements channel, anyone who goes online will send a message to the server
 
-    Checkstock - checks the price of a stock
+    Minigames? 
 
 Removed Utilities
 
