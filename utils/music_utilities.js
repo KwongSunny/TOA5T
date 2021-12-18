@@ -146,7 +146,6 @@ function isLink(link){
 
 async function getYTSearch(args){
     return new Promise(async (resolve, reject) => {
-        
         let opts = {
             maxResults: 1,
             key: process.env.YT_TOKEN

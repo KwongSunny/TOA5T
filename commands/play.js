@@ -63,7 +63,7 @@ module.exports = {
 
             //creates a songItem to be added to the queue
             const songInfo = await ytdl.getInfo(args);
-
+            
             const songItem = {
                 title: songInfo.player_response.microformat.playerMicroformatRenderer.title.simpleText,
                 url: args,
