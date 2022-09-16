@@ -81,7 +81,6 @@ raffleJob.start();
 
 //persist while bot is alive
 client.on('message', async message => {
-
     //messages that appear in a server
     if(message.guild){
         //check for custom prefix
