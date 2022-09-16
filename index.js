@@ -81,7 +81,6 @@ raffleJob.start();
 
 //persist while bot is alive
 client.on('message', async message => {
-
     //messages that appear in a server
     if(message.guild){
         //check for custom prefix
@@ -216,7 +215,7 @@ client.on('guildDelete', (guild) => {
     aws_utilities.deleteServer(guild);
 });
 
-let deploy = 'HEROKU';
+let deploy = 'LOCAL';
 
 if(deploy === 'HEROKU') client.login(process.env.BOT_TOKEN);  //HEROKU PUBLIC BUILD 
 else{
