@@ -38,19 +38,6 @@ module.exports = {
         else if(args.length === 1 && !args[0].includes(':')){
             if(utilities.isNumeric(args[0])){
                 aws_utilities.updateItem(message.guild.id, ['reactionrole_post_id', 'server_name'], [args[0], message.guild.name]);
-                const server = await aws_utilities.fetchServer(message.guild.id);
-
-                let roleArgs;
-                if(server && server.Item.reaction_roles) {
-                    console.log("B");
-                    roleArgs = rr_utilities.splitReactionArgs(server.Item.reaction_roles.split(','));
-                }
-
-                const messageEmbed = await utilities.fetchMessageFromGuild(message.guild, args[0]);
-                console.log(messageEmbed);
-                for(roleMention = 0; roleMention < roleArgs.length; roleMention++){
-                    messageEmbed.react(roleArgs[roleMention][1]);
-                }
             }
         }
         //there are roles, create a new reaction post
